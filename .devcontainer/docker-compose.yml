@@ -1,0 +1,47 @@
+services:
+  db:
+    image: mariadb:10.8
+    container_name: draw-arena-db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: drawarena
+      MARIADB_USER: drawarena
+      MARIADB_PASSWORD: drawarena
+    volumes:
+      - db-data:/var/lib/mysql
+      - ../database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "3306:3306"
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_NAME: drawarena
+      DB_USER: drawarena
+      DB_PASS: drawarena
+    volumes:
+      - ../backend:/var/www/html
+      - ..:/workspaces/Draw-Arena
+    ports:
+      - "8000:80"
+    restart: unless-stopped
+
+  frontend:
+    image: nginx:alpine
+    depends_on:
+      - backend
+    volumes:
+      - ../frontend:/usr/share/nginx/html:ro
+      - ../frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+volumes:
+  db-data:

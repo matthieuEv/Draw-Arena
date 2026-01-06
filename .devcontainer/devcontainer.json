@@ -1,0 +1,9 @@
+{
+  "name": "Draw-Arena",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "backend",
+  "workspaceFolder": "/workspaces/Draw-Arena",
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [8080, 8000, 3306],
+  "postCreateCommand": "php -v"
+}
