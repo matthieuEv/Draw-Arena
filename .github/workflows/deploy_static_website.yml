@@ -13,6 +13,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Azure CLI
+        uses: azure/cli@v2
+
+      - name: Remove unused files
+        run: |
+          rm -f ./frontend/README.md
+          rm -f ./frontend/nginx.conf
+
       - name: Upload to $web (Storage key)
         run: |
           az storage blob upload-batch \
