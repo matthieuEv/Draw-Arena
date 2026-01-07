@@ -12,6 +12,8 @@ const postsContainer = document.getElementById("posts");
 const statusEl = document.getElementById("status");
 const sessionUserEl = document.getElementById("session-user");
 const logoutBtn = document.getElementById("logout-btn");
+const apiIndicator = document.getElementById("api-indicator");
+const apiStatusLabel = document.getElementById("api-status-label");
 
 const state = {
   token: localStorage.getItem(TOKEN_KEY) || "",
@@ -22,6 +24,29 @@ function setStatus(message, isError = false) {
   statusEl.textContent = message;
   statusEl.style.color = isError ? "#e05d2f" : "#1e8f7a";
 }
+
+async function checkApiHealth() {
+  try {
+    const response = await fetch(`${API_BASE}/health`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    
+    if (response.ok) {
+      apiIndicator.className = "status-indicator online";
+      apiStatusLabel.textContent = "API";
+    } else {
+      apiIndicator.className = "status-indicator offline";
+      apiStatusLabel.textContent = "API";
+    }
+  } catch (error) {
+    apiIndicator.className = "status-indicator offline";
+    apiStatusLabel.textContent = "API";
+  }
+}
+
+// Vérifier le statut de l'API toutes les 5 secondes
+setInterval(checkApiHealth, 5000);
 
 function setAuthState(isAuthed) {
   authSection.classList.toggle("hidden", isAuthed);
@@ -140,10 +165,21 @@ registerForm.addEventListener("submit", async (event) => {
   setStatus("");
 
   const formData = new FormData(registerForm);
-  const payload = {
-    username: formData.get("username"),
-    password: formData.get("password"),
-  };
+  const username = (formData.get("username") || "").trim();
+  const password = formData.get("password") || "";
+
+  // Validation côté client
+  if (username.length < 3 || username.length > 30) {
+    setStatus("Le nom d'utilisateur doit contenir entre 3 et 30 caractères", true);
+    return;
+  }
+
+  if (password.length < 6) {
+    setStatus("Le mot de passe doit contenir au moins 6 caractères", true);
+    return;
+  }
+
+  const payload = { username, password };
 
   try {
     await apiFetch("/register", {
@@ -199,6 +235,9 @@ postForm.addEventListener("submit", async (event) => {
 });
 
 async function init() {
+  // Vérifier le statut de l'API immédiatement
+  checkApiHealth();
+  
   setAuthState(false);
 
   if (!state.token) {
