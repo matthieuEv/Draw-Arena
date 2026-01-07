@@ -25,6 +25,7 @@ services:
       DB_NAME: drawarena
       DB_USER: drawarena
       DB_PASS: drawarena
+      ALLOWED_ORIGINS: http://localhost:8080
     volumes:
       - ./backend:/var/www/html
       - .:/workspaces/Draw-Arena

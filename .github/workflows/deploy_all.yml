@@ -1,0 +1,168 @@
+name: 🚀 Deploy All (Infrastructure + Backend + Frontend)
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply_terraform:
+        description: 'Apply Terraform changes (create/update infrastructure)'
+        required: true
+        type: boolean
+        default: false
+
+jobs:
+  deploy-infrastructure:
+    if: ${{ inputs.apply_terraform }}
+    runs-on: ubuntu-latest
+    environment: azure
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Azure CLI
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.14.0
+
+      - name: Terraform Init
+        working-directory: ./infra
+        run: terraform init
+
+      - name: Terraform Plan
+        working-directory: ./infra
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        working-directory: ./infra
+        run: terraform apply -auto-approve tfplan
+
+      - name: Save outputs
+        working-directory: ./infra
+        run: |
+          echo "STORAGE_ACCOUNT=$(terraform output -raw storage_account_name)" >> $GITHUB_ENV
+          echo "BACKEND_APP=$(terraform output -raw backend_app_name)" >> $GITHUB_ENV
+          echo "RESOURCE_GROUP=$(terraform output -raw resource_group_name)" >> $GITHUB_ENV
+
+      - name: Summary
+        run: |
+          echo "### 🏗️ Infrastructure Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Terraform applied successfully" >> $GITHUB_STEP_SUMMARY
+          echo "- Storage Account: ${{ env.STORAGE_ACCOUNT }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Backend App: ${{ env.BACKEND_APP }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Resource Group: ${{ env.RESOURCE_GROUP }}" >> $GITHUB_STEP_SUMMARY
+
+  deploy-backend:
+    runs-on: ubuntu-latest
+    environment: azure
+    needs: [deploy-infrastructure]
+    if: always() && (needs.deploy-infrastructure.result == 'success' || needs.deploy-infrastructure.result == 'skipped')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Azure CLI
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.14.0
+          terraform_wrapper: false
+
+      - name: Get Terraform outputs
+        working-directory: ./infra
+        run: |
+          terraform init
+          echo "RESOURCE_GROUP=$(terraform output -raw resource_group_name)" >> $GITHUB_ENV
+          echo "APP_NAME=$(terraform output -raw backend_app_name)" >> $GITHUB_ENV
+          echo "API_URL=$(terraform output -raw backend_api_url)" >> $GITHUB_ENV
+
+      - name: Create backend package
+        run: |
+          cd backend
+          zip -r ../backend.zip . -x "*.git*" -x "readme.md" -x "__pycache__/*"
+
+      - name: Deploy backend
+        run: |
+          az webapp deploy \
+            --resource-group "${{ env.RESOURCE_GROUP }}" \
+            --name "${{ env.APP_NAME }}" \
+            --type zip \
+            --src-path backend.zip
+
+      - name: Wait and health check
+        run: |
+          sleep 10
+          curl -f "${{ env.API_URL }}/health" || echo "⚠️ Health check failed"
+
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    environment: azure
+    needs: [deploy-backend]
+    if: always() && needs.deploy-backend.result == 'success'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Azure CLI
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.14.0
+          terraform_wrapper: false
+
+      - name: Configure and deploy frontend
+        working-directory: ./infra
+        run: |
+          terraform init
+          API_URL=$(terraform output -raw backend_api_url)
+          STORAGE_NAME=$(terraform output -raw storage_account_name)
+          
+          echo "window.API_BASE = \"$API_URL\";" > ../frontend/config.js
+          
+          az storage blob upload-batch \
+            --destination '$web' \
+            --source ../frontend \
+            --account-name "$STORAGE_NAME" \
+            --auth-mode login \
+            --overwrite
+          
+          FRONTEND_URL=$(terraform output -raw static_website_url)
+          echo "FRONTEND_URL=$FRONTEND_URL" >> $GITHUB_ENV
+          echo "API_URL=$API_URL" >> $GITHUB_ENV
+
+      - name: Final Summary
+        run: |
+          echo "### 🎉 Complete Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Frontend:** ${{ env.FRONTEND_URL }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Backend API:** ${{ env.API_URL }}" >> $GITHUB_STEP_SUMMARY

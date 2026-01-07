@@ -1,31 +1,65 @@
-name: 🚀 Deploy static website
+name: 🚀 Deploy Frontend
 
 on:
   workflow_dispatch:
   push:
     tags:
       - 'v*.*.*'
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/deploy_static_website.yml'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: azure
+    
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
       - name: Set up Azure CLI
         uses: azure/cli@v2
+        with:
+          azcliversion: latest
 
-      - name: Remove unused files
-        run: |
-          rm -f ./frontend/README.md
-          rm -f ./frontend/nginx.conf
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Upload to $web (Storage key)
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.14.0
+          terraform_wrapper: false
+
+      - name: Configure frontend
+        working-directory: ./infra
         run: |
+          terraform init
+          API_URL=$(terraform output -raw backend_api_url)
+          echo "window.API_BASE = \"$API_URL\";" > ../frontend/config.js
+          echo "✅ Frontend configured with API: $API_URL"
+
+      - name: Deploy frontend
+        working-directory: ./infra
+        run: |
+          STORAGE_NAME=$(terraform output -raw storage_account_name)
+          
           az storage blob upload-batch \
-            --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT }}" \
-            --account-key "${{ secrets.AZURE_STORAGE_KEY }}" \
             --destination '$web' \
-            --source ./frontend \
+            --source ../frontend \
+            --account-name "$STORAGE_NAME" \
+            --auth-mode login \
             --overwrite
+          
+          FRONTEND_URL=$(terraform output -raw static_website_url)
+          echo "✅ Frontend deployed to: $FRONTEND_URL"
+          echo "FRONTEND_URL=$FRONTEND_URL" >> $GITHUB_ENV
+
+      - name: Summary
+        run: |
+          echo "### 🎉 Frontend Deployment Successful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Frontend URL:** ${{ env.FRONTEND_URL }}" >> $GITHUB_STEP_SUMMARY

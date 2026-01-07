@@ -1,8 +1,8 @@
 # Infra | Draw-Arena
 
-This folder provisions an Azure Storage Account Static Website for the
-frontend (plain HTML/CSS/JS). Nginx is not used in Azure; the static
-website endpoint serves the files directly.
+This folder provisions:
+- an Azure Storage Account Static Website for the frontend (plain HTML/CSS/JS)
+- an Azure App Service (Linux) for the PHP backend API
 
 ## Prerequisites
 
@@ -18,12 +18,24 @@ website endpoint serves the files directly.
 cd infra
 ```
 
-1) Initialize and apply the Terraform stack.
+2) Initialize and apply the Terraform stack.
 
 ```bash
 terraform init
 terraform apply
 ```
+
+3) After applying, note the outputs for later use:
+
+```bash
+terraform output
+```
+
+You'll need:
+- `storage_account_name` for deploying the frontend
+- `backend_app_name` for deploying the backend
+- `backend_api_url` for configuring the frontend (includes `/index.php/api` on App Service Linux)
+- `resource_group_name` for Azure CLI commands
 
 ## Deploy the frontend code
 
@@ -40,6 +52,54 @@ az storage blob upload-batch \\
 ```
 
 Re-run the same command each time you update the frontend code.
+
+## Link the frontend to the backend
+
+The frontend reads its API base URL from `frontend/config.js`. After
+Terraform applies, update the value to the backend API output before
+uploading the frontend files:
+
+```bash
+terraform output -raw backend_api_url
+```
+
+Then set `window.API_BASE` in `frontend/config.js` to that URL.
+
+By default, the backend only allows the static website origin for CORS.
+If you need extra origins, set the `backend_allowed_origins` variable.
+
+## Deploy the backend API
+
+Deploy the PHP backend to the App Service (zip deployment):
+
+```bash
+cd ../backend
+zip -r ../backend.zip . -x "*.git*" -x "readme.md"
+cd ../infra
+az webapp deploy \
+  --resource-group "$(terraform output -raw resource_group_name)" \
+  --name "$(terraform output -raw backend_app_name)" \
+  --type zip \
+  --src-path ../backend.zip
+```
+
+**Note**: For now, the database is not connected. When ready, configure the database settings:
+
+```bash
+az webapp config appsettings set \
+  --resource-group "$(terraform output -raw resource_group_name)" \
+  --name "$(terraform output -raw backend_app_name)" \
+  --settings DB_HOST=<your-db-host> DB_NAME=drawarena DB_USER=<user> DB_PASS=<password>
+```
+
+### Verify the backend is running
+
+Check the health endpoint:
+
+```bash
+curl "$(terraform output -raw backend_api_url)/health"
+# Expected: {"ok":true}
+```
 
 ### Why two separate steps?
 
@@ -70,6 +130,67 @@ Analogy: Terraform builds the house; the Azure CLI moves in the furniture. You d
 
 ## Check the public URL
 
+View your deployed frontend:
+
 ```bash
-echo "$(terraform output -raw static_website_url)"
+echo "Frontend: $(terraform output -raw static_website_url)"
+echo "Backend:  $(terraform output -raw backend_api_url)"
+```
+
+## Complete deployment workflow
+
+Here's the recommended order for deploying everything:
+
+```bash
+# 1. Deploy infrastructure
+cd infra
+terraform init
+terraform apply
+
+# 2. Deploy backend
+cd ../backend
+zip -r ../backend.zip . -x "*.git*" -x "readme.md"
+cd ../infra
+az webapp deploy \
+  --resource-group "$(terraform output -raw resource_group_name)" \
+  --name "$(terraform output -raw backend_app_name)" \
+  --type zip \
+  --src-path ../backend.zip
+
+# 3. Verify backend health
+curl "$(terraform output -raw backend_api_url)/health"
+
+# 4. Update frontend config
+cd ../frontend
+# Edit config.js and set window.API_BASE to the backend_api_url output
+echo "window.API_BASE = \"$(cd ../infra && terraform output -raw backend_api_url)\";" > config.js
+
+# 5. Deploy frontend
+cd ../infra
+az storage blob upload-batch \
+  --destination '$web' \
+  --source ../frontend \
+  --account-name "$(terraform output -raw storage_account_name)" \
+  --auth-mode login \
+  --overwrite
+
+# 6. Open your app
+open "$(terraform output -raw static_website_url)"
+```
+
+## Monitoring and logs
+
+View logs from your backend App Service:
+
+```bash
+# Stream live logs
+az webapp log tail \
+  --resource-group "$(terraform output -raw resource_group_name)" \
+  --name "$(terraform output -raw backend_app_name)"
+
+# Download logs
+az webapp log download \
+  --resource-group "$(terraform output -raw resource_group_name)" \
+  --name "$(terraform output -raw backend_app_name)" \
+  --log-file backend-logs.zip
 ```

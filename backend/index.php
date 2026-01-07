@@ -3,19 +3,38 @@
 declare(strict_types=1);
 
 header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Auth-Token');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204);
-    exit;
-}
 
 function respond(array $payload, int $status = 200): void
 {
     http_response_code($status);
     echo json_encode($payload, JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+function allowed_origins(): array
+{
+    $raw = getenv('ALLOWED_ORIGINS') ?: '';
+    $origins = array_map('trim', explode(',', $raw));
+    return array_values(array_filter($origins, static fn($origin) => $origin !== ''));
+}
+
+$allowed_origins = allowed_origins();
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$origin_allowed = $origin !== '' && in_array($origin, $allowed_origins, true);
+
+if ($origin_allowed) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Vary: Origin');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Auth-Token');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    header('Access-Control-Max-Age: 86400');
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    if (!$origin_allowed) {
+        respond(['error' => 'CORS origin not allowed'], 403);
+    }
+    http_response_code(204);
     exit;
 }
 
@@ -85,6 +104,15 @@ function require_user(): array
 
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '/';
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+
+// Normalize paths when requests go through /index.php (App Service nginx).
+$script_name = $_SERVER['SCRIPT_NAME'] ?? '';
+if ($script_name !== '' && str_starts_with($path, $script_name)) {
+    $path = substr($path, strlen($script_name));
+    if ($path === '') {
+        $path = '/';
+    }
+}
 
 if ($path === '/api/health' && $method === 'GET') {
     respond(['ok' => true]);

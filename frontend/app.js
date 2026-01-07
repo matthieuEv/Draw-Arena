@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8000/api";
+const API_BASE = window.API_BASE || "http://localhost:8000/api";
 const TOKEN_KEY = "drawarena_token";
 const USER_KEY = "drawarena_user";
 
@@ -33,19 +33,26 @@ async function checkApiHealth() {
     });
     
     if (response.ok) {
-      apiIndicator.className = "status-indicator online";
-      apiStatusLabel.textContent = "API";
+      const data = await response.json();
+      if (data.ok === true) {
+        apiIndicator.className = "status-indicator online";
+        apiStatusLabel.textContent = "API online";
+      } else {
+        apiIndicator.className = "status-indicator offline";
+        apiStatusLabel.textContent = "API degraded";
+      }
     } else {
       apiIndicator.className = "status-indicator offline";
-      apiStatusLabel.textContent = "API";
+      apiStatusLabel.textContent = `API error (${response.status})`;
     }
   } catch (error) {
     apiIndicator.className = "status-indicator offline";
-    apiStatusLabel.textContent = "API";
+    apiStatusLabel.textContent = "API offline";
+    console.warn("Health check failed:", error.message);
   }
 }
 
-// Vérifier le statut de l'API toutes les 5 secondes
+// Check API health every 5 seconds
 setInterval(checkApiHealth, 5000);
 
 function setAuthState(isAuthed) {
@@ -74,7 +81,7 @@ async function apiFetch(path, options = {}) {
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    const message = data.error || "Erreur API";
+    const message = data.error || "API Error";
     throw new Error(message);
   }
 
@@ -87,7 +94,7 @@ function renderPosts(posts) {
   if (!posts.length) {
     const empty = document.createElement("div");
     empty.className = "post";
-    empty.textContent = "Aucun post pour le moment.";
+    empty.textContent = "No posts yet.";
     postsContainer.appendChild(empty);
     return;
   }
@@ -102,7 +109,7 @@ function renderPosts(posts) {
     const meta = document.createElement("div");
     meta.className = "post-meta";
     const date = post.created_at
-      ? new Date(post.created_at).toLocaleString("fr-FR")
+      ? new Date(post.created_at).toLocaleString("en-US")
       : "";
     meta.textContent = `${post.author} · ${date}`.trim();
 
@@ -153,7 +160,7 @@ loginForm.addEventListener("submit", async (event) => {
     });
     saveSession(data.token, data.username);
     setAuthState(true);
-    setStatus("Connexion ok", false);
+    setStatus("Connection OK", false);
     await loadPosts();
   } catch (error) {
     setStatus(error.message, true);
@@ -168,14 +175,14 @@ registerForm.addEventListener("submit", async (event) => {
   const username = (formData.get("username") || "").trim();
   const password = formData.get("password") || "";
 
-  // Validation côté client
+  // Client-side validation
   if (username.length < 3 || username.length > 30) {
-    setStatus("Le nom d'utilisateur doit contenir entre 3 et 30 caractères", true);
+    setStatus("Username must be between 3 and 30 characters", true);
     return;
   }
 
   if (password.length < 6) {
-    setStatus("Le mot de passe doit contenir au moins 6 caractères", true);
+    setStatus("Password must be at least 6 characters", true);
     return;
   }
 
@@ -192,7 +199,7 @@ registerForm.addEventListener("submit", async (event) => {
     });
     saveSession(data.token, data.username);
     setAuthState(true);
-    setStatus("Compte cree", false);
+    setStatus("Account created", false);
     await loadPosts();
   } catch (error) {
     setStatus(error.message, true);
@@ -228,14 +235,14 @@ postForm.addEventListener("submit", async (event) => {
     });
     postForm.reset();
     await loadPosts();
-    setStatus("Post ajoute", false);
+    setStatus("Post added", false);
   } catch (error) {
     setStatus(error.message, true);
   }
 });
 
 async function init() {
-  // Vérifier le statut de l'API immédiatement
+  // Check API health immediately
   checkApiHealth();
   
   setAuthState(false);
