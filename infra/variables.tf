@@ -4,6 +4,17 @@ variable "location" {
   default     = "francecentral"
 }
 
+variable "environment" {
+  type        = string
+  description = "Deployment environment tag for Azure resources (preprod or prod)."
+  default     = "prod"
+
+  validation {
+    condition     = contains(["preprod", "prod"], var.environment)
+    error_message = "environment must be one of: preprod, prod."
+  }
+}
+
 variable "resource_group_name" {
   type        = string
   description = "Existing resource group name."

@@ -9,6 +9,15 @@ on:
       - 'backend/**'
       - '.github/workflows/deploy_backend.yml'
 
+env:
+  DEPLOY_ENV: ${{ github.event_name == 'workflow_dispatch' && 'preprod' || 'prod' }}
+  TF_WORKSPACE: ${{ github.event_name == 'workflow_dispatch' && 'preprod' || 'default' }}
+  TF_VAR_environment: ${{ github.event_name == 'workflow_dispatch' && 'preprod' || 'prod' }}
+  TF_VAR_resource_group_name: ${{ github.event_name == 'workflow_dispatch' && 'draw-arena-rg-preprod' || 'draw-arena-rg' }}
+  TF_VAR_storage_account_name: ${{ github.event_name == 'workflow_dispatch' && 'drawarenastaticpreprod' || 'drawarenastatic2026' }}
+  TF_VAR_backend_service_plan_name: ${{ github.event_name == 'workflow_dispatch' && 'draw-arena-backend-plan-preprod' || 'draw-arena-backend-plan' }}
+  TF_VAR_backend_app_name: ${{ github.event_name == 'workflow_dispatch' && 'draw-arena-backend-app-preprod' || 'draw-arena-backend-app' }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -38,6 +47,7 @@ jobs:
         working-directory: ./infra
         run: |
           terraform init
+          terraform workspace select "$TF_WORKSPACE" || terraform workspace new "$TF_WORKSPACE"
           echo "RESOURCE_GROUP=$(terraform output -raw resource_group_name)" >> $GITHUB_ENV
           echo "APP_NAME=$(terraform output -raw backend_app_name)" >> $GITHUB_ENV
           echo "API_URL=$(terraform output -raw backend_api_url)" >> $GITHUB_ENV

@@ -66,10 +66,19 @@ function deploy_frontend() {
 
 function show_urls() {
     cd "$PROJECT_ROOT/infra"
+    ENV_LABEL="${TF_VAR_environment:-}"
+    if [ -z "$ENV_LABEL" ]; then
+        WORKSPACE_NAME=$(terraform workspace show 2>/dev/null || echo "default")
+        if [ "$WORKSPACE_NAME" = "preprod" ]; then
+            ENV_LABEL="preprod"
+        else
+            ENV_LABEL="prod"
+        fi
+    fi
     echo ""
-    echo "🌐 Application URLs:"
-    echo "   Frontend: $(terraform output -raw static_website_url)"
-    echo "   Backend:  $(terraform output -raw backend_api_url)"
+    echo "🌐 Application URLs ($ENV_LABEL):"
+    echo "   Frontend ($ENV_LABEL): $(terraform output -raw static_website_url)"
+    echo "   Backend ($ENV_LABEL):  $(terraform output -raw backend_api_url)"
     echo ""
 }
 

@@ -20,6 +20,7 @@ resource "azurerm_storage_account" "this" {
 
   tags = {
     project = "Draw-Arena"
+    environment = var.environment
   }
 }
 
@@ -37,6 +38,7 @@ resource "azurerm_service_plan" "backend" {
 
   tags = {
     project = "Draw-Arena"
+    environment = var.environment
   }
 }
 
@@ -96,5 +98,6 @@ resource "azurerm_linux_web_app" "backend" {
 
   tags = {
     project = "Draw-Arena"
+    environment = var.environment
   }
 }
