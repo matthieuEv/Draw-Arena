@@ -102,17 +102,22 @@ function require_user(): array
     return $user;
 }
 
-$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '/';
-$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-
-// Normalize paths when requests go through /index.php (App Service nginx).
-$script_name = $_SERVER['SCRIPT_NAME'] ?? '';
-if ($script_name !== '' && str_starts_with($path, $script_name)) {
-    $path = substr($path, strlen($script_name));
-    if ($path === '') {
-        $path = '/';
+// Get path from PATH_INFO if available (for /index.php/api/health), otherwise from REQUEST_URI (for /api/health with rewrite)
+if (isset($_SERVER['PATH_INFO']) && $_SERVER['PATH_INFO'] !== '') {
+    $path = $_SERVER['PATH_INFO'];
+} else {
+    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH) ?? '/';
+    // Normalize paths when requests go through /index.php (App Service nginx)
+    $script_name = $_SERVER['SCRIPT_NAME'] ?? '';
+    if ($script_name !== '' && str_ends_with($script_name, 'index.php') && str_starts_with($path, $script_name)) {
+        $path = substr($path, strlen($script_name));
+        if ($path === '') {
+            $path = '/';
+        }
     }
 }
+
+$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 if ($path === '/api/health' && $method === 'GET') {
     respond(['ok' => true]);
