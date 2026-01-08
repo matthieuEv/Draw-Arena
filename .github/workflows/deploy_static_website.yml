@@ -27,7 +27,7 @@ jobs:
         run: |
           az storage blob upload-batch \
             --account-name "${{ env.ACCOUNT_NAME }}" \
-            --account-key "${{ secrets.AZURE_STORAGE_KEY }}" \
+            --account-key "${{ secrets.AZURE_STORAGE_KEY_PREPROD }}" \
             --destination '$web' \
             --source ./frontend \
             --overwrite
