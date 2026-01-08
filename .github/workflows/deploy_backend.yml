@@ -21,27 +21,34 @@ jobs:
             echo "DEPLOY_TYPE=preprod" >> $GITHUB_ENV
           fi
 
-      - name: Get App Service Name
-        run: |
-          if [[ "${{ env.DEPLOY_TYPE }}" == "prod" ]]; then
-            echo "APP_NAME=draw-arena-backend-app" >> $GITHUB_ENV
-            echo "PUBLISH_PROFILE=${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_PROD }}" >> $GITHUB_ENV
-          else
-            echo "APP_NAME=draw-arena-backend-app-preprod" >> $GITHUB_ENV
-            echo "PUBLISH_PROFILE=${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_PREPROD }}" >> $GITHUB_ENV
-          fi
-
       - name: Create backend package
         run: |
           cd backend
           zip -r ../backend.zip . -x "*.git*" -x "readme.md" -x "Dockerfile"
 
-      - name: Deploy to Azure App Service
+      - name: Deploy to Azure App Service (Preprod)
+        if: env.DEPLOY_TYPE == 'preprod'
         uses: azure/webapps-deploy@v2
         with:
-          app-name: ${{ env.APP_NAME }}
-          publish-profile: ${{ env.PUBLISH_PROFILE }}
+          app-name: draw-arena-backend-app-preprod
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_PREPROD }}
           package: backend.zip
+
+      - name: Deploy to Azure App Service (Prod)
+        if: env.DEPLOY_TYPE == 'prod'
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: draw-arena-backend-app
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_PROD }}
+          package: backend.zip
+
+      - name: Set App Name for summary
+        run: |
+          if [[ "${{ env.DEPLOY_TYPE }}" == "prod" ]]; then
+            echo "APP_NAME=draw-arena-backend-app" >> $GITHUB_ENV
+          else
+            echo "APP_NAME=draw-arena-backend-app-preprod" >> $GITHUB_ENV
+          fi
 
       - name: Verify deployment
         run: |
