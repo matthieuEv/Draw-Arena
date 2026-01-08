@@ -1,104 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Draw-Arena | Mini Blog</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="bg-shape shape-one"></div>
-    <div class="bg-shape shape-two"></div>
-    <div class="bg-shape shape-three"></div>
-
-    <header class="site-header">
-      <div class="logo">Draw-Arena</div>
-      <div class="tagline">Quick login, instant posts.</div>
-    </header>
-
-    <main class="layout">
-      <section class="card" style="--delay: 0.05s" id="auth-section">
-        <div class="card-header">
-          <div class="header-with-status">
-            <div>
-              <h2>Login</h2>
-              <p>Access your account and publish to your blog.</p>
-            </div>
-            <div class="api-status">
-              <div class="status-indicator" id="api-indicator"></div>
-              <span class="status-label" id="api-status-label">API</span>
-            </div>
-          </div>
-        </div>
-        <div class="auth-columns">
-          <form id="login-form" class="stack">
-            <label>
-              Username
-              <input type="text" name="username" autocomplete="username" required minlength="3" />
-            </label>
-            <label>
-              Password
-              <input type="password" name="password" autocomplete="current-password" required minlength="6" />
-            </label>
-            <button type="submit" class="btn primary">Sign in</button>
-          </form>
-
-          <form id="register-form" class="stack">
-            <label>
-              Username
-              <input type="text" name="username" autocomplete="username" required minlength="3" maxlength="30" />
-              <span class="field-hint">Between 3 and 30 characters</span>
-            </label>
-            <label>
-              Password
-              <input type="password" name="password" autocomplete="new-password" required minlength="6" />
-              <span class="field-hint">At least 6 characters</span>
-            </label>
-            <button type="submit" class="btn ghost">Create account</button>
-          </form>
-        </div>
-      </section>
-
-      <section class="card" style="--delay: 0.15s" id="session-section">
-        <div class="session-bar">
-          <div>
-            <div class="eyebrow">Signed in as</div>
-            <div id="session-user" class="session-user">-</div>
-          </div>
-          <button class="btn slim" id="logout-btn">Logout</button>
-        </div>
-        <div class="status" id="status"></div>
-        <div class="posts" id="posts"></div>
-      </section>
-
-      <section class="card" style="--delay: 0.25s" id="composer-section">
-        <div class="card-header">
-          <h2>New post</h2>
-          <p>Add an idea and share it with your team.</p>
-        </div>
-        <form id="post-form" class="stack">
-          <label>
-            Title
-            <input type="text" name="title" maxlength="120" required />
-          </label>
-          <label>
-            Content
-            <textarea name="body" rows="5" required></textarea>
-          </label>
-          <button type="submit" class="btn primary">Publish</button>
-        </form>
-      </section>
-    </main>
-
-    <footer class="site-footer">Draw-Arena demo.</footer>
-
-    <script src="config.js"></script>
-    <script src="app.js"></script>
-  </body>
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+  <main id="app"></main>
+  <script type="module" src="/app.js"></script>
+</body>
 </html>

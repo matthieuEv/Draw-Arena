@@ -26,6 +26,14 @@ jobs:
             echo "DEPLOY_TYPE=preprod" >> $GITHUB_ENV
           fi
 
+      - name : Build Frontend
+        working-directory: ./frontend
+        run: |
+          chmod +x ./build.sh
+          chmod +x ./jcss.sh
+          ./build.sh
+          echo "✅ Frontend build completed"
+
       - name: Get Account Name
         run: |
           if [[ "${{ env.DEPLOY_TYPE }}" == "prod" ]]; then
@@ -48,14 +56,14 @@ jobs:
               --account-name "${{ env.ACCOUNT_NAME }}" \
               --account-key "${{ secrets.AZURE_STORAGE_KEY_PROD }}" \
               --destination '$web' \
-              --source ./frontend \
+              --source ./frontend/dist \
               --overwrite
           else
             az storage blob upload-batch \
               --account-name "${{ env.ACCOUNT_NAME }}" \
               --account-key "${{ secrets.AZURE_STORAGE_KEY_PREPROD }}" \
               --destination '$web' \
-              --source ./frontend \
+              --source ./frontend/dist \
               --overwrite
           fi
 
