@@ -1,6 +1,7 @@
 # Configuration Terraform pour l'environnement PREPROD
 
 environment                 = "preprod"
+resource_group_name         = "draw-arena-rg-preprod"
 storage_account_name        = "drawarenastaticpreprod"
 backend_service_plan_name   = "draw-arena-backend-plan-preprod"
 backend_app_name            = "draw-arena-backend-app-preprod"
