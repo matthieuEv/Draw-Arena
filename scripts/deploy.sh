@@ -1,18 +1,28 @@
 #!/bin/bash
 # Draw-Arena deployment script for Azure
-# Usage: ./deploy.sh [init|backend|frontend|all]
+# Usage: ./deploy.sh [init|backend|frontend|all] [preprod|prod]
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
+# Déterminer l'environnement (preprod ou prod)
+ENV="${2:-prod}"
+if [[ "$ENV" != "preprod" && "$ENV" != "prod" ]]; then
+    echo "❌ Environnement invalide: $ENV (doit être 'preprod' ou 'prod')"
+    exit 1
+fi
+
+echo "🎯 Déploiement pour l'environnement: $ENV"
+
 cd "$PROJECT_ROOT/infra"
 
 function deploy_infra() {
-    echo "🏗️  Deploying Terraform infrastructure..."
+    echo "🏗️  Deploying Terraform infrastructure for $ENV..."
     terraform init
-    terraform apply
+    terraform workspace select "$ENV" || terraform workspace new "$ENV"
+    terraform apply -var-file="${ENV}.tfvars"
     echo "✅ Infrastructure deployed"
 }
 
@@ -49,36 +59,28 @@ function deploy_frontend() {
     API_URL=$(terraform output -raw backend_api_url)
     STORAGE_NAME=$(terraform output -raw storage_account_name)
     
-    echo "⚙️  Configuring frontend..."
-    echo "window.API_BASE = \"$API_URL\";" > "$PROJECT_ROOT/frontend/config.js"
+    echo "⚙️  Configuring frontend for $ENV environment..."
+    # Copier les fichiers frontend dans un répertoire temporaire
+    TMP_DIR=$(mktemp -d)
+    cp -r "$PROJECT_ROOT/frontend/"* "$TMP_DIR/"
     
-    echo "📤 Uploading frontend to Azure Storage..."
+    # Remplacer le placeholder par l'URL réelle de l'API
+    sed -i.bak "s|BACKEND_API_URL_PLACEHOLDER|$API_URL|g" "$TMP_DIR/config.js"
+    rm -f "$TMP_DIR/config.js.bak"
+    
+    echo "📤 Uploading frontend to Azure Storage ($ENV)..."
     az storage blob upload-batch \
         --destination '$web' \
-        --source "$PROJECT_ROOT/frontend" \
+        --source "$TMP_DIR" \
         --account-name "$STORAGE_NAME" \
         --auth-mode login \
         --overwrite
     
-    FRONTEND_URL=$(terraform output -raw static_website_url)
-    echo "✅ Frontend deployed: $FRONTEND_URL"
-}
-
-function show_urls() {
-    cd "$PROJECT_ROOT/infra"
-    ENV_LABEL="${TF_VAR_environment:-}"
-    if [ -z "$ENV_LABEL" ]; then
-        WORKSPACE_NAME=$(terraform workspace show 2>/dev/null || echo "default")
-        if [ "$WORKSPACE_NAME" = "preprod" ]; then
-            ENV_LABEL="preprod"
-        else
-            ENV_LABEL="prod"
-        fi
-    fi
+    WORKSPACE_NAME=$(terraform workspace show 2>/dev/null || echo "default")
     echo ""
-    echo "🌐 Application URLs ($ENV_LABEL):"
-    echo "   Frontend ($ENV_LABEL): $(terraform output -raw static_website_url)"
-    echo "   Backend ($ENV_LABEL):  $(terraform output -raw backend_api_url)"
+    echo "🌐 Application URLs ($WORKSPACE_NAME):"
+    echo "   Frontend: $(terraform output -raw static_website_url)"
+    echo "   Backend:  $(terraform output -raw backend_api_url)"
     echo ""
 }
 
@@ -96,6 +98,18 @@ case "${1:-all}" in
         show_urls
         ;;
     all)
+        deploy_infra
+        deploy_backend
+        deploy_frontend
+        show_urls
+        echo "🎉 Complete deployment finished for $ENV!"
+        ;;
+    *)
+        echo "Usage: $0 {init|backend|frontend|all} [preprod|prod]"
+        echo ""
+        echo "Examples:"
+        echo "  $0 all preprod    # Déploie tout sur preprod"
+        echo "  $0 frontend prod  # Déploie seulement le frontend sur prod
         deploy_infra
         deploy_backend
         deploy_frontend

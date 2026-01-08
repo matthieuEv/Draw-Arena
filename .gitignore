@@ -1,1 +1,5 @@
 backend.zip
+
+# Fichiers de configuration temporaires
+frontend/config.js.bak
+*.bak

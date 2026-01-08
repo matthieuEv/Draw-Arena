@@ -30,9 +30,16 @@ jobs:
         run: |
           if [[ "${{ env.DEPLOY_TYPE }}" == "prod" ]]; then
             echo "ACCOUNT_NAME=drawarenastaticprod" >> $GITHUB_ENV
+            echo "BACKEND_URL=https://draw-arena-backend-app.azurewebsites.net/index.php/api" >> $GITHUB_ENV
           else
             echo "ACCOUNT_NAME=drawarenastaticpreprod" >> $GITHUB_ENV
+            echo "BACKEND_URL=https://draw-arena-backend-app-preprod.azurewebsites.net/index.php/api" >> $GITHUB_ENV
           fi
+
+      - name: Configure frontend with backend URL
+        run: |
+          sed -i "s|BACKEND_API_URL_PLACEHOLDER|${{ env.BACKEND_URL }}|g" ./frontend/config.js
+          echo "✅ Configured frontend with backend URL: ${{ env.BACKEND_URL }}"
 
       - name: Upload to $web (Storage key)
         run: |
