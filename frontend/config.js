@@ -1,4 +1,6 @@
-// Utiliser l'API locale en développement, ou Azure en production
+// Configuration de l'API en fonction de l'environnement
+// Cette valeur sera remplacée automatiquement lors du déploiement CI/CD
+// Format: window.API_BASE = "BACKEND_API_URL_PLACEHOLDER"
 window.API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? "http://localhost:8000/index.php/api"
-  : "https://draw-arena-backend-app.azurewebsites.net/index.php/api";
+  : "BACKEND_API_URL_PLACEHOLDER";

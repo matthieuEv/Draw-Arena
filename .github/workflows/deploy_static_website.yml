@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - 'v*..'
+      - 'v*.*.*'
 
 jobs:
   deploy:
@@ -18,20 +18,49 @@ jobs:
           rm -f ./frontend/README.md
           rm -f ./frontend/nginx.conf
 
+      - name: Get Deploy type
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "DEPLOY_TYPE=prod" >> $GITHUB_ENV
+          else
+            echo "DEPLOY_TYPE=preprod" >> $GITHUB_ENV
+          fi
+
       - name: Get Account Name
         run: |
-          # echo "ACCOUNT_NAME=drawarenastatic2026" >> $GITHUB_ENV
-          echo "ACCOUNT_NAME=drawarenastaticpreprod" >> $GITHUB_ENV
+          if [[ "${{ env.DEPLOY_TYPE }}" == "prod" ]]; then
+            echo "ACCOUNT_NAME=drawarenastaticprod" >> $GITHUB_ENV
+            echo "BACKEND_URL=https://draw-arena-backend-app.azurewebsites.net/index.php/api" >> $GITHUB_ENV
+          else
+            echo "ACCOUNT_NAME=drawarenastaticpreprod" >> $GITHUB_ENV
+            echo "BACKEND_URL=https://draw-arena-backend-app-preprod.azurewebsites.net/index.php/api" >> $GITHUB_ENV
+          fi
+
+      - name: Configure frontend with backend URL
+        run: |
+          sed -i "s|BACKEND_API_URL_PLACEHOLDER|${{ env.BACKEND_URL }}|g" ./frontend/config.js
+          echo "✅ Configured frontend with backend URL: ${{ env.BACKEND_URL }}"
 
       - name: Upload to $web (Storage key)
         run: |
-          az storage blob upload-batch \
-            --account-name "${{ env.ACCOUNT_NAME }}" \
-            --account-key "${{ secrets.AZURE_STORAGE_KEY }}" \
-            --destination '$web' \
-            --source ./frontend \
-            --overwrite
+          if [[ "${{ env.DEPLOY_TYPE }}" == "prod" ]]; then
+            az storage blob upload-batch \
+              --account-name "${{ env.ACCOUNT_NAME }}" \
+              --account-key "${{ secrets.AZURE_STORAGE_KEY_PROD }}" \
+              --destination '$web' \
+              --source ./frontend \
+              --overwrite
+          else
+            az storage blob upload-batch \
+              --account-name "${{ env.ACCOUNT_NAME }}" \
+              --account-key "${{ secrets.AZURE_STORAGE_KEY_PREPROD }}" \
+              --destination '$web' \
+              --source ./frontend \
+              --overwrite
+          fi
 
-      - name: Summarize deployment
+      - name: Write summary
         run: |
-          echo "Website deployed to https://${{ env.ACCOUNT_NAME }}.z28.web.core.windows.net"
+          echo "## 🚀 Deployment info" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Website deployed to https://${{ env.ACCOUNT_NAME }}.z28.web.core.windows.net" >> $GITHUB_STEP_SUMMARY

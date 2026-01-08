@@ -12,3 +12,55 @@ jobs:
     environment: azure
     steps:
       - uses: actions/checkout@v4
+
+      - name: Get Deploy type
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "DEPLOY_TYPE=prod" >> $GITHUB_ENV
+          else
+            echo "DEPLOY_TYPE=preprod" >> $GITHUB_ENV
+          fi
+
+      - name: Create backend package
+        run: |
+          cd backend
+          zip -r ../backend.zip . -x "*.git*" -x "readme.md" -x "Dockerfile"
+
+      - name: Deploy to Azure App Service (Preprod)
+        if: env.DEPLOY_TYPE == 'preprod'
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: draw-arena-backend-app-preprod
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_PREPROD }}
+          package: backend.zip
+
+      - name: Deploy to Azure App Service (Prod)
+        if: env.DEPLOY_TYPE == 'prod'
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: draw-arena-backend-app
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_PROD }}
+          package: backend.zip
+
+      - name: Set App Name for summary
+        run: |
+          if [[ "${{ env.DEPLOY_TYPE }}" == "prod" ]]; then
+            echo "APP_NAME=draw-arena-backend-app" >> $GITHUB_ENV
+          else
+            echo "APP_NAME=draw-arena-backend-app-preprod" >> $GITHUB_ENV
+          fi
+
+      - name: Verify deployment
+        run: |
+          echo "Waiting for deployment to stabilize..."
+          sleep 10
+          APP_URL="https://${{ env.APP_NAME }}.azurewebsites.net"
+          echo "Testing health endpoint: $APP_URL/index.php/api/health"
+          curl -f "$APP_URL/index.php/api/health" || echo "⚠️ Health check failed"
+
+      - name: Write summary
+        run: |
+          echo "## 🚀 Deployment info" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Backend deployed to https://${{ env.APP_NAME }}.azurewebsites.net/index.php/api" >> $GITHUB_STEP_SUMMARY
+          echo "Environment: ${{ env.DEPLOY_TYPE }}" >> $GITHUB_STEP_SUMMARY
