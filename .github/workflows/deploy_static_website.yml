@@ -18,11 +18,20 @@ jobs:
           rm -f ./frontend/README.md
           rm -f ./frontend/nginx.conf
 
+      - name: Get Account Name
+        run: |
+          # echo "ACCOUNT_NAME=drawarenastatic2026" >> $GITHUB_ENV
+          echo "ACCOUNT_NAME=drawarenastaticpreprod" >> $GITHUB_ENV
+
       - name: Upload to $web (Storage key)
         run: |
           az storage blob upload-batch \
-            --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT }}" \
+            --account-name "${{ env.ACCOUNT_NAME }}" \
             --account-key "${{ secrets.AZURE_STORAGE_KEY }}" \
             --destination '$web' \
             --source ./frontend \
             --overwrite
+
+      - name: Summarize deployment
+        run: |
+          echo "Website deployed to https://${{ env.ACCOUNT_NAME }}.z28.web.core.windows.net"
