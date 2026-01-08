@@ -55,12 +55,12 @@ jobs:
           echo "Waiting for deployment to stabilize..."
           sleep 10
           APP_URL="https://${{ env.APP_NAME }}.azurewebsites.net"
-          echo "Testing health endpoint: $APP_URL/health"
-          curl -f "$APP_URL/health" || echo "⚠️ Health check failed"
+          echo "Testing health endpoint: $APP_URL/index.php/api/health"
+          curl -f "$APP_URL/index.php/api/health" || echo "⚠️ Health check failed"
 
       - name: Write summary
         run: |
           echo "## 🚀 Deployment info" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Backend deployed to https://${{ env.APP_NAME }}.azurewebsites.net" >> $GITHUB_STEP_SUMMARY
+          echo "Backend deployed to https://${{ env.APP_NAME }}.azurewebsites.net/index.php/api" >> $GITHUB_STEP_SUMMARY
           echo "Environment: ${{ env.DEPLOY_TYPE }}" >> $GITHUB_STEP_SUMMARY
