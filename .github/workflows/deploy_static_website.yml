@@ -18,19 +18,39 @@ jobs:
           rm -f ./frontend/README.md
           rm -f ./frontend/nginx.conf
 
+      - name: Get Deploy type
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "DEPLOY_TYPE=prod" >> $GITHUB_ENV
+          else
+            echo "DEPLOY_TYPE=preprod" >> $GITHUB_ENV
+          fi
+
       - name: Get Account Name
         run: |
-          # echo "ACCOUNT_NAME=drawarenastatic2026" >> $GITHUB_ENV
-          echo "ACCOUNT_NAME=drawarenastaticpreprod" >> $GITHUB_ENV
+          if [[ "${{ env.DEPLOY_TYPE }}" == "prod" ]]; then
+            echo "ACCOUNT_NAME=drawarenastaticprod" >> $GITHUB_ENV
+          else
+            echo "ACCOUNT_NAME=drawarenastaticpreprod" >> $GITHUB_ENV
+          fi
 
       - name: Upload to $web (Storage key)
         run: |
-          az storage blob upload-batch \
-            --account-name "${{ env.ACCOUNT_NAME }}" \
-            --account-key "${{ secrets.AZURE_STORAGE_KEY_PREPROD }}" \
-            --destination '$web' \
-            --source ./frontend \
-            --overwrite
+          if [[ "${{ env.DEPLOY_TYPE }}" == "prod" ]]; then
+            az storage blob upload-batch \
+              --account-name "${{ env.ACCOUNT_NAME }}" \
+              --account-key "${{ secrets.AZURE_STORAGE_KEY_PROD }}" \
+              --destination '$web' \
+              --source ./frontend \
+              --overwrite
+          else
+            az storage blob upload-batch \
+              --account-name "${{ env.ACCOUNT_NAME }}" \
+              --account-key "${{ secrets.AZURE_STORAGE_KEY_PREPROD }}" \
+              --destination '$web' \
+              --source ./frontend \
+              --overwrite
+          fi
 
       - name: Write summary
         run: |

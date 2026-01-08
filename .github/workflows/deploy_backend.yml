@@ -1,0 +1,14 @@
+name: 🚀 Deploy Backend
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*..'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: azure
+    steps:
+      - uses: actions/checkout@v4
