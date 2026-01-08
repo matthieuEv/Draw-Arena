@@ -32,6 +32,8 @@ jobs:
             --source ./frontend \
             --overwrite
 
-      - name: Summarize deployment
+      - name: Write summary
         run: |
-          echo "Website deployed to https://${{ env.ACCOUNT_NAME }}.z28.web.core.windows.net"
+          echo "## 🚀 Deployment info" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Website deployed to https://${{ env.ACCOUNT_NAME }}.z28.web.core.windows.net" >> $GITHUB_STEP_SUMMARY
