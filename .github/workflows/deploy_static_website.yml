@@ -27,11 +27,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -56,7 +51,7 @@ jobs:
             --destination '$web' \
             --source ../frontend \
             --account-name "$STORAGE_NAME" \
-            --auth-mode login \
+            --account-key "${{ secrets.AZURE_STORAGE_KEY }}" \
             --overwrite
           
           FRONTEND_URL=$(terraform output -raw static_website_url)

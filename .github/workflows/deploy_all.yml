@@ -2,12 +2,6 @@ name: 🚀 Deploy All (Infrastructure + Backend + Frontend)
 
 on:
   workflow_dispatch:
-    inputs:
-      apply_terraform:
-        description: 'Apply Terraform changes (create/update infrastructure)'
-        required: true
-        type: boolean
-        default: false
   push:
     tags:
       - 'v*.*.*'
@@ -22,65 +16,9 @@ env:
   TF_VAR_backend_app_name: ${{ github.event_name == 'workflow_dispatch' && 'draw-arena-backend-app-preprod' || 'draw-arena-backend-app' }}
 
 jobs:
-  deploy-infrastructure:
-    if: ${{ inputs.apply_terraform }}
-    runs-on: ubuntu-latest
-    environment: azure
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.14.0
-
-      - name: Terraform Init
-        working-directory: ./infra
-        run: |
-          terraform init
-          terraform workspace select "$TF_WORKSPACE" || terraform workspace new "$TF_WORKSPACE"
-
-      - name: Terraform Plan
-        working-directory: ./infra
-        run: terraform plan -out=tfplan
-
-      - name: Terraform Apply
-        working-directory: ./infra
-        run: terraform apply -auto-approve tfplan
-
-      - name: Save outputs
-        working-directory: ./infra
-        run: |
-          echo "STORAGE_ACCOUNT=$(terraform output -raw storage_account_name)" >> $GITHUB_ENV
-          echo "BACKEND_APP=$(terraform output -raw backend_app_name)" >> $GITHUB_ENV
-          echo "RESOURCE_GROUP=$(terraform output -raw resource_group_name)" >> $GITHUB_ENV
-          echo "FRONTEND_URL=$(terraform output -raw static_website_url)" >> $GITHUB_ENV
-          echo "API_URL=$(terraform output -raw backend_api_url)" >> $GITHUB_ENV
-
-      - name: Summary
-        run: |
-          echo "### 🏗️ Infrastructure Deployment" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Environment:** ${DEPLOY_ENV}" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Terraform applied successfully" >> $GITHUB_STEP_SUMMARY
-          echo "- Storage Account: ${{ env.STORAGE_ACCOUNT }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Backend App: ${{ env.BACKEND_APP }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Resource Group: ${{ env.RESOURCE_GROUP }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Frontend (${DEPLOY_ENV}): ${FRONTEND_URL}" >> $GITHUB_STEP_SUMMARY
-          echo "- Backend API (${DEPLOY_ENV}): ${API_URL}" >> $GITHUB_STEP_SUMMARY
-
   deploy-backend:
     runs-on: ubuntu-latest
     environment: azure
-    needs: [deploy-infrastructure]
-    if: always() && (needs.deploy-infrastructure.result == 'success' || needs.deploy-infrastructure.result == 'skipped')
     
     steps:
       - name: Checkout code
