@@ -14,9 +14,12 @@ fi
 rm -rf "$DIST_DIR/*"
 mkdir -p "$DIST_DIR"
 mkdir -p "$DIST_DIR/pages"
+mkdir -p "$DIST_DIR/css"
+
+./jcss.sh
 
 # Copie éventuelle d'assets (optionnel)
-for d in assets css js img; do
+for d in assets js img; do
   if [[ -d "$d" && "$d" != "$PAGES_DIR" ]]; then
     mkdir -p "$DIST_DIR"
     cp -a "$d" "$DIST_DIR" || true
