@@ -1,0 +1,12 @@
+{
+    "name": "draw-arena/backend",
+    "description": "Draw Arena Backend API",
+    "type": "project",
+    "require": {
+        "php": ">=8.2",
+        "microsoft/azure-storage-blob": "^1.5"
+    },
+    "autoload": {
+        "files": []
+    }
+}

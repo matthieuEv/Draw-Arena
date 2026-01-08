@@ -1,4 +1,14 @@
 services:
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    container_name: draw-arena-azurite
+    restart: unless-stopped
+    command: "azurite-blob --blobHost 0.0.0.0 --loose --skipApiVersionCheck"
+    ports:
+      - "10000:10000"
+    volumes:
+      - azurite-data:/data
+
   db:
     image: mariadb:10.8
     container_name: draw-arena-db
@@ -19,12 +29,18 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     depends_on:
+      - azurite
       - db
     environment:
       DB_HOST: db
       DB_NAME: drawarena
       DB_USER: drawarena
       DB_PASS: drawarena
+      STORAGE_ACCOUNT_NAME: devstoreaccount1
+      STORAGE_ACCOUNT_KEY: Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==
+      STORAGE_BLOB_ENDPOINT: http://azurite:10000/devstoreaccount1
+      STORAGE_PUBLIC_BASE_URL: http://localhost:10000/devstoreaccount1
+      STORAGE_CONTAINER: post-images
       ALLOWED_ORIGINS: http://localhost:8080
     volumes:
       - ./backend:/var/www/html
@@ -46,3 +62,4 @@ services:
 
 volumes:
   db-data:
+  azurite-data:

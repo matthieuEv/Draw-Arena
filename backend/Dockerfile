@@ -1,7 +1,26 @@
 FROM php:8.2-apache
 
-RUN a2enmod rewrite \
-    && docker-php-ext-install pdo_mysql \
-    && echo "cgi.fix_pathinfo=1" >> /usr/local/etc/php/php.ini
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends libcurl4-openssl-dev git unzip \
+    && docker-php-ext-install pdo_mysql curl fileinfo \
+    && apt-get purge -y --auto-remove libcurl4-openssl-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && a2enmod rewrite \
+    && echo "cgi.fix_pathinfo=1" >> /usr/local/etc/php/php.ini \
+    && echo "upload_max_filesize=8M" >> /usr/local/etc/php/php.ini \
+    && echo "post_max_size=8M" >> /usr/local/etc/php/php.ini
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 COPY apache.conf /etc/apache2/sites-available/000-default.conf
+
+WORKDIR /var/www/html
+
+# Copy composer files first for better caching
+COPY composer.json composer.lock* ./
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
+
+# Copy application code
+COPY . .
+RUN composer dump-autoload --optimize

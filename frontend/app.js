@@ -63,10 +63,14 @@ function setAuthState(isAuthed) {
 }
 
 async function apiFetch(path, options = {}) {
+  const isFormData = options.body instanceof FormData;
   const headers = {
-    "Content-Type": "application/json",
     ...(options.headers || {}),
   };
+
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
 
   if (state.token) {
     headers.Authorization = `Bearer ${state.token}`;
@@ -118,6 +122,14 @@ function renderPosts(posts) {
 
     card.appendChild(title);
     card.appendChild(meta);
+    if (post.image_url) {
+      const image = document.createElement("img");
+      image.className = "post-image";
+      image.src = post.image_url;
+      image.alt = `Image for ${post.title}`;
+      image.loading = "lazy";
+      card.appendChild(image);
+    }
     card.appendChild(body);
 
     postsContainer.appendChild(card);
@@ -223,15 +235,11 @@ postForm.addEventListener("submit", async (event) => {
   setStatus("");
 
   const formData = new FormData(postForm);
-  const payload = {
-    title: formData.get("title"),
-    body: formData.get("body"),
-  };
 
   try {
     await apiFetch("/posts", {
       method: "POST",
-      body: JSON.stringify(payload),
+      body: formData,
     });
     postForm.reset();
     await loadPosts();
