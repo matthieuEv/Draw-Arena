@@ -1,65 +1,31 @@
-name: 🚀 Deploy Frontend
+name: 🚀 Deploy static website
 
 on:
   workflow_dispatch:
   push:
     tags:
-      - 'v*.*.*'
-    paths:
-      - 'frontend/**'
-      - '.github/workflows/deploy_static_website.yml'
-
-env:
-  DEPLOY_ENV: ${{ github.event_name == 'workflow_dispatch' && 'preprod' || 'prod' }}
-  WORKSPACE_NAME: ${{ github.event_name == 'workflow_dispatch' && 'preprod' || 'default' }}
-  TF_VAR_environment: ${{ github.event_name == 'workflow_dispatch' && 'preprod' || 'prod' }}
-  TF_VAR_resource_group_name: ${{ github.event_name == 'workflow_dispatch' && 'draw-arena-rg-preprod' || 'draw-arena-rg' }}
-  TF_VAR_storage_account_name: ${{ github.event_name == 'workflow_dispatch' && 'drawarenastaticpreprod' || 'drawarenastatic2026' }}
-  TF_VAR_backend_service_plan_name: ${{ github.event_name == 'workflow_dispatch' && 'draw-arena-backend-plan-preprod' || 'draw-arena-backend-plan' }}
-  TF_VAR_backend_app_name: ${{ github.event_name == 'workflow_dispatch' && 'draw-arena-backend-app-preprod' || 'draw-arena-backend-app' }}
+      - 'v*..'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: azure
-    
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.14.0
-          terraform_wrapper: false
+      - name: Set up Azure CLI
+        uses: azure/cli@v2
 
-      - name: Configure frontend
-        working-directory: ./infra
+      - name: Remove unused files
         run: |
-          terraform init
-          terraform workspace select "$WORKSPACE_NAME" || terraform workspace new "$WORKSPACE_NAME"
-          API_URL=$(terraform output -raw backend_api_url)
-          echo "window.API_BASE = \"$API_URL\";" > ../frontend/config.js
-          echo "✅ Frontend configured with API: $API_URL"
+          rm -f ./frontend/README.md
+          rm -f ./frontend/nginx.conf
 
-      - name: Deploy frontend
-        working-directory: ./infra
+      - name: Upload to $web (Storage key)
         run: |
-          STORAGE_NAME=$(terraform output -raw storage_account_name)
-          
           az storage blob upload-batch \
-            --destination '$web' \
-            --source ../frontend \
-            --account-name "$STORAGE_NAME" \
+            --account-name "${{ secrets.AZURE_STORAGE_ACCOUNT }}" \
             --account-key "${{ secrets.AZURE_STORAGE_KEY }}" \
+            --destination '$web' \
+            --source ./frontend \
             --overwrite
-          
-          FRONTEND_URL=$(terraform output -raw static_website_url)
-          echo "✅ Frontend deployed to: $FRONTEND_URL"
-          echo "FRONTEND_URL=$FRONTEND_URL" >> $GITHUB_ENV
-
-      - name: Summary
-        run: |
-          echo "### 🎉 Frontend Deployment Successful" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Frontend URL:** ${{ env.FRONTEND_URL }}" >> $GITHUB_STEP_SUMMARY
