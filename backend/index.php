@@ -56,8 +56,9 @@ function db(): PDO
     $name = getenv('DB_NAME') ?: 'drawarena';
     $user = getenv('DB_USER') ?: 'drawarena';
     $pass = getenv('DB_PASS') ?: 'drawarena';
+    $port = getenv('DB_PORT') ?: '3306';
 
-    $dsn = sprintf('mysql:host=%s;dbname=%s;charset=utf8mb4', $host, $name);
+    $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4', $host, $port, $name);
     $pdo = new PDO($dsn, $user, $pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -116,14 +117,40 @@ function get_blob_client(): BlobRestProxy
         return $client;
     }
 
+    $connection = getenv('STORAGE_CONNECTION_STRING');
+    if (is_string($connection) && trim($connection) !== '') {
+        $client = BlobRestProxy::createBlobService($connection);
+        return $client;
+    }
+
     $account = getenv('STORAGE_ACCOUNT_NAME') ?: 'devstoreaccount1';
     $key = getenv('STORAGE_ACCOUNT_KEY') ?: 'Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==';
     $endpoint = getenv('STORAGE_BLOB_ENDPOINT') ?: 'http://azurite:10000/devstoreaccount1';
-    
-    $connectionString = "DefaultEndpointsProtocol=http;AccountName=$account;AccountKey=$key;BlobEndpoint=$endpoint;";
+    $protocol = parse_url($endpoint, PHP_URL_SCHEME) ?: 'http';
+
+    $connectionString = "DefaultEndpointsProtocol=$protocol;AccountName=$account;AccountKey=$key;BlobEndpoint=$endpoint;";
     $client = BlobRestProxy::createBlobService($connectionString);
     
     return $client;
+}
+
+function storage_connection_value(string $connection, string $key): ?string
+{
+    $parts = explode(';', $connection);
+    foreach ($parts as $part) {
+        if ($part === '') {
+            continue;
+        }
+        $pair = explode('=', $part, 2);
+        if (count($pair) !== 2) {
+            continue;
+        }
+        if (strcasecmp($pair[0], $key) === 0) {
+            return $pair[1];
+        }
+    }
+
+    return null;
 }
 
 function storage_config(): array
@@ -133,8 +160,32 @@ function storage_config(): array
         return $config;
     }
 
-    $account = getenv('STORAGE_ACCOUNT_NAME') ?: 'devstoreaccount1';
-    $endpoint = rtrim(getenv('STORAGE_BLOB_ENDPOINT') ?: 'http://azurite:10000/devstoreaccount1', '/');
+    $connection = getenv('STORAGE_CONNECTION_STRING') ?: '';
+
+    $account = getenv('STORAGE_ACCOUNT_NAME') ?: '';
+    if ($account === '' && $connection !== '') {
+        $account = storage_connection_value($connection, 'AccountName') ?: '';
+    }
+    if ($account === '') {
+        $account = 'devstoreaccount1';
+    }
+
+    $endpoint = getenv('STORAGE_BLOB_ENDPOINT') ?: '';
+    if ($endpoint === '' && $connection !== '') {
+        $endpoint = storage_connection_value($connection, 'BlobEndpoint') ?: '';
+    }
+    if ($endpoint === '' && $connection !== '') {
+        $protocol = storage_connection_value($connection, 'DefaultEndpointsProtocol') ?: 'https';
+        $suffix = storage_connection_value($connection, 'EndpointSuffix') ?: '';
+        if ($suffix !== '') {
+            $endpoint = sprintf('%s://%s.blob.%s', $protocol, $account, $suffix);
+        }
+    }
+    if ($endpoint === '') {
+        $endpoint = 'http://azurite:10000/devstoreaccount1';
+    }
+
+    $endpoint = rtrim($endpoint, '/');
     $public_base = rtrim(getenv('STORAGE_PUBLIC_BASE_URL') ?: '', '/');
     $container = getenv('STORAGE_CONTAINER') ?: 'post-images';
 

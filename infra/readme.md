@@ -2,13 +2,16 @@
 
 This folder provisions:
 - an Azure Storage Account Static Website for the frontend (plain HTML/CSS/JS)
+- an Azure Blob container for uploaded images
 - an Azure App Service (Linux) for the PHP backend API
+- an Azure Database for MySQL Flexible Server + database
 
 ## Prerequisites
 
 - Terraform >= 1.14
 - Azure CLI (`az`)
 - Logged in Azure session (`az login`)
+- MySQL client (`mysql`) for schema import (optional but recommended)
 
 ## Setup
 
@@ -18,14 +21,20 @@ This folder provisions:
 cd infra
 ```
 
-2) Initialize and apply the Terraform stack.
+2) Provide the MySQL admin password (required, 8+ chars, 3 of 4 categories):
+
+```bash
+export TF_VAR_mysql_admin_password="change-me"
+```
+
+3) Initialize and apply the Terraform stack.
 
 ```bash
 terraform init
 terraform apply
 ```
 
-3) After applying, note the outputs for later use:
+4) After applying, note the outputs for later use:
 
 ```bash
 terraform output
@@ -33,9 +42,11 @@ terraform output
 
 You'll need:
 - `storage_account_name` for deploying the frontend
+- `blob_container_name` for uploaded images
 - `backend_app_name` for deploying the backend
 - `backend_api_url` for configuring the frontend (includes `/index.php/api` on App Service Linux)
 - `resource_group_name` for Azure CLI commands
+- `mysql_server_fqdn` + `mysql_database_name` for DB initialization
 
 ## Deploy the frontend code
 
@@ -83,14 +94,24 @@ az webapp deploy \
   --src-path ../backend.zip
 ```
 
-**Note**: For now, the database is not connected. When ready, configure the database settings:
+The backend App Service receives DB and Blob Storage settings directly from Terraform app settings.
+
+## Initialize the database schema
+
+Apply the schema from `database/init.sql` to the Azure MySQL database:
 
 ```bash
-az webapp config appsettings set \
-  --resource-group "$(terraform output -raw resource_group_name)" \
-  --name "$(terraform output -raw backend_app_name)" \
-  --settings DB_HOST=<your-db-host> DB_NAME=drawarena DB_USER=<user> DB_PASS=<password>
+mysql \
+  --host "$(terraform output -raw mysql_server_fqdn)" \
+  --user "$(terraform output -raw mysql_admin_user)" \
+  --password \
+  --ssl-mode=REQUIRED \
+  --database "$(terraform output -raw mysql_database_name)" \
+  < ../database/init.sql
 ```
+
+If you want to connect from your local machine, add a firewall rule in `mysql_firewall_rules`
+or temporarily allow your IP in the Azure portal.
 
 ### Verify the backend is running
 
@@ -147,7 +168,16 @@ cd infra
 terraform init
 terraform apply
 
-# 2. Deploy backend
+# 2. Initialize database schema
+mysql \
+  --host "$(terraform output -raw mysql_server_fqdn)" \
+  --user "$(terraform output -raw mysql_admin_user)" \
+  --password \
+  --ssl-mode=REQUIRED \
+  --database "$(terraform output -raw mysql_database_name)" \
+  < ../database/init.sql
+
+# 3. Deploy backend
 cd ../backend
 zip -r ../backend.zip . -x "*.git*" -x "readme.md"
 cd ../infra
@@ -157,15 +187,15 @@ az webapp deploy \
   --type zip \
   --src-path ../backend.zip
 
-# 3. Verify backend health
+# 4. Verify backend health
 curl "$(terraform output -raw backend_api_url)/health"
 
-# 4. Update frontend config
+# 5. Update frontend config
 cd ../frontend
 # Edit config.js and set window.API_BASE to the backend_api_url output
 echo "window.API_BASE = \"$(cd ../infra && terraform output -raw backend_api_url)\";" > config.js
 
-# 5. Deploy frontend
+# 6. Deploy frontend
 cd ../infra
 az storage blob upload-batch \
   --destination '$web' \
@@ -174,7 +204,7 @@ az storage blob upload-batch \
   --auth-mode login \
   --overwrite
 
-# 6. Open your app
+# 7. Open your app
 open "$(terraform output -raw static_website_url)"
 ```
 
