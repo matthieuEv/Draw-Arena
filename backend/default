@@ -1,0 +1,54 @@
+server {
+    listen 8080;
+    listen [::]:8080;
+    root /home/site/wwwroot;
+    index index.php;
+    server_name _;
+
+    # Enable large uploads for images
+    client_max_body_size 10M;
+
+    # Pass Origin header for CORS
+    proxy_set_header Origin $http_origin;
+
+    # Security headers
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+
+    # Handle /index.php/api/* with PATH_INFO support
+    location ~ ^/index\.php(/.*)?$ {
+        fastcgi_split_path_info ^(/index\.php)(/.*)$;
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+        fastcgi_param REQUEST_URI $request_uri;
+        fastcgi_param HTTP_ORIGIN $http_origin;
+        fastcgi_param HTTP_AUTHORIZATION $http_authorization;
+        fastcgi_param HTTP_X_AUTH_TOKEN $http_x_auth_token;
+    }
+
+    location / {
+        # First attempt to serve request as file, then
+        # as directory, then fall back to index.php
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    # PHP-FPM Configuration for other PHP files
+    location ~ \.php$ {
+        fastcgi_pass 127.0.0.1:9000;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param SCRIPT_NAME $fastcgi_script_name;
+        fastcgi_param HTTP_ORIGIN $http_origin;
+        fastcgi_param HTTP_AUTHORIZATION $http_authorization;
+        fastcgi_param HTTP_X_AUTH_TOKEN $http_x_auth_token;
+    }
+
+    # Deny access to hidden files
+    location ~ /\. {
+        deny all;
+    }
+}

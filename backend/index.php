@@ -59,10 +59,20 @@ function db(): PDO
     $port = getenv('DB_PORT') ?: '3306';
 
     $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4', $host, $port, $name);
-    $pdo = new PDO($dsn, $user, $pass, [
+    
+    // Azure MySQL Flexible Server requires SSL
+    $options = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    ]);
+    ];
+    
+    // Enable SSL for Azure MySQL (when DB_HOST contains azure)
+    if (strpos($host, '.mysql.database.azure.com') !== false) {
+        $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+        $options[PDO::MYSQL_ATTR_SSL_CA] = true;
+    }
+    
+    $pdo = new PDO($dsn, $user, $pass, $options);
 
     return $pdo;
 }
