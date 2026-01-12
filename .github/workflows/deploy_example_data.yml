@@ -1,0 +1,57 @@
+name: 🌱 Deploy Example Data
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_type:
+        description: 'Type of deployment: preprod or prod'
+        required: false
+        default: 'preprod'
+
+jobs:
+  seed-db:
+    runs-on: ubuntu-latest
+    environment: azure
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get Deploy type
+        run: |
+          if [ "${{ github.event.inputs.deploy_type }}" == "prod" ]; then
+            echo "DEPLOY_TYPE=prod" >> $GITHUB_ENV
+          else
+            echo "DEPLOY_TYPE=preprod" >> $GITHUB_ENV
+          fi
+      
+      - name: Install MySQL client
+        run: sudo apt-get update && sudo apt-get install -y default-mysql-client
+      
+      - name: Seed example data (Preprod)
+        if: env.DEPLOY_TYPE == 'preprod'
+        env:
+          MYSQL_HOST: ${{ secrets.MYSQL_HOST_PREPROD }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER_PREPROD }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD_PREPROD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE_PREPROD }}
+        run: |
+          echo "🌱 Seeding database on preprod environment..."
+          mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < database/insertion.sql
+
+      - name: Seed example data (Prod)
+        if: env.DEPLOY_TYPE == 'prod'
+        env:
+          MYSQL_HOST: ${{ secrets.MYSQL_HOST_PROD }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER_PROD }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD_PROD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE_PROD }}
+        run: |
+          echo "🌱 Seeding database on prod environment..."
+          mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < database/insertion.sql
+
+      - name: Write summary
+        run: |
+          echo "## 🌱 Database Seeding Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Environment: ${{ env.DEPLOY_TYPE }}" >> $GITHUB_STEP_SUMMARY
+          echo "Example data deployed successfully!" >> $GITHUB_STEP_SUMMARY

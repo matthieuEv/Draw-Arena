@@ -18,6 +18,18 @@ You can also connect as root:
 docker exec -it draw-arena-db mariadb -u root -proot
 ```
 
+## Insert test data
+
+To populate the database with test data, run:
+
+```bash
+docker exec -i draw-arena-db mariadb -u drawarena -pdrawarena drawarena < database/insertion.sql
+```
+
+This will insert:
+- A test user (username: `user`, password: `verybigpassword1`)
+- A sample post
+
 ## Useful SQL commands
 
 ```sql
