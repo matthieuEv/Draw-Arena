@@ -6,6 +6,10 @@ on:
       deploy_type:
         description: 'Type of deployment: preprod or prod'
         required: false
+        type: choice
+        options:
+          - preprod
+          - prod
         default: 'preprod'
 
 jobs:
