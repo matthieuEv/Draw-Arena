@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SRC_DIR="${1:-jcss}"
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$ROOT_DIR"
+
+SRC_DIR="${1:-src/jcss}"
 OUT_DIR="${2:-dist/css}"
 
 if [[ ! -d "$SRC_DIR" ]]; then

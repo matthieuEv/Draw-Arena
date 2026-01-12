@@ -58,11 +58,13 @@ function deploy_frontend() {
     
     API_URL=$(terraform output -raw backend_api_url)
     STORAGE_NAME=$(terraform output -raw storage_account_name)
-    
+
     echo "⚙️  Configuring frontend for $ENV environment..."
+    FRONTEND_DIR="$PROJECT_ROOT/frontend"
+    "$FRONTEND_DIR/build.sh"
     # Copier les fichiers frontend dans un répertoire temporaire
     TMP_DIR=$(mktemp -d)
-    cp -r "$PROJECT_ROOT/frontend/"* "$TMP_DIR/"
+    cp -r "$FRONTEND_DIR/dist/"* "$TMP_DIR/"
     
     # Remplacer le placeholder par l'URL réelle de l'API
     sed -i.bak "s|BACKEND_API_URL_PLACEHOLDER|$API_URL|g" "$TMP_DIR/config.js"

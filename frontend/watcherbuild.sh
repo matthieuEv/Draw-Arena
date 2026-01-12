@@ -4,9 +4,11 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT_DIR"
 
-PAGES_DIR="pages"
-MODULES_DIR="modules"
-JCSS_DIR="jcss"
+SRC_DIR="src"
+PAGES_DIR="$SRC_DIR/pages"
+MODULES_DIR="$SRC_DIR/modules"
+JCSS_DIR="$SRC_DIR/jcss"
+MODULES_REF_DIR="modules"
 DIST_DIR="dist"
 CSS_DIR="$DIST_DIR/css"
 
@@ -49,22 +51,36 @@ process_file() {
   out_dir="$(dirname "$out_file")"
   mkdir -p "$out_dir"
 
-  awk '
+  local in_dir
+  in_dir="$(dirname "$in_file")"
+
+  awk -v file_dir="$in_dir" -v src_root="$SRC_DIR" '
     function print_file(path,   line) {
       while ((getline line < path) > 0) print line
       close(path)
+    }
+    function can_open(path,   line) {
+      if ((getline line < path) >= 0) { close(path); return 1 }
+      return 0
+    }
+    function resolve_path(src,   cand) {
+      cand = file_dir "/" src
+      if (can_open(cand)) return cand
+      cand = src_root "/" src
+      if (can_open(cand)) return cand
+      if (can_open(src)) return src
+      return ""
     }
 
     {
       if (match($0, /<include[[:space:]]+src="([^"]+)"[[:space:]]*><\/include>/, m)) {
         src = m[1]
-        test = (getline tmp < src)
-        if (test < 0) {
-          print "[WARN] INCLUDE not found: " src > "/dev/stderr"
+        resolved = resolve_path(src)
+        if (resolved == "") {
+          print "[WARN] INCLUDE not found: " src " (from " file_dir ")" > "/dev/stderr"
           print $0
         } else {
-          close(src)
-          print_file(src)
+          print_file(resolved)
         }
         next
       }
@@ -194,6 +210,19 @@ copy_file() {
   echo "[OK] $in -> $out"
 }
 
+copy_src_file() {
+  local in="$1"
+  local rel="${in#$SRC_DIR/}"
+  copy_file "$in" "$DIST_DIR/$rel"
+}
+
+remove_src_file() {
+  local in="$1"
+  local rel="${in#$SRC_DIR/}"
+  rm -f "$DIST_DIR/$rel"
+  echo "[OK] Removed $DIST_DIR/$rel"
+}
+
 process_page() {
   local file="$1"
   local rel="${file#$PAGES_DIR/}"
@@ -204,7 +233,7 @@ process_page() {
 process_module() {
   local file="$1"
   local rel="${file#$MODULES_DIR/}"
-  local module_ref="$MODULES_DIR/$rel"
+  local module_ref="$MODULES_REF_DIR/$rel"
   local needle="src=\"$module_ref\""
   local -a pages=()
 
@@ -252,13 +281,13 @@ handle_change() {
     return
   fi
 
-  if [[ "$file" == "index.html" || "$file" == "app.js" || "$file" == "config.js" ]]; then
-    copy_file "$file" "$DIST_DIR/$file"
+  if [[ "$file" == "$SRC_DIR/index.html" || "$file" == "$SRC_DIR/app.js" || "$file" == "$SRC_DIR/config.js" ]]; then
+    copy_src_file "$file"
     return
   fi
 
-  if [[ "$file" == assets/* || "$file" == js/* || "$file" == img/* ]]; then
-    copy_file "$file" "$DIST_DIR/$file"
+  if [[ "$file" == "$SRC_DIR/assets/"* || "$file" == "$SRC_DIR/js/"* || "$file" == "$SRC_DIR/img/"* ]]; then
+    copy_src_file "$file"
     return
   fi
 }
@@ -285,26 +314,24 @@ handle_delete() {
     return
   fi
 
-  if [[ "$file" == "index.html" || "$file" == "app.js" || "$file" == "config.js" ]]; then
-    rm -f "$DIST_DIR/$file"
-    echo "[OK] Removed $DIST_DIR/$file"
+  if [[ "$file" == "$SRC_DIR/index.html" || "$file" == "$SRC_DIR/app.js" || "$file" == "$SRC_DIR/config.js" ]]; then
+    remove_src_file "$file"
     return
   fi
 
-  if [[ "$file" == assets/* || "$file" == js/* || "$file" == img/* ]]; then
-    rm -f "$DIST_DIR/$file"
-    echo "[OK] Removed $DIST_DIR/$file"
+  if [[ "$file" == "$SRC_DIR/assets/"* || "$file" == "$SRC_DIR/js/"* || "$file" == "$SRC_DIR/img/"* ]]; then
+    remove_src_file "$file"
     return
   fi
 }
 
 list_watch_files() {
   local dir
-  for dir in "$PAGES_DIR" "$MODULES_DIR" "$JCSS_DIR" "assets" "js" "img"; do
+  for dir in "$PAGES_DIR" "$MODULES_DIR" "$JCSS_DIR" "$SRC_DIR/assets" "$SRC_DIR/js" "$SRC_DIR/img"; do
     [[ -d "$dir" ]] || continue
     find "$dir" -type f -print0
   done
-  for f in index.html app.js config.js; do
+  for f in "$SRC_DIR/index.html" "$SRC_DIR/app.js" "$SRC_DIR/config.js"; do
     [[ -f "$f" ]] && printf '%s\0' "$f"
   done
 }

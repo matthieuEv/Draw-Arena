@@ -39,31 +39,33 @@ You'll need:
 
 ## Deploy the frontend code
 
-After the Storage Account exists, upload the `frontend` folder to the
-`$web` container:
+After the Storage Account exists, build the frontend and upload the
+`frontend/dist` folder to the `$web` container:
 
 ```bash
+./../frontend/build.sh
 az storage blob upload-batch \\
   --destination '$web' \\
-  --source ../frontend \\
+  --source ../frontend/dist \\
   --account-name "$(terraform output -raw storage_account_name)" \\
   --auth-mode login \\
   --overwrite
 ```
 
-Re-run the same command each time you update the frontend code.
+Re-run the same commands each time you update the frontend code.
 
 ## Link the frontend to the backend
 
-The frontend reads its API base URL from `frontend/config.js`. After
+The frontend reads its API base URL from `frontend/src/config.js`. After
 Terraform applies, update the value to the backend API output before
-uploading the frontend files:
+building and uploading the frontend files:
 
 ```bash
 terraform output -raw backend_api_url
 ```
 
-Then set `window.API_BASE` in `frontend/config.js` to that URL.
+Then set `window.API_BASE` in `frontend/src/config.js` to that URL and
+rebuild the frontend.
 
 By default, the backend only allows the static website origin for CORS.
 If you need extra origins, set the `backend_allowed_origins` variable.
@@ -160,16 +162,17 @@ az webapp deploy \
 # 3. Verify backend health
 curl "$(terraform output -raw backend_api_url)/health"
 
-# 4. Update frontend config
+# 4. Update frontend config + build
 cd ../frontend
-# Edit config.js and set window.API_BASE to the backend_api_url output
-echo "window.API_BASE = \"$(cd ../infra && terraform output -raw backend_api_url)\";" > config.js
+sed -i.bak "s|BACKEND_API_URL_PLACEHOLDER|$(cd ../infra && terraform output -raw backend_api_url)|g" src/config.js
+rm -f src/config.js.bak
+./build.sh
 
 # 5. Deploy frontend
 cd ../infra
 az storage blob upload-batch \
   --destination '$web' \
-  --source ../frontend \
+  --source ../frontend/dist \
   --account-name "$(terraform output -raw storage_account_name)" \
   --auth-mode login \
   --overwrite

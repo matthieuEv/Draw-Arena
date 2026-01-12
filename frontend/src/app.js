@@ -2,8 +2,13 @@ const app = document.getElementById("app");
 
 const routes = [
   { path: "/", file: "/pages/home.html" },
+  { path: "/depot", file: "/pages/depot.html" },
+  { path: "/concours", file: "/pages/concours.html" },
+  { path: "/result", file: "/pages/result.html" },
+  { path: "/statistique", file: "/pages/statistique.html" },
+
   { path: "/login", file: "/pages/login.html" },
-//   { path: "/user/panel", file: "/pages/user/dashboard.html" },
+  
 ];
 
 function matchRoute(pathname) {
@@ -39,31 +44,6 @@ document.addEventListener("click", (e) => {
   e.preventDefault();
   history.pushState(null, "", a.getAttribute("href"));
   render();
-});
-
-function closeUserbarMenus(exceptUserbar = null) {
-  document.querySelectorAll(".userbar.is-open").forEach((userbar) => {
-    if (userbar === exceptUserbar) return;
-    userbar.classList.remove("is-open");
-    const toggle = userbar.querySelector("[data-userbar-toggle]");
-    if (toggle) toggle.setAttribute("aria-expanded", "false");
-  });
-}
-
-document.addEventListener("click", (e) => {
-  const toggle = e.target.closest("[data-userbar-toggle]");
-  if (toggle) {
-    const userbar = toggle.closest(".userbar");
-    if (!userbar) return;
-    const isOpen = !userbar.classList.contains("is-open");
-    closeUserbarMenus(userbar);
-    userbar.classList.toggle("is-open", isOpen);
-    toggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    return;
-  }
-
-  if (e.target.closest(".userbar")) return;
-  closeUserbarMenus();
 });
 
 window.addEventListener("popstate", render);
