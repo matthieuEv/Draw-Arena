@@ -1,6 +1,7 @@
 # Configuration Terraform pour l'environnement PRODUCTION
 
 environment                 = "prod"
+resource_group_name         = "draw-arena-rg"
 storage_account_name        = "drawarenastatic2026"
 backend_service_plan_name   = "draw-arena-backend-plan"
 backend_app_name            = "draw-arena-backend-app"
