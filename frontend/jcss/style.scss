@@ -1,0 +1,250 @@
+@import 'theme.css';
+@import 'error-404.css';
+
+body{
+    margin: 0px;
+    background-color: var(--color-white);
+}
+
+main{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+}
+
+.page-content{
+    flex-grow: 1;
+}
+
+
+
+
+
+nav{
+    max-width: 300px;
+    // height: 100vh;
+    background-color: var(--color-white);
+    border-right: 1px solid var(--color-light-gray);
+    box-shadow: 8px 0 24px rgba(90, 175, 232, 0.08);
+    color: var(--color-text);
+    padding: 20px 0 10px 0;
+
+    display: flex;
+    flex-direction: column;
+
+    .material-symbols-rounded {
+        font-variation-settings:
+        'FILL' 1,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24;
+    }
+
+    .logo-container{
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0 24px 8px 24px;
+        gap: 10px;
+
+        img{
+            width: 50px;
+            height: 50px;
+        }
+
+        h1{
+            font-size: 20px;
+            font-weight: 600;
+            margin: 0;
+        }
+    }
+
+    .buttons{
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0 16px;
+        margin-top: 12px;
+        gap: 4px;
+
+        button{
+            background: none;
+            border: none;
+            border-radius: 12px;
+            width: 100%;
+            cursor: pointer;
+            margin: 4px 0;
+            padding: 12px 14px;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-text-muted);
+            transition: background-color 150ms ease, color 150ms ease;
+
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: flex-start;
+
+            &.active{
+                background-color: var(--color-primary-100);
+                color: var(--color-primary-500);
+            }
+
+            &:hover{
+                background-color: var(--color-primary-100);
+                color: var(--color-primary-500);
+            }
+
+            &:hover .material-symbols-rounded,
+            &.active .material-symbols-rounded{
+                color: var(--color-primary-500);
+            }
+        }
+    }
+
+    .bottom{
+        margin-top: auto;
+        margin-bottom: 8px;
+        padding: 0 20px;
+        font-size: 12px;
+        color: var(--color-text-muted);
+    }
+}
+
+
+.userbar{
+    background-color: var(--color-white);
+    border-bottom: 1px solid var(--color-light-gray);
+    box-shadow: 0 8px 24px rgba(90, 175, 232, 0.08);
+    color: var(--color-text);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    .welkText{
+        margin: 0;
+        font-size: 14px;
+        color: var(--color-text-muted);
+
+        .user-name{
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-text);
+        }
+    }
+
+    .left{
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: relative;
+
+        .user-avatar{
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--color-light-gray);
+        }
+
+        .userbar-toggle{
+            background: none;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            padding: 4px 8px;
+            cursor: pointer;
+            color: var(--color-text-muted);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+        }
+
+        .userbar-toggle:hover{
+            background-color: var(--color-primary-100);
+            color: var(--color-primary-500);
+            border-color: var(--color-primary-100);
+        }
+
+        .userbar-toggle:focus-visible{
+            outline: 2px solid var(--color-primary-500);
+            outline-offset: 2px;
+        }
+
+        .user-settings-dropdown{
+            position: absolute;
+            right: 0;
+            top: calc(100% + 10px);
+            min-width: 180px;
+            background-color: var(--color-white);
+            border: 1px solid var(--color-light-gray);
+            border-radius: 12px;
+            box-shadow: 0 12px 24px rgba(90, 175, 232, 0.12);
+            padding: 6px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-6px);
+            pointer-events: none;
+            transition: opacity 150ms ease, transform 150ms ease, visibility 150ms ease;
+            z-index: 20;
+
+            li{
+                list-style: none;
+            }
+
+            ul{
+                padding: 0;
+                margin: 0;
+            }
+
+            a{
+                display: block;
+                padding: 10px 12px;
+                border-radius: 10px;
+                text-decoration: none;
+                font-size: 14px;
+                color: var(--color-text);
+                transition: background-color 150ms ease, color 150ms ease;
+            }
+
+            a:hover{
+                background-color: var(--color-primary-100);
+                color: var(--color-primary-500);
+            }
+        }
+    }
+
+    &.is-open{
+        .userbar-toggle{
+            background-color: var(--color-primary-100);
+            color: var(--color-primary-500);
+            border-color: var(--color-primary-100);
+        }
+
+        .down-arrow{
+            transform: rotate(-135deg);
+        }
+
+        .user-settings-dropdown{
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+    }
+}
+
+
+
+
+.down-arrow {
+    border: solid currentColor;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 4px;
+    transform: rotate(45deg);
+    transition: transform 150ms ease;
+}

@@ -16,6 +16,16 @@ compile_file() {
   local out="$2"
 
   awk '
+    function protect_urls(s){
+      gsub(/https:\/\//, "https:__JCSS_SLASH__", s)
+      gsub(/http:\/\//, "http:__JCSS_SLASH__", s)
+      return s
+    }
+    function restore_urls(s){
+      gsub(/https:__JCSS_SLASH__/, "https://", s)
+      gsub(/http:__JCSS_SLASH__/, "http://", s)
+      return s
+    }
     function trim(s){ sub(/^[ \t\r\n]+/, "", s); sub(/[ \t\r\n]+$/, "", s); return s }
     function join(n,   i,s){
       s=""
@@ -36,7 +46,9 @@ compile_file() {
 
     {
       line=$0
+      line=protect_urls(line)
       sub(/[ \t]*\/\/.*$/, "", line)
+      line=restore_urls(line)
 
       if(ic){
         if(match(line,/\*\//)){ sub(/^.*\*\//,"",line); ic=0 } else next

@@ -27,8 +27,8 @@ for d in assets js img; do
 done
 
 cp -a "app.js" "$DIST_DIR/" || true
+cp -a "config.js" "$DIST_DIR/" || true
 cp -a "index.html" "$DIST_DIR/" || true
-cp -a "staticwebapp.config.json" "$DIST_DIR/" || true
 
 # Remplace <include src="..."></include> par le contenu du fichier src
 process_file() {
