@@ -26,6 +26,7 @@
 - <u>num_concours</u> : ID
 - theme : String
 - date_debut : Date
+- description : String
 - date_fin : Date
 - etat : enum {'pas commence', 'en cours', 'attente', 'resultat', 'evalue'}
 - num_club* : ID

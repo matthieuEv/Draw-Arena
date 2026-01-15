@@ -26,6 +26,7 @@ class Utilisateur {
 class Concours {
     <u>numConcours</u> : ID
     theme : String
+    description : String
     dateDebut : Date
     dateFin : Date
     etat : enum {'pas commence', 'en cours', 'attente', 'resultat', 'evalue'}
