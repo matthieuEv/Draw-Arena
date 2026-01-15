@@ -1,89 +1,89 @@
-# Schéma de Base de Données Textuel - Draw Arena
+# Schema de Base de Donnees Textuel - Draw Arena
 
 ## Tables
 
 ### 1. Club
-- <u>numClub</u> : ID
-- nomClub : String
+- <u>num_club</u> : ID
+- nom_club : String
 - adresse : String
-- numTelephone : String
-- nombreAdherents : int
+- num_telephone : String
+- nombre_adherents : int
 - ville : String
 - departement : String
-- région : String
+- region : String
 
 ### 2. Utilisateur
-- <u>numUtilisateur</u> : ID
+- <u>num_utilisateur</u> : ID
 - nom : String
 - prenom : String
 - adresse : String
 - login : String
-- motDePasse : String
-- typeCompte : enum {'prive', 'public'}
-- numClub* : ID
+- mot_de_passe : String
+- type_compte : enum {'prive', 'public'}
+- num_club* : ID
 
 ### 3. Concours
-- <u>numConcours</u> : ID
+- <u>num_concours</u> : ID
 - theme : String
-- dateDebut : Date
-- dateFin : Date
+- date_debut : Date
+- date_fin : Date
 - etat : enum {'pas commence', 'en cours', 'attente', 'resultat', 'evalue'}
-- numClub* : ID
-- numPresident* : ID
+- num_club* : ID
+- num_president* : ID
 
 ### 4. Dessin
-- <u>numDessin</u> : ID
+- <u>num_dessin</u> : ID
 - commentaire : String
 - classement : int
-- dateRemise : Date
-- leDessin : String
-- numConcours* : ID
-- numCompetiteur* : ID
+- date_remise : Date
+- le_dessin : String
+- num_concours* : ID
+- num_competiteur* : ID
 
 ### 5. Evaluation
-- numDessin* : ID
-- numEvaluateur* : ID
-- dateEvaluation : Date
+- num_dessin* : ID
+- num_evaluateur* : ID
+- date_evaluation : Date
 - note : float
 - commentaire : String
-- Cle primaire composite* : (numDessin, numEvaluateur)
+- Cle primaire composite* : (num_dessin, num_evaluateur)
 
-### 6. Compétiteur
-- <u>numUtilisateur*</u> : ID
-- datePremiereParticipation : Date
+### 6. Competiteur
+- <u>num_utilisateur*</u> : ID
+- date_premiere_participation : Date
 
 ### 7. Evaluateur
-- <u>numUtilisateur*</u> : ID
+- <u>num_utilisateur*</u> : ID
 - specialite : String
 
-### 8. Président
-- <u>numUtilisateur*</u> : ID
+### 8. President
+- <u>num_utilisateur*</u> : ID
 - prime : float
 
 ### 9. Administrateur
-- <u>numUtilisateur*</u> : ID
-- dateDebut : Date
+- <u>num_utilisateur*</u> : ID
+- date_debut : Date
 
 ### 10. Directeur
-- <u>numUtilisateur*</u> : ID
-- dateDebut : Date
+- <u>num_utilisateur*</u> : ID
+- date_debut : Date
 
 ### 11. Concours_Evaluateur
-- numConcours* : ID
-- numEvaluateur* : ID
-- Cle primaire composite* : (numConcours, numEvaluateur)
+- num_concours* : ID
+- num_evaluateur* : ID
+- Cle primaire composite* : (num_concours, num_evaluateur)
 
 ### 12. Club_Directeur
-- numClub* : ID
-- numDirecteur* : ID 
-- Cle primaire* : (numClub, numDirecteur)
+- num_club* : ID
+- num_directeur* : ID 
+- Cle primaire* : (num_club, num_directeur)
 
 ### 13. Concours_Competiteur
-- numConcours* : ID
-- numCompetiteur* : ID
-- Cle primaire* : (numConcours, numCompetiteur)
+- num_concours* : ID
+- num_competiteur* : ID
+- Cle primaire* : (num_concours, num_competiteur)
 
 ### 14. Club_Concours
-- numClub* : ID
-- numConcours* : ID
-- Cle primaire* : (numConcours, numClub)
+- num_club* : ID
+- num_concours* : ID
+- Cle primaire* : (num_concours, num_club)

@@ -23,5 +23,5 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- Insert sample data
 
 -- Utilisateurs
-INSERT INTO Utilisateur (nom, prénom, adresse, login, motDePasse, typeCompte, numClub) VALUES
+INSERT INTO Utilisateur (nom, prenom, adresse, login, mot_de_passe, type_compte, num_club) VALUES
 ('Doe', 'John', '10 Rue A', 'johndoe', '$2y$10$hashedpassword1', 'public', NULL);

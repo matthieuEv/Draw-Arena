@@ -6,7 +6,7 @@ class Club {
     <u>numClub</u> : ID
     nomClub : String
     adresse : String
-    numTéléphone : String
+    numTelephone : String
     nombreAdherents : int
     ville : String
     département : String
@@ -16,7 +16,7 @@ class Club {
 class Utilisateur {
     <u>numUtilisateur</u> : ID
     nom : String
-    prénom : String
+    prenom : String
     adresse : String
     login : String
     motDePasse : String
@@ -25,7 +25,7 @@ class Utilisateur {
 
 class Concours {
     <u>numConcours</u> : ID
-    thème : String
+    theme : String
     dateDebut : Date
     dateFin : Date
     etat : enum {'pas commence', 'en cours', 'attente', 'resultat', 'evalue'}
