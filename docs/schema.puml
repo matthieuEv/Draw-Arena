@@ -1,0 +1,90 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+' Classes principales
+class Club {
+    <u>numClub</u> : ID
+    nomClub : String
+    adresse : String
+    numTéléphone : String
+    nombreAdherents : int
+    ville : String
+    département : String
+    région : String
+}
+
+class Utilisateur {
+    <u>numUtilisateur</u> : ID
+    nom : String
+    prénom : String
+    adresse : String
+    login : String
+    motDePasse : String
+    typeCompte : enum {'prive', 'public'}
+}
+
+class Concours {
+    <u>numConcours</u> : ID
+    thème : String
+    dateDebut : Date
+    dateFin : Date
+    etat : enum {'pas commence', 'en cours', 'attente', 'resultat', 'evalue'}
+}
+
+class Dessin {
+    <u>numDessin</u> : ID
+    commentaire : String
+    classement : int
+    dateRemise : Date
+    leDessin : Blob
+}
+
+class Evaluation {
+    dateEvaluation : Date
+    note : float
+    commentaire : String
+}
+
+' Sous-classes d'Utilisateur
+class Compétiteur {
+    datePremiereParticipation : Date
+}
+
+class Evaluateur {
+    specialite : String
+}
+
+class Président {
+    prime : float
+}
+
+class Administrateur {
+    dateDebut : Date
+}
+
+class Directeur {
+    dateDebut : Date
+}
+
+' Héritages
+Utilisateur <|-- Competiteur
+Utilisateur <|-- Evaluateur
+Utilisateur <|-- President
+Utilisateur <|-- Administrateur
+Utilisateur <|-- Directeur
+
+' Associations
+Club "1" -- "*" Utilisateur : Adherents >
+Club "1" -- "*" Concours : Participe >
+Club "1" - "1" Directeur : Dirige <
+
+Concours "1" -- "*" Dessin : porte sur >
+Concours "*" -- "1" President : préside <
+Concours "*" --- "*" Evaluateur : jury <
+
+Competiteur "1" -- "*" Dessin : soumet >
+
+Dessin "*" -- "2" Evaluateur : evalue <
+(Dessin, Evaluateur) .. Evaluation
+
+@enduml
