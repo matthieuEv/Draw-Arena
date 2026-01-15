@@ -2,74 +2,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="stylesheet" href="/css/single.css">
     <title>Login</title>
 </head>
 <body>
-    <section class="auth" data-auth data-auth-state="login">
-        <div class="auth__content">
-            <span class="auth__tag">Acces securise</span>
-            <h1 class="auth__title">Reviens dessiner</h1>
-            <p class="auth__message">
+    <section class="single" data-auth data-auth-state="login">
+        <div class="single__content">
+            <h1 class="single__title">Reviens dessiner</h1>
+            <p class="single__message">
                 Connecte-toi pour participer aux concours, partager tes creations
                 et suivre tes scores.
             </p>
 
-            <div class="auth__switch" role="tablist" aria-label="Auth">
-                <button class="auth__toggle-btn is-active" type="button" data-auth-toggle="login" aria-pressed="true">
+            <div class="single__switch" role="tablist" aria-label="Auth">
+                <button class="single__toggle-btn is-active" type="button" data-auth-toggle="login" aria-pressed="true">
                     Login
                 </button>
-                <button class="auth__toggle-btn" type="button" data-auth-toggle="signup" aria-pressed="false">
+                <button class="single__toggle-btn" type="button" data-auth-toggle="signup" aria-pressed="false">
                     Signup
                 </button>
             </div>
 
-            <div class="auth__forms">
-                <form class="auth__form auth__form--login is-active" data-auth-panel="login" autocomplete="on">
-                    <div class="auth__field">
-                        <label class="auth__label" for="login-email">Email</label>
-                        <input class="auth__input" id="login-email" type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
+            <div class="single__forms">
+                <form class="single__form single__form--login is-active" data-auth-panel="login" autocomplete="on">
+                    <div class="single__field">
+                        <label class="single__label" for="login-email">Email</label>
+                        <input class="single__input" id="login-email" type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
                     </div>
-                    <div class="auth__field">
-                        <label class="auth__label" for="login-password">Mot de passe</label>
-                        <input class="auth__input" id="login-password" type="password" name="password" autocomplete="current-password" placeholder="********" required />
+                    <div class="single__field">
+                        <label class="single__label" for="login-password">Mot de passe</label>
+                        <input class="single__input" id="login-password" type="password" name="password" autocomplete="current-password" placeholder="********" required />
                     </div>
-                    <div class="auth__row">
-                        <label class="auth__checkbox">
+                    <div class="single__row">
+                        <label class="single__checkbox">
                             <input type="checkbox" name="remember" />
                             <span>Se souvenir de moi</span>
                         </label>
-                        <a class="auth__link" href="#">Mot de passe oublie</a>
+                        <a class="single__link" href="#">Mot de passe oublie</a>
                     </div>
-                    <button class="auth__cta" type="submit">Se connecter</button>
-                    <p class="auth__meta">Pas de compte ? Passe sur Signup.</p>
+                    <button class="single__btn single__btn--primary" type="submit">Se connecter</button>
                 </form>
 
-                <form class="auth__form auth__form--signup" data-auth-panel="signup" autocomplete="on">
-                    <div class="auth__field">
-                        <label class="auth__label" for="signup-name">Pseudo</label>
-                        <input class="auth__input" id="signup-name" type="text" name="username" autocomplete="username" placeholder="sketchking" required />
+                <form class="single__form single__form--signup" data-auth-panel="signup" autocomplete="on">
+                    <div class="single__field">
+                        <label class="single__label" for="signup-name">Pseudo</label>
+                        <input class="single__input" id="signup-name" type="text" name="username" autocomplete="username" placeholder="sketchking" required />
                     </div>
-                    <div class="auth__field">
-                        <label class="auth__label" for="signup-email">Email</label>
-                        <input class="auth__input" id="signup-email" type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
+                    <div class="single__field">
+                        <label class="single__label" for="signup-email">Email</label>
+                        <input class="single__input" id="signup-email" type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
                     </div>
-                    <div class="auth__field">
-                        <label class="auth__label" for="signup-password">Mot de passe</label>
-                        <input class="auth__input" id="signup-password" type="password" name="password" autocomplete="new-password" placeholder="********" required />
+                    <div class="single__field">
+                        <label class="single__label" for="signup-password">Mot de passe</label>
+                        <input class="single__input" id="signup-password" type="password" name="password" autocomplete="new-password" placeholder="********" required />
                     </div>
-                    <button class="auth__cta" type="submit">Creer un compte</button>
-                    <button class="auth__cta auth__cta--ghost" type="button" data-auth-toggle="login">Retour login</button>
+                    <button class="single__btn single__btn--primary" type="submit">Creer un compte</button>
                 </form>
             </div>
         </div>
 
-        <div class="auth__visual" aria-hidden="true">
-            <p class="auth__visual-title">DRAW</p>
-            <p class="auth__visual-text">ARENA ACCESS</p>
+        <div class="single__visual" aria-hidden="true">
+            <p class="single__visual-title">DRAW</p>
+            <p class="single__visual-text">ARENA ACCESS</p>
         </div>
     </section>
 
     <script type="module" src="/js/auth.js"></script>
+    <script type="module" src="/js/easter.js"></script>
 </body>
 </html>

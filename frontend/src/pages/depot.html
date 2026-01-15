@@ -2,6 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/captcha.css">
     <title>Depot</title>
 </head>
     <body>
@@ -9,6 +10,13 @@
         <div class="page-content">
             <include src="modules/userbar.html"></include>
             <p>This is the depot page content.</p>
+
+            <input type="file" id="imageSelector" name="imageSelector" accept="image/png, image/jpeg" />
+            <button id="uploadBtn">Upload Image</button>
+            <p id="captchaMessage"></p>
+            <div id="captcha"></div>
         </div>
+
+        <script src="js/captcha.js" async defer></script>
     </body>
 </html>

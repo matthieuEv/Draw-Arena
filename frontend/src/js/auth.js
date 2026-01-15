@@ -9,7 +9,7 @@ function initAuthPanels(root = document) {
     const toggles = Array.from(auth.querySelectorAll("[data-auth-toggle]"));
     const panels = Array.from(auth.querySelectorAll("[data-auth-panel]"));
     const primaryToggles = toggles.filter((btn) =>
-      btn.classList.contains("auth__toggle-btn")
+      btn.classList.contains("single__toggle-btn")
     );
 
     if (toggles.length === 0 || panels.length === 0) return;
