@@ -46,7 +46,7 @@ class Evaluation {
 }
 
 ' Sous-classes d'Utilisateur
-class Compétiteur {
+class Competiteur {
     datePremiereParticipation : Date
 }
 

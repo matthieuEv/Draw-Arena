@@ -18,17 +18,17 @@ CREATE TABLE IF NOT EXISTS Club (
     numClub INT AUTO_INCREMENT PRIMARY KEY,
     nomClub VARCHAR(255) NOT NULL,
     adresse VARCHAR(255),
-    numTéléphone VARCHAR(20),
+    numTelephone VARCHAR(20),
     nombreAdherents INT,
     ville VARCHAR(100),
-    département VARCHAR(100),
-    région VARCHAR(100)
+    departement VARCHAR(100),
+    region VARCHAR(100)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS Utilisateur (
     numUtilisateur INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
-    prénom VARCHAR(100) NOT NULL,
+    prenom VARCHAR(100) NOT NULL,
     adresse VARCHAR(255),
     login VARCHAR(100) UNIQUE NOT NULL,
     motDePasse VARCHAR(255) NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS Directeur (
 
 CREATE TABLE IF NOT EXISTS Concours (
     numConcours INT AUTO_INCREMENT PRIMARY KEY,
-    thème VARCHAR(255) NOT NULL,
+    theme VARCHAR(255) NOT NULL,
     dateDebut DATE,
     dateFin DATE,
     etat ENUM('pas commence', 'en cours', 'attente', 'resultat', 'evalue') NOT NULL,
@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS Dessin (
     commentaire TEXT,
     classement INT,
     dateRemise DATE,
-    leDessin BLOB,
+    leDessin VARCHAR(255),
     numConcours INT,
     numCompetiteur INT,
     CONSTRAINT fk_dessin_concours FOREIGN KEY (numConcours) REFERENCES Concours(numConcours),

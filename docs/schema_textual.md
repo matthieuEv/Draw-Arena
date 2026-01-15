@@ -6,16 +6,16 @@
 - <u>numClub</u> : ID
 - nomClub : String
 - adresse : String
-- numTéléphone : String
+- numTelephone : String
 - nombreAdherents : int
 - ville : String
-- département : String
+- departement : String
 - région : String
 
 ### 2. Utilisateur
 - <u>numUtilisateur</u> : ID
 - nom : String
-- prénom : String
+- prenom : String
 - adresse : String
 - login : String
 - motDePasse : String
@@ -24,7 +24,7 @@
 
 ### 3. Concours
 - <u>numConcours</u> : ID
-- thème : String
+- theme : String
 - dateDebut : Date
 - dateFin : Date
 - etat : enum {'pas commence', 'en cours', 'attente', 'resultat', 'evalue'}
@@ -36,7 +36,7 @@
 - commentaire : String
 - classement : int
 - dateRemise : Date
-- leDessin : Blob
+- leDessin : String
 - numConcours* : ID
 - numCompetiteur* : ID
 
@@ -46,7 +46,7 @@
 - dateEvaluation : Date
 - note : float
 - commentaire : String
-- Clé primaire composite* : (numDessin, numEvaluateur)
+- Cle primaire composite* : (numDessin, numEvaluateur)
 
 ### 6. Compétiteur
 - <u>numUtilisateur*</u> : ID
@@ -71,19 +71,19 @@
 ### 11. Concours_Evaluateur
 - numConcours* : ID
 - numEvaluateur* : ID
-- Clé primaire composite* : (numConcours, numEvaluateur)
+- Cle primaire composite* : (numConcours, numEvaluateur)
 
 ### 12. Club_Directeur
 - numClub* : ID
 - numDirecteur* : ID 
-- Clé primaire* : (numClub, numDirecteur)
+- Cle primaire* : (numClub, numDirecteur)
 
 ### 13. Concours_Competiteur
 - numConcours* : ID
 - numCompetiteur* : ID
-- Clé primaire* : (numConcours, numCompetiteur)
+- Cle primaire* : (numConcours, numCompetiteur)
 
 ### 14. Club_Concours
 - numClub* : ID
 - numConcours* : ID
-- Clé primaire* : (numConcours, numClub)
+- Cle primaire* : (numConcours, numClub)
