@@ -41,9 +41,10 @@ services:
       STORAGE_BLOB_ENDPOINT: http://azurite:10000/devstoreaccount1
       STORAGE_PUBLIC_BASE_URL: http://localhost:10000/devstoreaccount1
       STORAGE_CONTAINER: post-images
-      ALLOWED_ORIGINS: http://localhost:8080
+      ALLOWED_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
     volumes:
       - ./backend:/var/www/html
+      - backend-vendor:/var/www/html/vendor
       - .:/workspaces/Draw-Arena
     ports:
       - "8000:80"
@@ -62,4 +63,5 @@ services:
 
 volumes:
   db-data:
+  backend-vendor:
   azurite-data:
