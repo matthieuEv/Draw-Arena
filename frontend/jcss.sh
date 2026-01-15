@@ -128,12 +128,12 @@ compile_file() {
 
 export -f compile_file
 
-find "$SRC_DIR" -type f -name "*.scss" | while read -r file; do
+find "$SRC_DIR" -type f -name "*.jcss" | while read -r file; do
   rel="${file#$SRC_DIR/}"
-  out="$OUT_DIR/${rel%.scss}.css"
+  out="$OUT_DIR/${rel%.jcss}.css"
 
   mkdir -p "$(dirname "$out")"
-  echo "SCSS → CSS : $file → $out"
+  echo "JCSS → CSS : $file → $out"
   compile_file "$file" "$out"
 done
 
