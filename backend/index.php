@@ -52,26 +52,26 @@ function db(): PDO
         return $pdo;
     }
 
-    $host = getenv('DB_HOST') ?: 'db';
-    $name = getenv('DB_NAME') ?: 'drawarena';
-    $user = getenv('DB_USER') ?: 'drawarena';
-    $pass = getenv('DB_PASS') ?: 'drawarena';
-    $port = getenv('DB_PORT') ?: '3306';
+    $host = getenv('DB_HOST');
+    $name = getenv('DB_NAME');
+    $user = getenv('DB_USER');
+    $pass = getenv('DB_PASS');
+    $port = getenv('DB_PORT');
 
     $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4', $host, $port, $name);
-    
+
     // Azure MySQL Flexible Server requires SSL
     $options = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     ];
-    
+
     // Enable SSL for Azure MySQL (when DB_HOST contains azure)
     if (strpos($host, '.mysql.database.azure.com') !== false) {
         $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
         $options[PDO::MYSQL_ATTR_SSL_CA] = true;
     }
-    
+
     $pdo = new PDO($dsn, $user, $pass, $options);
 
     return $pdo;
@@ -140,7 +140,7 @@ function get_blob_client(): BlobRestProxy
 
     $connectionString = "DefaultEndpointsProtocol=$protocol;AccountName=$account;AccountKey=$key;BlobEndpoint=$endpoint;";
     $client = BlobRestProxy::createBlobService($connectionString);
-    
+
     return $client;
 }
 
@@ -224,7 +224,7 @@ function ensure_storage_container(): void
         $client = get_blob_client();
         $config = storage_config();
         $container = $config['container'];
-        
+
         // Try to get container properties (will throw if doesn't exist)
         try {
             $client->getContainerProperties($container);
@@ -238,7 +238,7 @@ function ensure_storage_container(): void
                 throw $e;
             }
         }
-        
+
         $ready = true;
     } catch (ServiceException $e) {
         respond(['error' => 'Storage container unavailable: ' . $e->getMessage()], 500);
@@ -257,14 +257,14 @@ function storage_public_url(string $blob_name): string
 function storage_upload_blob(string $blob_name, string $content, string $mime): string
 {
     ensure_storage_container();
-    
+
     try {
         $client = get_blob_client();
         $config = storage_config();
         $container = $config['container'];
-        
+
         $client->createBlockBlob($container, $blob_name, $content);
-        
+
         return storage_public_url($blob_name);
     } catch (ServiceException $e) {
         respond(['error' => 'Storage upload failed: ' . $e->getMessage()], 500);
@@ -295,40 +295,40 @@ function upload_image_if_present(): ?string
     if (!is_multipart_request()) {
         $data = read_json();
         $image_data = $data['image_data'] ?? null;
-        
+
         if ($image_data === null || !is_string($image_data)) {
             return null;
         }
-        
+
         // Parse data URL: data:image/png;base64,iVBORw0KG...
         if (!preg_match('/^data:image\/(\w+);base64,(.+)$/', $image_data, $matches)) {
             respond(['error' => 'Invalid image_data format'], 422);
         }
-        
+
         $extension = strtolower($matches[1]);
         $base64_data = $matches[2];
-        
+
         // Validate extension
         $allowed_extensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
         if (!in_array($extension, $allowed_extensions, true)) {
             respond(['error' => 'Unsupported image type'], 415);
         }
-        
+
         // Decode base64
         $content = base64_decode($base64_data, true);
         if ($content === false) {
             respond(['error' => 'Invalid base64 data'], 422);
         }
-        
+
         // Check size
         $max_bytes = (int)(getenv('UPLOAD_MAX_BYTES') ?: 5 * 1024 * 1024);
         if (strlen($content) > $max_bytes) {
             respond(['error' => 'Image too large (max 5MB)'], 413);
         }
-        
+
         $mime = 'image/' . ($extension === 'jpg' ? 'jpeg' : $extension);
         $blob_name = sprintf('%s/%s.%s', gmdate('Y/m/d'), bin2hex(random_bytes(12)), $extension);
-        
+
         return storage_upload_blob($blob_name, $content, $mime);
     }
 
