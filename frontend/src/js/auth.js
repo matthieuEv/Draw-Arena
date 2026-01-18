@@ -65,3 +65,100 @@ if (document.readyState === "loading") {
 } else {
   observeAuthPanels();
 }
+
+
+
+
+
+async function login(event) {
+  event.preventDefault();
+
+  const errorMessage = document.querySelector("[data-signin-error]");
+  errorMessage.textContent = "";
+
+  const form = event.target;
+  const email = form.email.value;
+  const password = form.password.value;
+  const remember = form["login-remember"].checked;
+
+  if (!email || !password) {
+    errorMessage.textContent = "Veuillez remplir tous les champs.";
+    return;
+  }
+
+  if (!isAValidEmail(email)) {
+    errorMessage.textContent = "Veuillez entrer une adresse e-mail valide.";
+    return;
+  }
+
+  // TODO: Implement actual login logic here
+  // console.log("Login attempt:", { email, password, remember });
+  const res = await apiFetch("/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+  });
+
+  if (res.success) {
+    saveSession(res.token, res.username);
+    console.log(`Bienvenue, ${res.username} !`);
+    await loadPosts();
+  } else {
+    errorMessage.textContent = res.message || "Échec de la connexion.";
+  }
+}
+
+async function signup(event){
+  event.preventDefault();
+
+  const errorMessage = document.querySelector("[data-signup-error]");
+  errorMessage.textContent = "";
+
+  const form = event.target;
+  const username = form.username.value;
+  const nom = form.lastname.value;
+  const prenom = form.firstname.value;
+  const email = form.email.value;
+  const password = form.password.value;
+  const confirmPassword = form.passwordConfirm.value;
+
+  if (!username || !nom || !prenom || !email || !password || !confirmPassword) {
+    errorMessage.textContent = "Veuillez remplir tous les champs.";
+    return;
+  }
+
+  if (!isAValidEmail(email)) {
+    errorMessage.textContent = "Veuillez entrer une adresse e-mail valide.";
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    errorMessage.textContent = "Les mots de passe ne correspondent pas.";
+    return;
+  }
+
+  // TODO: Implement actual signup logic here
+  // console.log("Signup attempt:", { username, nom, prenom, email, password, confirmPassword });
+  const res = await apiFetch("/signup", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username, nom, prenom, email, password }),
+  });
+
+  if (res.success) {
+    saveSession(res.token, res.username);
+    console.log(`Compte créé avec succès. Bienvenue, ${res.username} !`);
+    await loadPosts();
+  } else {
+    errorMessage.textContent = res.message || "Échec de la création du compte.";
+  }
+}
+
+function isAValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}

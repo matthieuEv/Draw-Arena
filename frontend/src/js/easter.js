@@ -18,6 +18,9 @@ var settings = {
 
 // Detect special key press
 document.addEventListener("keydown", function(event) {
+    if (event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA" || event.target.isContentEditable) {
+        return;
+    }
     if (event.key === "d" || event.key === "D") {
         setActive(!isActive);
     }

@@ -41,7 +41,7 @@
 |GET|/api/statistique/?..|logged|||                 #(To improve)
 |
 |
-|GET|/api/user/login|all|Username,password|token|
+|POST|/api/user/login|all|Username,password|token|
 |POST|/api/user/singin|all|...|token|
 |GET|/api/user/profil|logged||status|                        #(To improve)
 |GET|/api/user/dessins|logged||array of image/desc|

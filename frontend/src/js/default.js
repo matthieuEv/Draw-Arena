@@ -24,3 +24,8 @@ document.addEventListener("click", (e) => {
   if (e.target.closest(".userbar")) return;
   closeUserbarMenus();
 });
+
+function logout() {
+    clearSession();
+    window.location.href = "/login";
+}

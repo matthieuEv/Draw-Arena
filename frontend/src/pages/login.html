@@ -24,7 +24,7 @@
             </div>
 
             <div class="single__forms">
-                <form class="single__form single__form--login is-active" data-auth-panel="login" autocomplete="on">
+                <form onsubmit="login(event)" class="single__form single__form--login is-active" data-auth-panel="login" autocomplete="on">
                     <div class="single__field">
                         <label class="single__label" for="login-email">Email</label>
                         <input class="single__input" id="login-email" type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
@@ -35,27 +35,45 @@
                     </div>
                     <div class="single__row">
                         <label class="single__checkbox">
-                            <input type="checkbox" name="remember" />
+                            <input type="checkbox" id="login-remember" name="login-remember" />
                             <span>Se souvenir de moi</span>
                         </label>
                         <a class="single__link" href="#">Mot de passe oublie</a>
                     </div>
+                    <p class="error-message" aria-live="polite" data-signin-error></p>
                     <button class="single__btn single__btn--primary" type="submit">Se connecter</button>
                 </form>
 
-                <form class="single__form single__form--signup" data-auth-panel="signup" autocomplete="on">
+                <form onsubmit="signup(event)" class="single__form single__form--signup" data-auth-panel="signup" autocomplete="on">
                     <div class="single__field">
                         <label class="single__label" for="signup-name">Pseudo</label>
                         <input class="single__input" id="signup-name" type="text" name="username" autocomplete="username" placeholder="sketchking" required />
+                    </div>
+                    <div class="single__field--inline">
+                        <div class="single__field">
+                            <label class="single__label" for="signup-firstname">Prenom</label>
+                            <input class="single__input" id="signup-firstname" type="text" name="firstname" autocomplete="given-name" placeholder="John" required />
+                        </div>
+                        <div class="single__field">
+                            <label class="single__label" for="signup-lastname">Nom</label>
+                            <input class="single__input" id="signup-lastname" type="text" name="lastname" autocomplete="family-name" placeholder="Doe" required />
+                        </div>
                     </div>
                     <div class="single__field">
                         <label class="single__label" for="signup-email">Email</label>
                         <input class="single__input" id="signup-email" type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
                     </div>
-                    <div class="single__field">
-                        <label class="single__label" for="signup-password">Mot de passe</label>
-                        <input class="single__input" id="signup-password" type="password" name="password" autocomplete="new-password" placeholder="********" required />
+                    <div class="single__field--inline">
+                        <div class="single__field">
+                            <label class="single__label" for="signup-password">Mot de passe</label>
+                            <input class="single__input" id="signup-password" type="password" name="password" autocomplete="new-password" placeholder="********" required />
+                        </div>
+                        <div class="single__field">
+                            <label class="single__label" for="signup-password-confirm">Confirmer le mot de passe</label>
+                            <input class="single__input" id="signup-password-confirm" type="password" name="passwordConfirm" autocomplete="new-password" placeholder="********" required />
+                        </div>
                     </div>
+                    <p class="error-message" aria-live="polite" data-signup-error></p>
                     <button class="single__btn single__btn--primary" type="submit">Creer un compte</button>
                 </form>
             </div>
@@ -67,7 +85,7 @@
         </div>
     </section>
 
-    <script type="module" src="/js/auth.js"></script>
-    <script type="module" src="/js/easter.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/easter.js"></script>
 </body>
 </html>

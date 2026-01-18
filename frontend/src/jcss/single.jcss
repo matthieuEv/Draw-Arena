@@ -5,14 +5,13 @@
     width: 100%;
     padding: 64px 6vw;
     display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); 
     gap: 40px;
     align-items: center;
     background:
         radial-gradient(circle at 12% 18%, rgba(90, 175, 232, 0.18), transparent 60%),
         radial-gradient(circle at 88% 20%, rgba(247, 166, 89, 0.2), transparent 55%),
         linear-gradient(135deg, #f8fafc 0%, #eef3f8 100%);
-    overflow: hidden;
     font-family: "Space Grotesk", "Segoe UI", sans-serif;
 }
 
@@ -90,7 +89,6 @@
 .single__visual-title{
     position: relative;
     z-index: 1;
-    font-family: "Space Mono", "Courier New", monospace;
     font-size: clamp(42px, 9vw, 92px);
     font-weight: 700;
     color: var(--color-primary-500);
@@ -212,8 +210,16 @@
 
 .single__field{
     display: grid;
+    flex: 1;
     gap: 6px;
 }
+
+.single__field--inline{
+    display: flex;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
 
 .single__label{
     font-size: 13px;
@@ -271,16 +277,29 @@
     margin-bottom: 18px;
 }
 
+.error-message{
+    margin: 0 0 12px;
+    font-size: 13px;
+    color: var(--color-error);
+    font-weight: 600;
+}
+
 
 @media (max-width: 900px){
     .single{
         grid-template-columns: 1fr;
-        padding: 48px 8vw;
+        padding: 5px 2vw;
         gap: 32px;
+    }
+
+    .single__content{
+        order: 1;
     }
 
     .single__visual{
         width: 100%;
+        min-height: 150px;
+        order: 0;
     }
 }
 
