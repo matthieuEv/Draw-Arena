@@ -8,32 +8,46 @@ use PDO;
 
 class President
 {
-    private int $numUtilisateur;
+    private int $numPresident;
     private ?float $prime;
 
-    public static function create(int $numUtilisateur, ?float $prime = null): bool
+    private function __construct() {}
+
+    public static function create(int $numPresident, ?float $prime = null): bool
     {
         $stmt = Database::prepare(
-            'INSERT INTO President (numUtilisateur, prime) VALUES (?, ?)'
+            'INSERT INTO President (num_president, prime) VALUES (?, ?)'
         );
 
-        return $stmt->execute([$numUtilisateur, $prime]);
+        return $stmt->execute([$numPresident, $prime]);
     }
 
-    public static function findById(int $numUtilisateur): ?array
+    public static function findById(int $numPresident): ?President
     {
-        $stmt = Database::prepare('SELECT * FROM President WHERE numUtilisateur = ? LIMIT 1');
-        $stmt->execute([$numUtilisateur]);
+        $stmt = Database::prepare('SELECT * FROM President WHERE num_president = ? LIMIT 1');
+        $stmt->execute([$numPresident]);
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result ? self::hydrateFromArray($result) : null;
     }
 
+    public static function existsForUser(int $numUtilisateur): bool
+    {
+        $stmt = Database::prepare('SELECT COUNT(*) as count FROM President WHERE num_president = ?');
+        $stmt->execute([$numUtilisateur]);
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)($result['count'] ?? 0) > 0;
+    }
+
+    /**
+     * @return President[]
+     */
     public static function getAll(int $limit = 20, int $offset = 0): array
     {
         $stmt = Database::prepare(
-            'SELECT p.*, u.nom, u.prenom, u.login FROM President p
-             JOIN Utilisateur u ON p.numUtilisateur = u.numUtilisateur
+            'SELECT p.* FROM President p
+             JOIN Utilisateur u ON p.num_president = u.num_utilisateur
              ORDER BY u.nom, u.prenom LIMIT ? OFFSET ?'
         );
         $stmt->bindValue(1, $limit, PDO::PARAM_INT);
@@ -44,26 +58,29 @@ class President
         return array_map(fn($row) => self::hydrateFromArray($row), $results);
     }
 
-    public static function update(int $numUtilisateur, ?float $prime = null): bool
+    private static function hydrateFromArray(array $data): President
     {
-        $stmt = Database::prepare(
-            'UPDATE President SET prime = ? WHERE numUtilisateur = ?'
-        );
-
-        return $stmt->execute([$prime, $numUtilisateur]);
+        $president = new self();
+        $president->numPresident = (int)$data['num_president'];
+        $president->prime = $data['prime'] ? (float)$data['prime'] : null;
+        return $president;
     }
 
-    public static function delete(int $numUtilisateur): bool
-    {
-        $stmt = Database::prepare('DELETE FROM President WHERE numUtilisateur = ?');
-        return $stmt->execute([$numUtilisateur]);
-    }
-
-    private static function hydrateFromArray(array $data): array
+    public function toArray(): array
     {
         return [
-            'numUtilisateur' => (int)$data['numUtilisateur'],
-            'prime' => $data['prime'] ? (float)$data['prime'] : null,
+            'numPresident' => $this->numPresident,
+            'prime' => $this->prime,
         ];
+    }
+
+    public function getNumPresident(): int
+    {
+        return $this->numPresident;
+    }
+
+    public function getPrime(): ?float
+    {
+        return $this->prime;
     }
 }

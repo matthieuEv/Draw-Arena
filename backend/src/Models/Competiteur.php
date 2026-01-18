@@ -11,29 +11,43 @@ class Competiteur
     private int $numCompetiteur;
     private string $datePremiereParticipation;
 
+    private function __construct() {}
+
     public static function create(int $numCompetiteur, string $datePremiereParticipation): bool
     {
         $stmt = Database::prepare(
-            'INSERT INTO Competiteur (numCompetiteur, datePremiereParticipation) VALUES (?, ?)'
+            'INSERT INTO Competiteur (num_competiteur, date_premiere_participation) VALUES (?, ?)'
         );
 
         return $stmt->execute([$numCompetiteur, $datePremiereParticipation]);
     }
 
-    public static function findById(int $numCompetiteur): ?array
+    public static function findById(int $numCompetiteur): ?Competiteur
     {
-        $stmt = Database::prepare('SELECT * FROM Competiteur WHERE numCompetiteur = ? LIMIT 1');
+        $stmt = Database::prepare('SELECT * FROM Competiteur WHERE num_competiteur = ? LIMIT 1');
         $stmt->execute([$numCompetiteur]);
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result ? self::hydrateFromArray($result) : null;
     }
 
+    public static function existsForUser(int $numUtilisateur): bool
+    {
+        $stmt = Database::prepare('SELECT COUNT(*) as count FROM Competiteur WHERE num_competiteur = ?');
+        $stmt->execute([$numUtilisateur]);
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)($result['count'] ?? 0) > 0;
+    }
+
+    /**
+     * @return Competiteur[]
+     */
     public static function getAll(int $limit = 20, int $offset = 0): array
     {
         $stmt = Database::prepare(
-            'SELECT c.*, u.nom, u.prenom, u.login FROM Competiteur c
-             JOIN Utilisateur u ON c.numCompetiteur = u.numCompetiteur
+            'SELECT c.* FROM Competiteur c
+             JOIN Utilisateur u ON c.num_competiteur = u.num_utilisateur
              ORDER BY u.nom, u.prenom LIMIT ? OFFSET ?'
         );
         $stmt->bindValue(1, $limit, PDO::PARAM_INT);
@@ -44,26 +58,29 @@ class Competiteur
         return array_map(fn($row) => self::hydrateFromArray($row), $results);
     }
 
-    public static function update(int $numCompetiteur, string $datePremiereParticipation): bool
+    private static function hydrateFromArray(array $data): Competiteur
     {
-        $stmt = Database::prepare(
-            'UPDATE Competiteur SET datePremiereParticipation = ? WHERE numCompetiteur = ?'
-        );
-
-        return $stmt->execute([$datePremiereParticipation, $numCompetiteur]);
+        $competiteur = new self();
+        $competiteur->numCompetiteur = (int)$data['num_competiteur'];
+        $competiteur->datePremiereParticipation = $data['date_premiere_participation'] ?? '';
+        return $competiteur;
     }
 
-    public static function delete(int $numCompetiteur): bool
-    {
-        $stmt = Database::prepare('DELETE FROM Competiteur WHERE numCompetiteur = ?');
-        return $stmt->execute([$numCompetiteur]);
-    }
-
-    private static function hydrateFromArray(array $data): array
+    public function toArray(): array
     {
         return [
-            'numCompetiteur' => (int)$data['numCompetiteur'],
-            'datePremiereParticipation' => $data['datePremiereParticipation'] ?? null,
+            'numCompetiteur' => $this->numCompetiteur,
+            'datePremiereParticipation' => $this->datePremiereParticipation,
         ];
+    }
+
+    public function getNumCompetiteur(): int
+    {
+        return $this->numCompetiteur;
+    }
+
+    public function getDatePremiereParticipation(): string
+    {
+        return $this->datePremiereParticipation;
     }
 }

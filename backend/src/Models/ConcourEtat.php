@@ -12,5 +12,4 @@ enum ConcourEtat: string
     case EN_COURS = 'en cours';
     case ATTENTE = 'attente';
     case RESULTAT = 'resultat';
-    case EVALUE = 'evalue';
 }

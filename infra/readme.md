@@ -44,7 +44,7 @@ You'll need:
 - `storage_account_name` for deploying the frontend
 - `blob_container_name` for uploaded images
 - `backend_app_name` for deploying the backend
-- `backend_api_url` for configuring the frontend (includes `/index.php/api` on App Service Linux)
+- `backend_api_url` for configuring the frontend (includes `/api` on App Service Linux)
 - `resource_group_name` for Azure CLI commands
 - `mysql_server_fqdn` + `mysql_database_name` for DB initialization
 

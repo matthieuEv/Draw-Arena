@@ -6,7 +6,7 @@ namespace DrawArena\Core;
 class Router
 {
     private array $routes = [];
-    private array $middlewares = [];
+    private array $globalMiddlewares = [];
     private Request $request;
     private Response $response;
 
@@ -16,38 +16,54 @@ class Router
         $this->response = new Response();
     }
 
+    /**
+     * Register a global middleware (applies to all routes)
+     */
     public function use(mixed $middleware): self
     {
-        $this->middlewares[] = $middleware;
+        $this->globalMiddlewares[] = $middleware;
         return $this;
     }
 
-    public function get(string $path, callable|array $handler): self
+    /**
+     * Register a GET route with optional middlewares
+     */
+    public function get(string $path, callable|array $handler, array $middlewares = []): self
     {
-        return $this->route('GET', $path, $handler);
+        return $this->route('GET', $path, $handler, $middlewares);
     }
 
-    public function post(string $path, callable|array $handler): self
+    /**
+     * Register a POST route with optional middlewares
+     */
+    public function post(string $path, callable|array $handler, array $middlewares = []): self
     {
-        return $this->route('POST', $path, $handler);
+        return $this->route('POST', $path, $handler, $middlewares);
     }
 
-    public function put(string $path, callable|array $handler): self
+    /**
+     * Register a PUT route with optional middlewares
+     */
+    public function put(string $path, callable|array $handler, array $middlewares = []): self
     {
-        return $this->route('PUT', $path, $handler);
+        return $this->route('PUT', $path, $handler, $middlewares);
     }
 
-    public function delete(string $path, callable|array $handler): self
+    /**
+     * Register a DELETE route with optional middlewares
+     */
+    public function delete(string $path, callable|array $handler, array $middlewares = []): self
     {
-        return $this->route('DELETE', $path, $handler);
+        return $this->route('DELETE', $path, $handler, $middlewares);
     }
 
-    private function route(string $method, string $path, callable|array $handler): self
+    private function route(string $method, string $path, callable|array $handler, array $middlewares = []): self
     {
         $this->routes[] = [
             'method' => $method,
             'path' => $path,
             'handler' => $handler,
+            'middlewares' => $middlewares,
         ];
         return $this;
     }
@@ -57,14 +73,19 @@ class Router
         $method = $this->request->getMethod();
         $path = $this->request->getPath();
 
-        // Run middlewares
-        foreach ($this->middlewares as $middleware) {
+        // Run global middlewares first
+        foreach ($this->globalMiddlewares as $middleware) {
             $middleware->handle($this->request, $this->response);
         }
 
         // Find matching route
         foreach ($this->routes as $route) {
             if ($route['method'] === $method && $this->pathMatches($route['path'], $path)) {
+                // Run route-specific middlewares
+                foreach ($route['middlewares'] as $middleware) {
+                    $middleware->handle($this->request, $this->response);
+                }
+
                 $this->executeHandler($route['handler']);
                 return;
             }

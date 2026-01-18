@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace DrawArena\Utils;
 
+use DrawArena\Models\UtilisateurType;
+
 class Validator
 {
     private array $errors = [];
@@ -39,6 +41,7 @@ class Validator
             'max' => $this->validateMax($field, $value, (int)$param),
             'string' => $this->validateString($field, $value),
             'numeric' => $this->validateNumeric($field, $value),
+            'typeCompte' => $this->validateTypeCompte($field, $value),
             default => null,
         };
     }
@@ -82,6 +85,16 @@ class Validator
     {
         if ($value !== null && !is_numeric($value)) {
             $this->addError($field, "{$field} must be numeric");
+        }
+    }
+
+    private function validateTypeCompte(string $field, mixed $value): void
+    {
+        if ($value !== null) {
+            $validValues = array_map(fn($case) => $case->value, UtilisateurType::cases());
+            if (!in_array($value, $validValues, true)) {
+                $this->addError($field, "{$field} must be a valid typeCompte");
+            }
         }
     }
 

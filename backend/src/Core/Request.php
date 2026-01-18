@@ -48,7 +48,27 @@ class Request
     public function getHeader(string $key, mixed $default = null): mixed
     {
         $key = strtolower(str_replace('-', '_', $key));
-        return $this->headers[$key] ?? $default;
+
+        // Check in headers array first
+        if (isset($this->headers[$key])) {
+            return $this->headers[$key];
+        }
+
+        // Also check in $_SERVER directly (some servers may not populate HTTP_ prefix properly)
+        $serverKey = 'HTTP_' . strtoupper(str_replace('-', '_', $key));
+        if (isset($_SERVER[$serverKey])) {
+            return $_SERVER[$serverKey];
+        }
+
+        // Check without HTTP_ prefix for Content-Type and Content-Length
+        if (in_array($key, ['content_type', 'content_length'])) {
+            $serverKey = strtoupper($key);
+            if (isset($_SERVER[$serverKey])) {
+                return $_SERVER[$serverKey];
+            }
+        }
+
+        return $default;
     }
 
     public function getBearerToken(): ?string

@@ -5,7 +5,8 @@ namespace DrawArena\Handlers;
 
 use DrawArena\Core\Request;
 use DrawArena\Core\Response;
-use DrawArena\Models\User;
+use DrawArena\Models\Utilisateur;
+use DrawArena\Models\UtilisateurType;
 use DrawArena\Utils\JwtManager;
 use DrawArena\Utils\Validator;
 
@@ -18,20 +19,35 @@ class AuthHandler
         // Validate input
         $validator = new Validator();
         if (!$validator->validate($data, [
-            'username' => 'required|string|min:3|max:255',
-            'email' => 'required|email',
-            'password' => 'required|string|min:6',
+            'nom' => 'required|string|min:2|max:100',
+            'prenom' => 'required|string|min:2|max:100',
+            'login' => 'required|email|string|max:100',
+            'password' => 'required|string|min:6|max:255',
+            'num_club' => 'int',
+            'typeCompte' => 'string|typeCompte',
+            'adresse' => 'string|min:2|max:255',
+            'photo_profil_url' => 'string|min:2|max:255',
         ])) {
             $response->error('Validation failed', 422, ['errors' => $validator->getErrors()])->send();
         }
 
         // Check if user exists
-        if (User::existsByEmail($data['email'])) {
-            $response->error('Email already registered', 409)->send();
+        if (Utilisateur::existsByLogin($data['login'])) {
+            $response->error('Login already registered', 409)->send();
         }
 
         // Create user
-        if (!User::create($data['username'], $data['email'], $data['password'])) {
+        $typeCompte = UtilisateurType::from($data['typeCompte'] ?? 'prive');
+        if (!Utilisateur::create(
+            $data['nom'],
+            $data['prenom'],
+            $data['login'],
+            $data['password'],
+            $typeCompte,
+            $data['adresse'] ?? null,
+            $data['num_club'] ?? null,
+            $data['photo_profil_url'] ?? null
+        )) {
             $response->error('Failed to create user', 500)->send();
         }
 
@@ -45,39 +61,37 @@ class AuthHandler
         // Validate input
         $validator = new Validator();
         if (!$validator->validate($data, [
-            'email' => 'required|email',
+            'login' => 'required|email|string|min:2|max:100',
             'password' => 'required|string',
         ])) {
             $response->error('Validation failed', 422, ['errors' => $validator->getErrors()])->send();
         }
 
-        // Find user
-        $user = User::findByEmail($data['email']);
+        // Find user by login
+        $user = Utilisateur::findByLogin($data['login']);
         if (!$user) {
             $response->error('Invalid credentials', 401)->send();
         }
 
         // Verify password
-        if (!User::verifyPassword($data['password'], $user['password'])) {
+        if (!Utilisateur::verifyPassword($data['password'], $user->getMotDePasse())) {
             $response->error('Invalid credentials', 401)->send();
         }
 
-        // Generate JWT token
+        // Generate JWT token with user data
         $jwtManager = new JwtManager();
         $token = $jwtManager->generateToken([
-            'id' => $user['id'],
-            'email' => $user['email'],
-            'username' => $user['username'],
+            'numUtilisateur' => $user->getNumUtilisateur(),
+            'nom' => $user->getNom(),
+            'prenom' => $user->getPrenom(),
+            'login' => $user->getLogin(),
+            'typeCompte' => $user->getTypeCompte()->value,
         ]);
 
         $response->success([
-            'message' => 'Login successful',
             'token' => $token,
-            'user' => [
-                'id' => $user['id'],
-                'username' => $user['username'],
-                'email' => $user['email'],
-            ]
+            'role' => $user->getRole(),
+            'club' => $user->getNumClub(),
         ])->send();
     }
 }

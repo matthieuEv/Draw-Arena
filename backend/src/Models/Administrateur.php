@@ -11,29 +11,43 @@ class Administrateur
     private int $numAdministrateur;
     private string $dateDebut;
 
+    private function __construct() {}
+
     public static function create(int $numAdministrateur, string $dateDebut): bool
     {
         $stmt = Database::prepare(
-            'INSERT INTO Administrateur (numAdministrateur, dateDebut) VALUES (?, ?)'
+            'INSERT INTO Administrateur (num_administrateur, date_debut) VALUES (?, ?)'
         );
 
         return $stmt->execute([$numAdministrateur, $dateDebut]);
     }
 
-    public static function findById(int $numAdministrateur): ?array
+    public static function findById(int $numAdministrateur): ?Administrateur
     {
-        $stmt = Database::prepare('SELECT * FROM Administrateur WHERE numAdministrateur = ? LIMIT 1');
+        $stmt = Database::prepare('SELECT * FROM Administrateur WHERE num_administrateur = ? LIMIT 1');
         $stmt->execute([$numAdministrateur]);
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result ? self::hydrateFromArray($result) : null;
     }
 
+    public static function existsForUser(int $numUtilisateur): bool
+    {
+        $stmt = Database::prepare('SELECT COUNT(*) as count FROM Administrateur WHERE num_administrateur = ?');
+        $stmt->execute([$numUtilisateur]);
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)($result['count'] ?? 0) > 0;
+    }
+
+    /**
+     * @return Administrateur[]
+     */
     public static function getAll(int $limit = 20, int $offset = 0): array
     {
         $stmt = Database::prepare(
-            'SELECT a.*, u.nom, u.prenom, u.login FROM Administrateur a
-             JOIN Utilisateur u ON a.numAdministrateur = u.numAdministrateur
+            'SELECT a.* FROM Administrateur a
+             JOIN Utilisateur u ON a.num_administrateur = u.num_utilisateur
              ORDER BY u.nom, u.prenom LIMIT ? OFFSET ?'
         );
         $stmt->bindValue(1, $limit, PDO::PARAM_INT);
@@ -44,26 +58,29 @@ class Administrateur
         return array_map(fn($row) => self::hydrateFromArray($row), $results);
     }
 
-    public static function update(int $numAdministrateur, string $dateDebut): bool
+    private static function hydrateFromArray(array $data): Administrateur
     {
-        $stmt = Database::prepare(
-            'UPDATE Administrateur SET dateDebut = ? WHERE numAdministrateur = ?'
-        );
-
-        return $stmt->execute([$dateDebut, $numAdministrateur]);
+        $admin = new self();
+        $admin->numAdministrateur = (int)$data['num_administrateur'];
+        $admin->dateDebut = $data['date_debut'];
+        return $admin;
     }
 
-    public static function delete(int $numAdministrateur): bool
-    {
-        $stmt = Database::prepare('DELETE FROM Administrateur WHERE numAdministrateur = ?');
-        return $stmt->execute([$numAdministrateur]);
-    }
-
-    private static function hydrateFromArray(array $data): array
+    public function toArray(): array
     {
         return [
-            'numAdministrateur' => (int)$data['numAdministrateur'],
-            'dateDebut' => $data['dateDebut'],
+            'numAdministrateur' => $this->numAdministrateur,
+            'dateDebut' => $this->dateDebut,
         ];
+    }
+
+    public function getNumAdministrateur(): int
+    {
+        return $this->numAdministrateur;
+    }
+
+    public function getDateDebut(): string
+    {
+        return $this->dateDebut;
     }
 }
