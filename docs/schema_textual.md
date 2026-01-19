@@ -19,6 +19,7 @@
 - adresse : String
 - login : String
 - mot_de_passe : String
+- photo_profil_url : String
 - type_compte : enum {'prive', 'public'}
 - num_club* : ID
 
@@ -29,6 +30,7 @@
 - description : String
 - date_fin : Date
 - etat : enum {'pas commence', 'en cours', 'attente', 'resultat', 'evalue'}
+- etat : enum {'pas_commence', 'en_cours', 'attente', 'resultat', 'evalue'}
 - num_club* : ID
 - num_president* : ID
 

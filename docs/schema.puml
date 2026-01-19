@@ -2,90 +2,91 @@
 skinparam classAttributeIconSize 0
 
 ' Classes principales
-class Club {
-    <u>numClub</u> : ID
-    nomClub : String
+class club {
+    <u>num_club</u> : ID
+    nom_club : String
     adresse : String
-    numTelephone : String
-    nombreAdherents : int
+    num_telephone : String
+    nombre_adherents : int
     ville : String
-    département : String
-    région : String
+    departement : String
+    region : String
 }
 
-class Utilisateur {
-    <u>numUtilisateur</u> : ID
+class utilisateur {
+    <u>num_utilisateur</u> : ID
     nom : String
     prenom : String
     adresse : String
     login : String
-    motDePasse : String
-    typeCompte : enum {'prive', 'public'}
+    mot_de_passe : String
+    photo_profil_url : String
+    type_compte : enum {'prive', 'public'}
 }
 
-class Concours {
-    <u>numConcours</u> : ID
+class concours {
+    <u>num_concours</u> : ID
     theme : String
     description : String
-    dateDebut : Date
-    dateFin : Date
-    etat : enum {'pas commence', 'en cours', 'attente', 'resultat', 'evalue'}
+    date_debut : Date
+    date_fin : Date
+    etat : enum {'pas_commence', 'en_cours', 'attente', 'resultat', 'evalue'}
 }
 
-class Dessin {
-    <u>numDessin</u> : ID
+class dessin {
+    <u>num_dessin</u> : ID
     commentaire : String
     classement : int
-    dateRemise : Date
-    leDessin : Blob
+    date_remise : Date
+    le_dessin : Blob
 }
 
-class Evaluation {
-    dateEvaluation : Date
+class evaluation {
+    date_evaluation : Date
     note : float
     commentaire : String
 }
 
 ' Sous-classes d'Utilisateur
-class Competiteur {
-    datePremiereParticipation : Date
+class competiteur {
+    date_premiere_participation : Date
 }
 
-class Evaluateur {
+class evaluateur {
     specialite : String
 }
 
-class Président {
+class president {
     prime : float
 }
 
-class Administrateur {
-    dateDebut : Date
+class administrateur {
+    date_debut : Date
 }
 
-class Directeur {
-    dateDebut : Date
+class directeur {
+    date_debut : Date
 }
 
 ' Héritages
-Utilisateur <|-- Competiteur
-Utilisateur <|-- Evaluateur
-Utilisateur <|-- President
-Utilisateur <|-- Administrateur
-Utilisateur <|-- Directeur
+utilisateur <|-- competiteur
+utilisateur <|-- evaluateur
+utilisateur <|-- president
+utilisateur <|-- administrateur
+utilisateur <|-- directeur
 
 ' Associations
-Club "1" -- "*" Utilisateur : Adherents >
-Club "1" -- "*" Concours : Participe >
-Club "1" - "1" Directeur : Dirige <
+club "1" -- "*" utilisateur : adherents >
+club "1" -- "*" concours : participe >
+club "1" - "1" directeur : dirige <
 
-Concours "1" -- "*" Dessin : porte sur >
-Concours "*" -- "1" President : préside <
-Concours "*" --- "*" Evaluateur : jury <
+concours "1" -- "*" dessin : porte_sur >
+concours "*" -- "1" president : preside <
+concours "*" --- "*" evaluateur : jury <
 
-Competiteur "1" -- "*" Dessin : soumet >
+competiteur "1" -- "*" dessin : soumet >
 
-Dessin "*" -- "2" Evaluateur : evalue <
-(Dessin, Evaluateur) .. Evaluation
+dessin "*" -- "2" evaluateur : evalue <
+(dessin, evaluateur) .. evaluation
 
 @enduml
