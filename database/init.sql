@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS Utilisateur (
     num_utilisateur INT AUTO_INCREMENT PRIMARY KEY,
     nom VARCHAR(100) NOT NULL,
     prenom VARCHAR(100) NOT NULL,
+    age INT,
     adresse VARCHAR(255),
     age INT NOT NULL,
     login VARCHAR(100) UNIQUE NOT NULL,
