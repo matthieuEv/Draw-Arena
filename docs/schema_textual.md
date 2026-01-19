@@ -29,7 +29,6 @@
 - date_debut : Date
 - description : String
 - date_fin : Date
-- etat : enum {'pas commence', 'en cours', 'attente', 'resultat', 'evalue'}
 - etat : enum {'pas_commence', 'en_cours', 'attente', 'resultat', 'evalue'}
 - num_club* : ID
 - num_president* : ID

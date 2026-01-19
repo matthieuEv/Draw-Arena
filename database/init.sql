@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS Concours (
     num_club INT,
     num_president INT NOT NULL,
     CONSTRAINT fk_concours_club FOREIGN KEY (num_club) REFERENCES Club(num_club),
-    CONSTRAINT fk_concours_president FOREIGN KEY (num_president) REFERENCES President(num_utilisateur)
+    CONSTRAINT fk_concours_president FOREIGN KEY (num_president) REFERENCES President(num_president)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS Dessin (
@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS Dessin (
     num_concours INT NOT NULL,
     num_competiteur INT NOT NULL,
     CONSTRAINT fk_dessin_concours FOREIGN KEY (num_concours) REFERENCES Concours(num_concours),
-    CONSTRAINT fk_dessin_competiteur FOREIGN KEY (num_competiteur) REFERENCES Competiteur(num_utilisateur)
+    CONSTRAINT fk_dessin_competiteur FOREIGN KEY (num_competiteur) REFERENCES Competiteur(num_competiteur)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS Evaluation (
@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS Evaluation (
     commentaire TEXT,
     PRIMARY KEY (num_dessin, num_evaluateur),
     CONSTRAINT fk_evaluation_dessin FOREIGN KEY (num_dessin) REFERENCES Dessin(num_dessin),
-    CONSTRAINT fk_evaluation_evaluateur FOREIGN KEY (num_evaluateur) REFERENCES Evaluateur(num_utilisateur)
+    CONSTRAINT fk_evaluation_evaluateur FOREIGN KEY (num_evaluateur) REFERENCES Evaluateur(num_evaluateur)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS Concours_Evaluateur (
@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS Concours_Evaluateur (
     num_evaluateur INT NOT NULL,
     PRIMARY KEY (num_concours, num_evaluateur),
     CONSTRAINT fk_concours_evaluateur_concours FOREIGN KEY (num_concours) REFERENCES Concours(num_concours),
-    CONSTRAINT fk_concours_evaluateur_evaluateur FOREIGN KEY (num_evaluateur) REFERENCES Evaluateur(num_utilisateur)
+    CONSTRAINT fk_concours_evaluateur_evaluateur FOREIGN KEY (num_evaluateur) REFERENCES Evaluateur(num_evaluateur)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS Club_Directeur (
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS Club_Directeur (
     num_directeur INT,
     PRIMARY KEY (num_club, num_directeur),
     CONSTRAINT fk_club_directeur_club FOREIGN KEY (num_club) REFERENCES Club(num_club),
-    CONSTRAINT fk_club_directeur_directeur FOREIGN KEY (num_directeur) REFERENCES Directeur(num_utilisateur)
+    CONSTRAINT fk_club_directeur_directeur FOREIGN KEY (num_directeur) REFERENCES Directeur(num_directeur)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS Concours_Competiteur (
@@ -125,7 +125,7 @@ CREATE TABLE IF NOT EXISTS Concours_Competiteur (
     num_competiteur INT,
     PRIMARY KEY (num_concours, num_competiteur),
     CONSTRAINT fk_concours_competiteur_concours FOREIGN KEY (num_concours) REFERENCES Concours(num_concours),
-    CONSTRAINT fk_concours_competiteur_competiteur FOREIGN KEY (num_competiteur) REFERENCES Competiteur(num_utilisateur)
+    CONSTRAINT fk_concours_competiteur_competiteur FOREIGN KEY (num_competiteur) REFERENCES Competiteur(num_competiteur)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS Club_Concours (
