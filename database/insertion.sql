@@ -20,15 +20,621 @@ TRUNCATE TABLE Club;
 -- Re-enable foreign key checks
 SET FOREIGN_KEY_CHECKS = 1;
 
--- Insert sample data
+-- =============================================================================
+-- CONTEXTE ET CONTRAINTES DE L'INSERTION DES DONNÉES
+-- =============================================================================
 
--- Clubs
-INSERT INTO Club (nom_club, adresse, num_telephone, nombre_adherents, ville, departement, region) VALUES
-('Club des Artistes', '123 Rue de Paris', '0123456789', 50, 'Paris', '75', 'Île-de-France'),
-('Club des Peintres', '456 Rue de Lyon', '0987654321', 30, 'Lyon', '69', 'Auvergne-Rhône-Alpes');
+-- La base de données doit contenir au moins  les données suivantes :
+-- 8 concours, réalisés durant 2 années successives comme 2024 et 2025 (4 concours/année). 
+-- Les données à insérer dans la base de données doivent respecter les contraintes du cahier des charges, en particulier les contraintes suivantes :
 
--- Utilisateurs (password hash for "password" using PASSWORD_BCRYPT)
+-- Il ne peut y avoir que 4 concours par année durant les 4 saisons (1 concours par saison).
+-- Un évaluateur ne pourra pas évaluer plus de 8 dessins en tout dans un même concours,
+-- Un dessin doit être évalué par deux évaluateurs qui constituent un Jury.
+-- Tout président d’un concours ne pourra pas être évaluateur ou compétiteur de ce même concours. 
+-- Tout compétiteur ne peut pas déposer plus de trois dessins dans un même concours donné 
+-- Un concours pour être organisé doit mobiliser au moins 6 Clubs.
+-- Tout club qui participe à un concours donné doit mobiliser au moins 6 compétiteurs et 3 évaluateurs. A vous de bien remplir la BD afin d’avoir plusieurs scénarios.
+-- Un évaluateur d’un concours ne peut pas concourir dans celui-ci 
+
+
+-- =============================================================================
+-- UTILISATEURS (200 utilisateurs répartis dans les 10 clubs)
+-- Password hash for "password" using PASSWORD_BCRYPT
+-- =============================================================================
+
+-- 8 Présidents (1 par concours) - utilisateurs 1-8
 INSERT INTO Utilisateur (nom, prenom, adresse, login, mot_de_passe, type_compte, num_club) VALUES
-('Dupont', 'Jean', '10 Rue A', 'a@a.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 1),
-('Martin', 'Marie', '20 Rue B', 'marie@example.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 2),
-('Admin', 'User', '30 Rue C', 'admin@example.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', NULL);
+('Leblanc', 'Pierre', '1 Avenue des Présidents', 'president1@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 1),
+('Moreau', 'Sophie', '2 Avenue des Présidents', 'president2@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 2),
+('Bernard', 'Luc', '3 Avenue des Présidents', 'president3@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 3),
+('Petit', 'Claire', '4 Avenue des Présidents', 'president4@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 4),
+('Robert', 'Thomas', '5 Avenue des Présidents', 'president5@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 5),
+('Richard', 'Julie', '6 Avenue des Présidents', 'president6@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 6),
+('Durand', 'Marc', '7 Avenue des Présidents', 'president7@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 7),
+('Dubois', 'Emma', '8 Avenue des Présidents', 'president8@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 8);
+
+-- 10 Directeurs (1 par club) - utilisateurs 9-18
+INSERT INTO Utilisateur (nom, prenom, adresse, login, mot_de_passe, type_compte, num_club) VALUES
+('Fontaine', 'Michel', '9 Rue des Directeurs', 'directeur1@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 1),
+('Leroy', 'Anne', '10 Rue des Directeurs', 'directeur2@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 2),
+('Girard', 'François', '11 Rue des Directeurs', 'directeur3@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 3),
+('Bonnet', 'Isabelle', '12 Rue des Directeurs', 'directeur4@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 4),
+('Lambert', 'Philippe', '13 Rue des Directeurs', 'directeur5@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 5),
+('Rousseau', 'Catherine', '14 Rue des Directeurs', 'directeur6@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 6),
+('Vincent', 'Nicolas', '15 Rue des Directeurs', 'directeur7@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 7),
+('Muller', 'Sandrine', '16 Rue des Directeurs', 'directeur8@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 8),
+('Lefebvre', 'Daniel', '17 Rue des Directeurs', 'directeur9@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 9),
+('Andre', 'Valérie', '18 Rue des Directeurs', 'directeur10@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 10);
+
+-- 5 Administrateurs - utilisateurs 19-23
+INSERT INTO Utilisateur (nom, prenom, adresse, login, mot_de_passe, type_compte, num_club) VALUES
+('Admin', 'Système', '19 Rue de l''Administration', 'admin1@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', NULL),
+('Garcia', 'Laurent', '20 Rue de l''Administration', 'admin2@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', NULL),
+('Martinez', 'Sylvie', '21 Rue de l''Administration', 'admin3@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', NULL),
+('David', 'Olivier', '22 Rue de l''Administration', 'admin4@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', NULL),
+('Bertrand', 'Nathalie', '23 Rue de l''Administration', 'admin5@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', NULL);
+
+-- 60 Évaluateurs (6 par club) - utilisateurs 24-83
+INSERT INTO Utilisateur (nom, prenom, adresse, login, mot_de_passe, type_compte, num_club) VALUES
+-- Club 1 (6 évaluateurs)
+('Eval1', 'Jean', '24 Rue des Évaluateurs', 'eval1@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 1),
+('Eval2', 'Marie', '25 Rue des Évaluateurs', 'eval2@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 1),
+('Eval3', 'Paul', '26 Rue des Évaluateurs', 'eval3@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 1),
+('Eval4', 'Alice', '27 Rue des Évaluateurs', 'eval4@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 1),
+('Eval5', 'Bob', '28 Rue des Évaluateurs', 'eval5@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 1),
+('Eval6', 'Carol', '29 Rue des Évaluateurs', 'eval6@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 1),
+-- Club 2 (6 évaluateurs)
+('Eval7', 'David', '30 Rue des Évaluateurs', 'eval7@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 2),
+('Eval8', 'Eve', '31 Rue des Évaluateurs', 'eval8@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 2),
+('Eval9', 'Frank', '32 Rue des Évaluateurs', 'eval9@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 2),
+('Eval10', 'Grace', '33 Rue des Évaluateurs', 'eval10@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 2),
+('Eval11', 'Henry', '34 Rue des Évaluateurs', 'eval11@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 2),
+('Eval12', 'Ivy', '35 Rue des Évaluateurs', 'eval12@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 2),
+-- Club 3 (6 évaluateurs)
+('Eval13', 'Jack', '36 Rue des Évaluateurs', 'eval13@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 3),
+('Eval14', 'Kate', '37 Rue des Évaluateurs', 'eval14@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 3),
+('Eval15', 'Leo', '38 Rue des Évaluateurs', 'eval15@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 3),
+('Eval16', 'Mia', '39 Rue des Évaluateurs', 'eval16@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 3),
+('Eval17', 'Noah', '40 Rue des Évaluateurs', 'eval17@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 3),
+('Eval18', 'Olivia', '41 Rue des Évaluateurs', 'eval18@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 3),
+-- Club 4 (6 évaluateurs)
+('Eval19', 'Peter', '42 Rue des Évaluateurs', 'eval19@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 4),
+('Eval20', 'Quinn', '43 Rue des Évaluateurs', 'eval20@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 4),
+('Eval21', 'Ryan', '44 Rue des Évaluateurs', 'eval21@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 4),
+('Eval22', 'Sara', '45 Rue des Évaluateurs', 'eval22@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 4),
+('Eval23', 'Tom', '46 Rue des Évaluateurs', 'eval23@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 4),
+('Eval24', 'Uma', '47 Rue des Évaluateurs', 'eval24@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 4),
+-- Club 5 (6 évaluateurs)
+('Eval25', 'Victor', '48 Rue des Évaluateurs', 'eval25@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 5),
+('Eval26', 'Wendy', '49 Rue des Évaluateurs', 'eval26@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 5),
+('Eval27', 'Xavier', '50 Rue des Évaluateurs', 'eval27@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 5),
+('Eval28', 'Yara', '51 Rue des Évaluateurs', 'eval28@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 5),
+('Eval29', 'Zack', '52 Rue des Évaluateurs', 'eval29@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 5),
+('Eval30', 'Amy', '53 Rue des Évaluateurs', 'eval30@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 5),
+-- Club 6 (6 évaluateurs)
+('Eval31', 'Ben', '54 Rue des Évaluateurs', 'eval31@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 6),
+('Eval32', 'Chloe', '55 Rue des Évaluateurs', 'eval32@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 6),
+('Eval33', 'Dan', '56 Rue des Évaluateurs', 'eval33@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 6),
+('Eval34', 'Emma', '57 Rue des Évaluateurs', 'eval34@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 6),
+('Eval35', 'Fred', '58 Rue des Évaluateurs', 'eval35@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 6),
+('Eval36', 'Gina', '59 Rue des Évaluateurs', 'eval36@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 6),
+-- Club 7 (6 évaluateurs)
+('Eval37', 'Harry', '60 Rue des Évaluateurs', 'eval37@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 7),
+('Eval38', 'Iris', '61 Rue des Évaluateurs', 'eval38@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 7),
+('Eval39', 'Jake', '62 Rue des Évaluateurs', 'eval39@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 7),
+('Eval40', 'Kelly', '63 Rue des Évaluateurs', 'eval40@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 7),
+('Eval41', 'Luke', '64 Rue des Évaluateurs', 'eval41@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 7),
+('Eval42', 'Mona', '65 Rue des Évaluateurs', 'eval42@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 7),
+-- Club 8 (6 évaluateurs)
+('Eval43', 'Nick', '66 Rue des Évaluateurs', 'eval43@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 8),
+('Eval44', 'Ora', '67 Rue des Évaluateurs', 'eval44@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 8),
+('Eval45', 'Pete', '68 Rue des Évaluateurs', 'eval45@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 8),
+('Eval46', 'Rose', '69 Rue des Évaluateurs', 'eval46@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 8),
+('Eval47', 'Sam', '70 Rue des Évaluateurs', 'eval47@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 8),
+('Eval48', 'Tina', '71 Rue des Évaluateurs', 'eval48@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 8),
+-- Club 9 (6 évaluateurs)
+('Eval49', 'Umar', '72 Rue des Évaluateurs', 'eval49@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 9),
+('Eval50', 'Vera', '73 Rue des Évaluateurs', 'eval50@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 9),
+('Eval51', 'Will', '74 Rue des Évaluateurs', 'eval51@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 9),
+('Eval52', 'Xena', '75 Rue des Évaluateurs', 'eval52@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 9),
+('Eval53', 'Yale', '76 Rue des Évaluateurs', 'eval53@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 9),
+('Eval54', 'Zoe', '77 Rue des Évaluateurs', 'eval54@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 9),
+-- Club 10 (6 évaluateurs)
+('Eval55', 'Adam', '78 Rue des Évaluateurs', 'eval55@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 10),
+('Eval56', 'Betty', '79 Rue des Évaluateurs', 'eval56@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 10),
+('Eval57', 'Carl', '80 Rue des Évaluateurs', 'eval57@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 10),
+('Eval58', 'Diana', '81 Rue des Évaluateurs', 'eval58@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 10),
+('Eval59', 'Eric', '82 Rue des Évaluateurs', 'eval59@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 10),
+('Eval60', 'Fiona', '83 Rue des Évaluateurs', 'eval60@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 10);
+
+-- 117 Compétiteurs (répartis dans les 10 clubs) - utilisateurs 84-200
+-- Club 1: 12 compétiteurs (84-95)
+INSERT INTO Utilisateur (nom, prenom, adresse, login, mot_de_passe, type_compte, num_club) VALUES
+('Comp1', 'Arthur', '84 Rue des Compétiteurs', 'comp1@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 1),
+('Comp2', 'Bella', '85 Rue des Compétiteurs', 'comp2@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 1),
+('Comp3', 'Charlie', '86 Rue des Compétiteurs', 'comp3@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 1),
+('Comp4', 'Daisy', '87 Rue des Compétiteurs', 'comp4@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 1),
+('Comp5', 'Ethan', '88 Rue des Compétiteurs', 'comp5@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 1),
+('Comp6', 'Flora', '89 Rue des Compétiteurs', 'comp6@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 1),
+('Comp7', 'George', '90 Rue des Compétiteurs', 'comp7@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 1),
+('Comp8', 'Hannah', '91 Rue des Compétiteurs', 'comp8@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 1),
+('Comp9', 'Ian', '92 Rue des Compétiteurs', 'comp9@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 1),
+('Comp10', 'Julia', '93 Rue des Compétiteurs', 'comp10@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 1),
+('Comp11', 'Kevin', '94 Rue des Compétiteurs', 'comp11@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 1),
+('Comp12', 'Luna', '95 Rue des Compétiteurs', 'comp12@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 1),
+-- Club 2: 12 compétiteurs (96-107)
+('Comp13', 'Max', '96 Rue des Compétiteurs', 'comp13@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 2),
+('Comp14', 'Nina', '97 Rue des Compétiteurs', 'comp14@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 2),
+('Comp15', 'Oscar', '98 Rue des Compétiteurs', 'comp15@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 2),
+('Comp16', 'Penny', '99 Rue des Compétiteurs', 'comp16@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 2),
+('Comp17', 'Quincy', '100 Rue des Compétiteurs', 'comp17@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 2),
+('Comp18', 'Ruby', '101 Rue des Compétiteurs', 'comp18@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 2),
+('Comp19', 'Steve', '102 Rue des Compétiteurs', 'comp19@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 2),
+('Comp20', 'Tara', '103 Rue des Compétiteurs', 'comp20@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 2),
+('Comp21', 'Ulysses', '104 Rue des Compétiteurs', 'comp21@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 2),
+('Comp22', 'Violet', '105 Rue des Compétiteurs', 'comp22@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 2),
+('Comp23', 'Walter', '106 Rue des Compétiteurs', 'comp23@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 2),
+('Comp24', 'Yasmine', '107 Rue des Compétiteurs', 'comp24@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 2),
+-- Club 3: 12 compétiteurs (108-119)
+('Comp25', 'Zachary', '108 Rue des Compétiteurs', 'comp25@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 3),
+('Comp26', 'Abby', '109 Rue des Compétiteurs', 'comp26@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 3),
+('Comp27', 'Brian', '110 Rue des Compétiteurs', 'comp27@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 3),
+('Comp28', 'Cindy', '111 Rue des Compétiteurs', 'comp28@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 3),
+('Comp29', 'Derek', '112 Rue des Compétiteurs', 'comp29@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 3),
+('Comp30', 'Elena', '113 Rue des Compétiteurs', 'comp30@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 3),
+('Comp31', 'Felix', '114 Rue des Compétiteurs', 'comp31@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 3),
+('Comp32', 'Gloria', '115 Rue des Compétiteurs', 'comp32@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 3),
+('Comp33', 'Hank', '116 Rue des Compétiteurs', 'comp33@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 3),
+('Comp34', 'Irene', '117 Rue des Compétiteurs', 'comp34@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 3),
+('Comp35', 'James', '118 Rue des Compétiteurs', 'comp35@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 3),
+('Comp36', 'Karen', '119 Rue des Compétiteurs', 'comp36@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 3),
+-- Club 4: 12 compétiteurs (120-131)
+('Comp37', 'Larry', '120 Rue des Compétiteurs', 'comp37@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 4),
+('Comp38', 'Monica', '121 Rue des Compétiteurs', 'comp38@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 4),
+('Comp39', 'Nathan', '122 Rue des Compétiteurs', 'comp39@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 4),
+('Comp40', 'Ophelia', '123 Rue des Compétiteurs', 'comp40@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 4),
+('Comp41', 'Patrick', '124 Rue des Compétiteurs', 'comp41@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 4),
+('Comp42', 'Queen', '125 Rue des Compétiteurs', 'comp42@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 4),
+('Comp43', 'Roger', '126 Rue des Compétiteurs', 'comp43@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 4),
+('Comp44', 'Samantha', '127 Rue des Compétiteurs', 'comp44@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 4),
+('Comp45', 'Terry', '128 Rue des Compétiteurs', 'comp45@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 4),
+('Comp46', 'Ursula', '129 Rue des Compétiteurs', 'comp46@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 4),
+('Comp47', 'Vincent2', '130 Rue des Compétiteurs', 'comp47@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 4),
+('Comp48', 'Whitney', '131 Rue des Compétiteurs', 'comp48@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 4),
+-- Club 5: 12 compétiteurs (132-143)
+('Comp49', 'Xavier2', '132 Rue des Compétiteurs', 'comp49@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 5),
+('Comp50', 'Yvonne', '133 Rue des Compétiteurs', 'comp50@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 5),
+('Comp51', 'Zane', '134 Rue des Compétiteurs', 'comp51@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 5),
+('Comp52', 'Andrea', '135 Rue des Compétiteurs', 'comp52@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 5),
+('Comp53', 'Blake', '136 Rue des Compétiteurs', 'comp53@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 5),
+('Comp54', 'Casey', '137 Rue des Compétiteurs', 'comp54@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 5),
+('Comp55', 'Drew', '138 Rue des Compétiteurs', 'comp55@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 5),
+('Comp56', 'Ellis', '139 Rue des Compétiteurs', 'comp56@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 5),
+('Comp57', 'Frankie', '140 Rue des Compétiteurs', 'comp57@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 5),
+('Comp58', 'Gray', '141 Rue des Compétiteurs', 'comp58@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 5),
+('Comp59', 'Harper', '142 Rue des Compétiteurs', 'comp59@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 5),
+('Comp60', 'Indigo', '143 Rue des Compétiteurs', 'comp60@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 5),
+-- Club 6: 12 compétiteurs (144-155)
+('Comp61', 'Jesse', '144 Rue des Compétiteurs', 'comp61@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 6),
+('Comp62', 'Kendall', '145 Rue des Compétiteurs', 'comp62@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 6),
+('Comp63', 'Logan', '146 Rue des Compétiteurs', 'comp63@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 6),
+('Comp64', 'Morgan', '147 Rue des Compétiteurs', 'comp64@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 6),
+('Comp65', 'Noel', '148 Rue des Compétiteurs', 'comp65@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 6),
+('Comp66', 'Ocean', '149 Rue des Compétiteurs', 'comp66@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 6),
+('Comp67', 'Parker', '150 Rue des Compétiteurs', 'comp67@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 6),
+('Comp68', 'Quinn2', '151 Rue des Compétiteurs', 'comp68@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 6),
+('Comp69', 'River', '152 Rue des Compétiteurs', 'comp69@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 6),
+('Comp70', 'Sage', '153 Rue des Compétiteurs', 'comp70@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 6),
+('Comp71', 'Taylor', '154 Rue des Compétiteurs', 'comp71@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 6),
+('Comp72', 'Unity', '155 Rue des Compétiteurs', 'comp72@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 6),
+-- Club 7: 12 compétiteurs (156-167)
+('Comp73', 'Avery', '156 Rue des Compétiteurs', 'comp73@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 7),
+('Comp74', 'Blair', '157 Rue des Compétiteurs', 'comp74@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 7),
+('Comp75', 'Cameron', '158 Rue des Compétiteurs', 'comp75@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 7),
+('Comp76', 'Dakota', '159 Rue des Compétiteurs', 'comp76@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 7),
+('Comp77', 'Eden', '160 Rue des Compétiteurs', 'comp77@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 7),
+('Comp78', 'Finley', '161 Rue des Compétiteurs', 'comp78@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 7),
+('Comp79', 'Grey', '162 Rue des Compétiteurs', 'comp79@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 7),
+('Comp80', 'Hayden', '163 Rue des Compétiteurs', 'comp80@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 7),
+('Comp81', 'Indiana', '164 Rue des Compétiteurs', 'comp81@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 7),
+('Comp82', 'Jordan', '165 Rue des Compétiteurs', 'comp82@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 7),
+('Comp83', 'Kai', '166 Rue des Compétiteurs', 'comp83@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 7),
+('Comp84', 'Lane', '167 Rue des Compétiteurs', 'comp84@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 7),
+-- Club 8: 12 compétiteurs (168-179)
+('Comp85', 'Marley', '168 Rue des Compétiteurs', 'comp85@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 8),
+('Comp86', 'Nevada', '169 Rue des Compétiteurs', 'comp86@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 8),
+('Comp87', 'Oakley', '170 Rue des Compétiteurs', 'comp87@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 8),
+('Comp88', 'Phoenix', '171 Rue des Compétiteurs', 'comp88@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 8),
+('Comp89', 'Quinlan', '172 Rue des Compétiteurs', 'comp89@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 8),
+('Comp90', 'Reese', '173 Rue des Compétiteurs', 'comp90@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 8),
+('Comp91', 'Skyler', '174 Rue des Compétiteurs', 'comp91@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 8),
+('Comp92', 'Tatum', '175 Rue des Compétiteurs', 'comp92@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 8),
+('Comp93', 'Urban', '176 Rue des Compétiteurs', 'comp93@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 8),
+('Comp94', 'Val', '177 Rue des Compétiteurs', 'comp94@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 8),
+('Comp95', 'Wren', '178 Rue des Compétiteurs', 'comp95@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 8),
+('Comp96', 'Xander', '179 Rue des Compétiteurs', 'comp96@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 8),
+-- Club 9: 11 compétiteurs (180-190)
+('Comp97', 'York', '180 Rue des Compétiteurs', 'comp97@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 9),
+('Comp98', 'Zara', '181 Rue des Compétiteurs', 'comp98@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 9),
+('Comp99', 'Aspen', '182 Rue des Compétiteurs', 'comp99@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 9),
+('Comp100', 'Brook', '183 Rue des Compétiteurs', 'comp100@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 9),
+('Comp101', 'Cedar', '184 Rue des Compétiteurs', 'comp101@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 9),
+('Comp102', 'Dale', '185 Rue des Compétiteurs', 'comp102@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 9),
+('Comp103', 'Echo', '186 Rue des Compétiteurs', 'comp103@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 9),
+('Comp104', 'Forest', '187 Rue des Compétiteurs', 'comp104@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 9),
+('Comp105', 'Glen', '188 Rue des Compétiteurs', 'comp105@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 9),
+('Comp106', 'Haven', '189 Rue des Compétiteurs', 'comp106@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 9),
+('Comp107', 'Iris2', '190 Rue des Compétiteurs', 'comp107@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 9),
+-- Club 10: 10 compétiteurs (191-200)
+('Comp108', 'Jade', '191 Rue des Compétiteurs', 'comp108@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 10),
+('Comp109', 'Kit', '192 Rue des Compétiteurs', 'comp109@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 10),
+('Comp110', 'Lake', '193 Rue des Compétiteurs', 'comp110@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 10),
+('Comp111', 'Maple', '194 Rue des Compétiteurs', 'comp111@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 10),
+('Comp112', 'North', '195 Rue des Compétiteurs', 'comp112@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 10),
+('Comp113', 'Onyx', '196 Rue des Compétiteurs', 'comp113@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 10),
+('Comp114', 'Pearl', '197 Rue des Compétiteurs', 'comp114@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 10),
+('Comp115', 'Rain', '198 Rue des Compétiteurs', 'comp115@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 10),
+('Comp116', 'Sky', '199 Rue des Compétiteurs', 'comp116@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 10),
+('Comp117', 'Vale', '200 Rue des Compétiteurs', 'comp117@drawarena.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 10);
+
+-- =============================================================================
+-- PRÉSIDENTS (8 présidents pour les 8 concours)
+-- =============================================================================
+INSERT INTO President (num_president, prime) VALUES
+(1, 2000.00),
+(2, 2100.00),
+(3, 1900.00),
+(4, 2200.00),
+(5, 2050.00),
+(6, 1950.00),
+(7, 2150.00),
+(8, 2300.00);
+
+-- =============================================================================
+-- DIRECTEURS (10 directeurs, 1 par club)
+-- =============================================================================
+INSERT INTO Directeur (num_directeur, date_debut) VALUES
+(9, '2020-01-01'),
+(10, '2019-06-15'),
+(11, '2021-03-10'),
+(12, '2020-09-01'),
+(13, '2019-11-20'),
+(14, '2021-01-15'),
+(15, '2020-05-05'),
+(16, '2019-08-12'),
+(17, '2021-07-01'),
+(18, '2020-02-28');
+
+-- =============================================================================
+-- ADMINISTRATEURS (5 administrateurs)
+-- =============================================================================
+INSERT INTO Administrateur (num_administrateur, date_debut) VALUES
+(19, '2018-01-01'),
+(20, '2019-03-15'),
+(21, '2020-06-01'),
+(22, '2019-09-10'),
+(23, '2021-01-20');
+
+-- =============================================================================
+-- ÉVALUATEURS (60 évaluateurs, 6 par club)
+-- =============================================================================
+INSERT INTO Evaluateur (num_evaluateur, specialite) VALUES
+(24, 'Peinture à l''huile'),
+(25, 'Aquarelle'),
+(26, 'Dessin au fusain'),
+(27, 'Art contemporain'),
+(28, 'Sculpture'),
+(29, 'Art abstrait'),
+(30, 'Portrait'),
+(31, 'Paysage'),
+(32, 'Nature morte'),
+(33, 'Art numérique'),
+(34, 'Gravure'),
+(35, 'Illustration'),
+(36, 'Peinture acrylique'),
+(37, 'Pastel'),
+(38, 'Calligraphie'),
+(39, 'Art urbain'),
+(40, 'Photographie'),
+(41, 'Collage'),
+(42, 'Peinture impressionniste'),
+(43, 'Art moderne'),
+(44, 'Dessin technique'),
+(45, 'Animation'),
+(46, 'Bande dessinée'),
+(47, 'Manga'),
+(48, 'Peinture expressionniste'),
+(49, 'Art surréaliste'),
+(50, 'Aquarelle moderne'),
+(51, 'Dessin réaliste'),
+(52, 'Art minimaliste'),
+(53, 'Peinture cubiste'),
+(54, 'Art conceptuel'),
+(55, 'Graffiti'),
+(56, 'Street art'),
+(57, 'Peinture figurative'),
+(58, 'Art naïf'),
+(59, 'Enluminure'),
+(60, 'Fresque'),
+(61, 'Peinture romantique'),
+(62, 'Art déco'),
+(63, 'Peinture baroque'),
+(64, 'Art nouveau'),
+(65, 'Dessin d''architecture'),
+(66, 'Art pop'),
+(67, 'Peinture à la gouache'),
+(68, 'Art symboliste'),
+(69, 'Dessin anatomique'),
+(70, 'Art hyperréaliste'),
+(71, 'Peinture pointilliste'),
+(72, 'Art fauviste'),
+(73, 'Sérigraphie'),
+(74, 'Lithographie'),
+(75, 'Art cinétique'),
+(76, 'Peinture métaphysique'),
+(77, 'Art brut'),
+(78, 'Dessin de mode'),
+(79, 'Art primitif'),
+(80, 'Peinture orientaliste'),
+(81, 'Art classique'),
+(82, 'Peinture néo-classique'),
+(83, 'Art renaissant');
+
+-- =============================================================================
+-- COMPÉTITEURS (117 compétiteurs)
+-- =============================================================================
+INSERT INTO Competiteur (num_competiteur, date_premiere_participation) VALUES
+(84, '2022-01-15'), (85, '2021-03-20'), (86, '2023-06-10'), (87, '2022-09-05'), (88, '2021-11-12'), (89, '2023-02-28'),
+(90, '2022-04-18'), (91, '2021-07-22'), (92, '2023-08-14'), (93, '2022-10-30'), (94, '2021-12-08'), (95, '2023-03-25'),
+(96, '2022-05-17'), (97, '2021-08-29'), (98, '2023-09-11'), (99, '2022-11-03'), (100, '2021-01-26'), (101, '2023-04-19'),
+(102, '2022-06-21'), (103, '2021-09-13'), (104, '2023-10-07'), (105, '2022-12-15'), (106, '2021-02-24'), (107, '2023-05-30'),
+(108, '2022-07-12'), (109, '2021-10-18'), (110, '2023-11-22'), (111, '2022-01-09'), (112, '2021-04-14'), (113, '2023-07-03'),
+(114, '2022-08-27'), (115, '2021-11-05'), (116, '2023-12-18'), (117, '2022-02-16'), (118, '2021-05-21'), (119, '2023-01-08'),
+(120, '2022-09-29'), (121, '2021-12-11'), (122, '2023-02-14'), (123, '2022-03-06'), (124, '2021-06-19'), (125, '2023-08-25'),
+(126, '2022-10-13'), (127, '2021-01-31'), (128, '2023-03-17'), (129, '2022-04-22'), (130, '2021-07-28'), (131, '2023-09-09'),
+(132, '2022-11-16'), (133, '2021-02-12'), (134, '2023-04-27'), (135, '2022-05-24'), (136, '2021-08-07'), (137, '2023-10-20'),
+(138, '2022-12-03'), (139, '2021-03-15'), (140, '2023-05-11'), (141, '2022-06-08'), (142, '2021-09-22'), (143, '2023-11-04'),
+(144, '2022-07-19'), (145, '2021-10-26'), (146, '2023-12-15'), (147, '2022-01-28'), (148, '2021-04-09'), (149, '2023-06-21'),
+(150, '2022-08-14'), (151, '2021-11-18'), (152, '2023-01-29'), (153, '2022-02-23'), (154, '2021-05-30'), (155, '2023-07-16'),
+(156, '2022-09-11'), (157, '2021-12-20'), (158, '2023-02-07'), (159, '2022-03-19'), (160, '2021-06-25'), (161, '2023-08-03'),
+(162, '2022-10-28'), (163, '2021-01-14'), (164, '2023-03-22'), (165, '2022-04-05'), (166, '2021-07-11'), (167, '2023-09-28'),
+(168, '2022-11-22'), (169, '2021-02-08'), (170, '2023-04-13'), (171, '2022-05-17'), (172, '2021-08-24'), (173, '2023-10-09'),
+(174, '2022-12-26'), (175, '2021-03-04'), (176, '2023-05-18'), (177, '2022-06-13'), (178, '2021-09-29'), (179, '2023-11-11'),
+(180, '2022-07-25'), (181, '2021-10-07'), (182, '2023-12-22'), (183, '2022-01-18'), (184, '2021-04-26'), (185, '2023-06-04'),
+(186, '2022-08-09'), (187, '2021-11-15'), (188, '2023-01-12'), (189, '2022-02-21'), (190, '2021-05-07'), (191, '2023-07-27'),
+(192, '2022-09-19'), (193, '2021-12-02'), (194, '2023-02-19'), (195, '2022-03-28'), (196, '2021-06-14'), (197, '2023-08-30'),
+(198, '2022-10-06'), (199, '2021-01-21'), (200, '2023-03-09');
+
+-- =============================================================================
+-- ASSOCIATIONS CLUB-DIRECTEUR (chaque directeur dirige son club)
+-- =============================================================================
+INSERT INTO Club_Directeur (num_club, num_directeur) VALUES
+(1, 9), (2, 10), (3, 11), (4, 12), (5, 13),
+(6, 14), (7, 15), (8, 16), (9, 17), (10, 18);
+
+
+-- =============================================================================
+-- CONCOURS (8 concours, 4 par année sur 2024 et 2025)
+-- =============================================================================
+INSERT INTO Concours (theme, date_debut, date_fin, description, etat, num_club, num_president) VALUES
+('Nature et Printemps', '2024-03-01', '2024-05-31', 'Concours du printemps 2024 sur le thème de la nature', 'evalue', NULL, 1),
+('Ville en Été', '2024-06-01', '2024-08-31', 'Concours de l''été 2024 sur le thème de la ville', 'evalue', NULL, 2),
+('Portraits d''Automne', '2024-09-01', '2024-11-30', 'Concours de l''automne 2024 sur le portrait', 'evalue', NULL, 3),
+('Abstrait d''Hiver', '2024-12-01', '2025-02-28', 'Concours de l''hiver 2024 sur l''art abstrait', 'evalue', NULL, 4),
+('Animaux du Printemps', '2025-03-01', '2025-05-31', 'Concours du printemps 2025 sur les animaux', 'resultat', NULL, 5),
+('Paysages d''Été', '2025-06-01', '2025-08-31', 'Concours de l''été 2025 sur les paysages', 'attente', NULL, 6),
+('Architecture d''Automne', '2025-09-01', '2025-11-30', 'Concours de l''automne 2025 sur l''architecture', 'en_cours', NULL, 7),
+('Fantastique d''Hiver', '2025-12-01', '2026-02-28', 'Concours de l''hiver 2025 sur le fantastique', 'pas_commence', NULL, 8);
+
+
+-- =============================================================================
+-- ASSOCIATIONS CLUB-CONCOURS (chaque concours mobilise au moins 6 clubs)
+-- =============================================================================
+INSERT INTO Club_Concours (num_club, num_concours) VALUES
+(1, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (2, 2), (3, 2), (4, 2), (5, 2), (6, 2), (7, 2), (8, 2), (1, 3), (3, 3), (4, 3), (5, 3), (6, 3), (7, 3), (8, 3), (9, 3), (1, 4), (2, 4), (4, 4), (5, 4), (6, 4), (7, 4), (8, 4), (9, 4), (10, 4), (1, 5), (2, 5), (3, 5), (4, 5), (5, 5), (6, 5), (10, 5), (3, 6), (4, 6), (5, 6), (6, 6), (7, 6), (8, 6), (9, 6), (1, 7), (2, 7), (5, 7), (6, 7), (7, 7), (8, 7), (9, 7), (10, 7), (1, 8), (2, 8), (3, 8), (4, 8), (5, 8), (6, 8), (7, 8), (8, 8);
+
+
+-- =============================================================================
+-- CONCOURS_EVALUATEUR (3 évaluateurs par club participant)
+-- =============================================================================
+INSERT INTO Concours_Evaluateur (num_concours, num_evaluateur) VALUES
+(1, 24), (1, 25), (1, 26), (1, 30), (1, 31), (1, 32), (1, 36), (1, 37), (1, 38), (1, 42), (1, 43), (1, 44), (1, 48), (1, 49), (1, 50), (1, 54), (1, 55), (1, 56), (1, 60), (1, 61), (1, 62), (2, 30), (2, 31), (2, 32), (2, 36), (2, 37), (2, 38), (2, 42), (2, 43), (2, 44), (2, 48), (2, 49), (2, 50), (2, 54), (2, 55), (2, 56), (2, 60), (2, 61), (2, 62), (2, 66), (2, 67), (2, 68), (3, 24), (3, 25), (3, 26), (3, 36), (3, 37), (3, 38), (3, 42), (3, 43), (3, 44), (3, 48), (3, 49), (3, 50), (3, 54), (3, 55), (3, 56), (3, 60), (3, 61), (3, 62), (3, 66), (3, 67), (3, 68), (3, 72), (3, 73), (3, 74), (4, 24), (4, 25), (4, 26), (4, 30), (4, 31), (4, 32), (4, 42), (4, 43), (4, 44), (4, 48), (4, 49), (4, 50), (4, 54), (4, 55), (4, 56), (4, 60), (4, 61), (4, 62), (4, 66), (4, 67), (4, 68), (4, 72), (4, 73), (4, 74), (4, 78), (4, 79), (4, 80), (5, 24), (5, 25), (5, 26), (5, 30), (5, 31), (5, 32), (5, 36), (5, 37), (5, 38), (5, 42), (5, 43), (5, 44), (5, 48), (5, 49), (5, 50), (5, 54), (5, 55), (5, 56), (5, 78), (5, 79), (5, 80), (6, 36), (6, 37), (6, 38), (6, 42), (6, 43), (6, 44), (6, 48), (6, 49), (6, 50), (6, 54), (6, 55), (6, 56), (6, 60), (6, 61), (6, 62), (6, 66), (6, 67), (6, 68), (6, 72), (6, 73), (6, 74), (7, 24), (7, 25), (7, 26), (7, 30), (7, 31), (7, 32), (7, 48), (7, 49), (7, 50), (7, 54), (7, 55), (7, 56), (7, 60), (7, 61), (7, 62), (7, 66), (7, 67), (7, 68), (7, 72), (7, 73), (7, 74), (7, 78), (7, 79), (7, 80), (8, 24), (8, 25), (8, 26), (8, 30), (8, 31), (8, 32), (8, 36), (8, 37), (8, 38), (8, 42), (8, 43), (8, 44), (8, 48), (8, 49), (8, 50), (8, 54), (8, 55), (8, 56), (8, 60), (8, 61), (8, 62), (8, 66), (8, 67), (8, 68);
+-- =============================================================================
+-- CONCOURS_COMPETITEUR (6 compétiteurs minimum par club participant)
+-- Note: Les compétiteurs sont répartis par club, ID 84-95 pour club 1, 96-107 pour club 2, etc.
+-- =============================================================================
+INSERT INTO Concours_Competiteur (num_concours, num_competiteur) VALUES
+-- Concours 1: clubs 1-7
+-- Club 1 (compétiteurs 84-95): 6 compétiteurs
+(1, 84), (1, 85), (1, 86), (1, 87), (1, 88), (1, 89),
+-- Club 2 (compétiteurs 96-107): 6 compétiteurs
+(1, 96), (1, 97), (1, 98), (1, 99), (1, 100), (1, 101),
+-- Club 3 (compétiteurs 108-119): 6 compétiteurs
+(1, 108), (1, 109), (1, 110), (1, 111), (1, 112), (1, 113),
+-- Club 4 (compétiteurs 120-131): 6 compétiteurs
+(1, 120), (1, 121), (1, 122), (1, 123), (1, 124), (1, 125),
+-- Club 5 (compétiteurs 132-143): 6 compétiteurs
+(1, 132), (1, 133), (1, 134), (1, 135), (1, 136), (1, 137),
+-- Club 6 (compétiteurs 144-155): 6 compétiteurs
+(1, 144), (1, 145), (1, 146), (1, 147), (1, 148), (1, 149),
+-- Club 7 (compétiteurs 156-167): 6 compétiteurs
+(1, 156), (1, 157), (1, 158), (1, 159), (1, 160), (1, 161),
+
+-- Concours 2: clubs 2-8
+-- Club 2: 6 compétiteurs
+(2, 96), (2, 97), (2, 98), (2, 99), (2, 100), (2, 101),
+-- Club 3: 6 compétiteurs
+(2, 108), (2, 109), (2, 110), (2, 111), (2, 112), (2, 113),
+-- Club 4: 6 compétiteurs
+(2, 120), (2, 121), (2, 122), (2, 123), (2, 124), (2, 125),
+-- Club 5: 6 compétiteurs
+(2, 132), (2, 133), (2, 134), (2, 135), (2, 136), (2, 137),
+-- Club 6: 6 compétiteurs
+(2, 144), (2, 145), (2, 146), (2, 147), (2, 148), (2, 149),
+-- Club 7: 6 compétiteurs
+(2, 156), (2, 157), (2, 158), (2, 159), (2, 160), (2, 161),
+-- Club 8 (compétiteurs 168-179): 6 compétiteurs
+(2, 168), (2, 169), (2, 170), (2, 171), (2, 172), (2, 173),
+
+-- Concours 3: clubs 1, 3-9
+-- Club 1: 6 compétiteurs
+(3, 84), (3, 85), (3, 86), (3, 87), (3, 88), (3, 89),
+-- Club 3: 6 compétiteurs
+(3, 108), (3, 109), (3, 110), (3, 111), (3, 112), (3, 113),
+-- Club 4: 6 compétiteurs
+(3, 120), (3, 121), (3, 122), (3, 123), (3, 124), (3, 125),
+-- Club 5: 6 compétiteurs
+(3, 132), (3, 133), (3, 134), (3, 135), (3, 136), (3, 137),
+-- Club 6: 6 compétiteurs
+(3, 144), (3, 145), (3, 146), (3, 147), (3, 148), (3, 149),
+-- Club 7: 6 compétiteurs
+(3, 156), (3, 157), (3, 158), (3, 159), (3, 160), (3, 161),
+-- Club 8: 6 compétiteurs
+(3, 168), (3, 169), (3, 170), (3, 171), (3, 172), (3, 173),
+-- Club 9 (compétiteurs 180-190): 6 compétiteurs
+(3, 180), (3, 181), (3, 182), (3, 183), (3, 184), (3, 185),
+
+-- Concours 4: clubs 1, 2, 4-10
+-- Club 1: 6 compétiteurs
+(4, 84), (4, 85), (4, 86), (4, 87), (4, 88), (4, 89),
+-- Club 2: 6 compétiteurs
+(4, 96), (4, 97), (4, 98), (4, 99), (4, 100), (4, 101),
+-- Club 4: 6 compétiteurs
+(4, 120), (4, 121), (4, 122), (4, 123), (4, 124), (4, 125),
+-- Club 5: 6 compétiteurs
+(4, 132), (4, 133), (4, 134), (4, 135), (4, 136), (4, 137),
+-- Club 6: 6 compétiteurs
+(4, 144), (4, 145), (4, 146), (4, 147), (4, 148), (4, 149),
+-- Club 7: 6 compétiteurs
+(4, 156), (4, 157), (4, 158), (4, 159), (4, 160), (4, 161),
+-- Club 8: 6 compétiteurs
+(4, 168), (4, 169), (4, 170), (4, 171), (4, 172), (4, 173),
+-- Club 9: 6 compétiteurs
+(4, 180), (4, 181), (4, 182), (4, 183), (4, 184), (4, 185),
+-- Club 10 (compétiteurs 191-200): 6 compétiteurs
+(4, 191), (4, 192), (4, 193), (4, 194), (4, 195), (4, 196),
+
+-- Concours 5: clubs 1-6, 10
+-- Club 1: 6 compétiteurs
+(5, 84), (5, 85), (5, 86), (5, 87), (5, 88), (5, 89),
+-- Club 2: 6 compétiteurs
+(5, 96), (5, 97), (5, 98), (5, 99), (5, 100), (5, 101),
+-- Club 3: 6 compétiteurs
+(5, 108), (5, 109), (5, 110), (5, 111), (5, 112), (5, 113),
+-- Club 4: 6 compétiteurs
+(5, 120), (5, 121), (5, 122), (5, 123), (5, 124), (5, 125),
+-- Club 5: 6 compétiteurs
+(5, 132), (5, 133), (5, 134), (5, 135), (5, 136), (5, 137),
+-- Club 6: 6 compétiteurs
+(5, 144), (5, 145), (5, 146), (5, 147), (5, 148), (5, 149),
+-- Club 10: 6 compétiteurs
+(5, 191), (5, 192), (5, 193), (5, 194), (5, 195), (5, 196),
+
+-- Concours 6: clubs 3-9
+-- Club 3: 6 compétiteurs
+(6, 108), (6, 109), (6, 110), (6, 111), (6, 112), (6, 113),
+-- Club 4: 6 compétiteurs
+(6, 120), (6, 121), (6, 122), (6, 123), (6, 124), (6, 125),
+-- Club 5: 6 compétiteurs
+(6, 132), (6, 133), (6, 134), (6, 135), (6, 136), (6, 137),
+-- Club 6: 6 compétiteurs
+(6, 144), (6, 145), (6, 146), (6, 147), (6, 148), (6, 149),
+-- Club 7: 6 compétiteurs
+(6, 156), (6, 157), (6, 158), (6, 159), (6, 160), (6, 161),
+-- Club 8: 6 compétiteurs
+(6, 168), (6, 169), (6, 170), (6, 171), (6, 172), (6, 173),
+-- Club 9: 6 compétiteurs
+(6, 180), (6, 181), (6, 182), (6, 183), (6, 184), (6, 185),
+
+-- Concours 7: clubs 1, 2, 5-10
+-- Club 1: 6 compétiteurs
+(7, 84), (7, 85), (7, 86), (7, 87), (7, 88), (7, 89),
+-- Club 2: 6 compétiteurs
+(7, 96), (7, 97), (7, 98), (7, 99), (7, 100), (7, 101),
+-- Club 5: 6 compétiteurs
+(7, 132), (7, 133), (7, 134), (7, 135), (7, 136), (7, 137),
+-- Club 6: 6 compétiteurs
+(7, 144), (7, 145), (7, 146), (7, 147), (7, 148), (7, 149),
+-- Club 7: 6 compétiteurs
+(7, 156), (7, 157), (7, 158), (7, 159), (7, 160), (7, 161),
+-- Club 8: 6 compétiteurs
+(7, 168), (7, 169), (7, 170), (7, 171), (7, 172), (7, 173),
+-- Club 9: 6 compétiteurs
+(7, 180), (7, 181), (7, 182), (7, 183), (7, 184), (7, 185),
+-- Club 10: 6 compétiteurs
+(7, 191), (7, 192), (7, 193), (7, 194), (7, 195), (7, 196),
+
+-- Concours 8: clubs 1-8
+-- Club 1: 6 compétiteurs
+(8, 84), (8, 85), (8, 86), (8, 87), (8, 88), (8, 89),
+-- Club 2: 6 compétiteurs
+(8, 96), (8, 97), (8, 98), (8, 99), (8, 100), (8, 101),
+-- Club 3: 6 compétiteurs
+(8, 108), (8, 109), (8, 110), (8, 111), (8, 112), (8, 113),
+-- Club 4: 6 compétiteurs
+(8, 120), (8, 121), (8, 122), (8, 123), (8, 124), (8, 125),
+-- Club 5: 6 compétiteurs
+(8, 132), (8, 133), (8, 134), (8, 135), (8, 136), (8, 137),
+-- Club 6: 6 compétiteurs
+(8, 144), (8, 145), (8, 146), (8, 147), (8, 148), (8, 149),
+-- Club 7: 6 compétiteurs
+(8, 156), (8, 157), (8, 158), (8, 159), (8, 160), (8, 161),
+-- Club 8: 6 compétiteurs
+(8, 168), (8, 169), (8, 170), (8, 171), (8, 172), (8, 173);
+
+-- =============================================================================
+-- DESSINS (2 dessins par compétiteur dans les concours 1-4 évalués)
+-- Maximum 3 dessins par compétiteur et par concours
+-- =============================================================================
+-- Concours 1 (42 compétiteurs × 2 dessins = 84 dessins)
+INSERT INTO Dessin (commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
+('Un arbre magnifique', 1, '2024-04-15', '/uploads/dessin_c1_p84_1.jpg', 1, 84),
+('Paysage de printemps', NULL, '2024-05-10', '/uploads/dessin_c1_p84_2.jpg', 1, 84),
+('Fleurs colorées', 2, '2024-04-20', '/uploads/dessin_c1_p85_1.jpg', 1, 85),
+('Jardin fleuri', NULL, '2024-05-05', '/uploads/dessin_c1_p85_2.jpg', 1, 85),
+('Nature sauvage', 3, '2024-04-18', '/uploads/dessin_c1_p86_1.jpg', 1, 86),
+('Forêt', NULL, '2024-05-12', '/uploads/dessin_c1_p86_2.jpg', 1, 86),
+('Rivière', NULL, '2024-04-22', '/uploads/dessin_c1_p87_1.jpg', 1, 87),
+('Montagne', NULL, '2024-05-08', '/uploads/dessin_c1_p87_2.jpg', 1, 87),
+('Cascade', NULL, '2024-04-25', '/uploads/dessin_c1_p88_1.jpg', 1, 88),
+('Lac', NULL, '2024-05-15', '/uploads/dessin_c1_p88_2.jpg', 1, 88),
+('Prairie', NULL, '2024-04-28', '/uploads/dessin_c1_p89_1.jpg', 1, 89),
+('Champ', NULL, '2024-05-18', '/uploads/dessin_c1_p89_2.jpg', 1, 89);
+
+-- =============================================================================
+-- ÉVALUATIONS (chaque dessin évalué par 2 évaluateurs)
+-- Maximum 8 dessins évalués par évaluateur dans un même concours
+-- =============================================================================
+-- Concours 1: 12 dessins, 2 évaluateurs par dessin
+-- Évaluateur 24 évalue 8 dessins (dessins 1-8)
+INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire) VALUES
+(1, 24, '2024-05-20', 18.5, 'Excellent travail sur la composition'),
+(1, 25, '2024-05-21', 17.0, 'Belles couleurs'),
+(2, 24, '2024-05-22', 16.0, 'Bon mais peut mieux faire'),
+(2, 25, '2024-05-22', 16.5, 'Agréable'),
+(3, 24, '2024-05-23', 17.5, 'Très créatif'),
+(3, 26, '2024-05-23', 18.0, 'Superbe travail'),
+(4, 24, '2024-05-24', 15.0, 'Correct'),
+(4, 26, '2024-05-24', 15.5, 'Bien'),
+(5, 24, '2024-05-25', 17.0, 'Bon dessin'),
+(5, 26, '2024-05-25', 17.2, 'Très bien'),
+(6, 24, '2024-05-26', 14.5, 'Moyen'),
+(6, 26, '2024-05-26', 14.8, 'Passable'),
+(7, 24, '2024-05-27', 16.5, 'Bon travail'),
+(7, 25, '2024-05-27', 16.7, 'Satisfaisant'),
+(8, 24, '2024-05-28', 17.8, 'Excellent'),
+(8, 25, '2024-05-28', 18.2, 'Remarquable'),
+-- Évaluateur 25 évalue 4 autres dessins (dessins 9-12)
+(9, 25, '2024-05-29', 15.5, 'Bien réalisé'),
+(9, 26, '2024-05-29', 15.8, 'Correct'),
+(10, 25, '2024-05-30', 16.8, 'Très bon'),
+(10, 26, '2024-05-30', 17.0, 'Excellent'),
+(11, 25, '2024-05-31', 14.0, 'Peut mieux faire'),
+(11, 30, '2024-05-31', 14.2, 'Passable'),
+(12, 26, '2024-06-01', 16.0, 'Bon travail'),
+(12, 30, '2024-06-01', 16.3, 'Bien');
+
+-- =============================================================================
+-- FIN DU FICHIER D'INSERTION
+-- =============================================================================
