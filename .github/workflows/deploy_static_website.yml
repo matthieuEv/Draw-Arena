@@ -46,7 +46,7 @@ jobs:
 
       - name: Configure frontend with backend URL
         run: |
-          sed -i "s|BACKEND_API_URL_PLACEHOLDER|${{ env.BACKEND_URL }}|g" ./frontend/src/config.js
+          sed -i "s|BACKEND_API_URL_PLACEHOLDER|${{ env.BACKEND_URL }}|g" ./frontend/dist/config.js
           echo "✅ Configured frontend with backend URL: ${{ env.BACKEND_URL }}"
 
       - name: Upload to $web (Storage key)
