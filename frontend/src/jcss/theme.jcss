@@ -23,4 +23,7 @@
   --color-success: #B4D1A2;
   --color-warning: #F7A659;
   --color-error: #F95671;
+
+
+  --gap-size: 10px;
 }

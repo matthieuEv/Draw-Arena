@@ -1,35 +1,191 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Space+Mono:wght@600;700&display=swap");
 @import 'theme.css';
+
+*{
+    box-sizing: border-box;
+}
 
 body{
     margin: 0px;
-    background-color: var(--color-white);
+    min-height: 100vh;
+    font-family: "Space Grotesk", "Segoe UI", sans-serif;
+    color: var(--color-text);
+    background:
+        radial-gradient(circle at 12% 18%, rgba(90, 175, 232, 0.18), transparent 60%),
+        radial-gradient(circle at 88% 20%, rgba(247, 166, 89, 0.2), transparent 55%),
+        linear-gradient(135deg, #f8fafc 0%, #eef3f8 100%);
 }
 
 main{
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.app-shell{
+    min-height: 100vh;
     display: flex;
+    align-items: stretch;
+    gap: var(--gap-size);
+    padding: var(--gap-size);
 }
 
 .page-content{
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: var(--gap-size);
+    position: relative;
+
+    &::after{
+        content: "";
+        position: absolute;
+        width: 220px;
+        height: 220px;
+        border-radius: 999px;
+        background: rgba(249, 86, 113, 0.16);
+        top: -120px;
+        right: -80px;
+        filter: blur(0.5px);
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    & > *{
+        position: relative;
+    }
 }
 
 
 
+.page-body{
+    flex: 1;
+    display: grid;
+    align-content: start;
+    gap: var(--gap-size);
+    padding: var(--gap-size);
+    border-radius: var(--gap-size);
+    border: 1px solid var(--color-light-gray);
+    background: var(--color-white);
+    box-shadow: 0 var(--gap-size) 32px rgba(90, 175, 232, 0.12);
 
+    & h1{
+        margin: 0;
+        color: var(--color-text);
+    }
+
+    & h2{
+        margin: 0;
+        color: var(--color-text);
+    }
+
+    & h3{
+        margin: 0;
+        color: var(--color-text);
+    }
+
+    & p{
+        margin: 0;
+        color: var(--color-text-muted);
+        line-height: 1.7;
+    }
+
+    & a{
+        color: var(--color-primary-500);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    & input{
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--color-light-gray);
+        background: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        color: var(--color-text);
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    & select{
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--color-light-gray);
+        background: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        color: var(--color-text);
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    & textarea{
+        width: 100%;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid var(--color-light-gray);
+        background: rgba(255, 255, 255, 0.9);
+        font-size: 14px;
+        color: var(--color-text);
+        transition: border-color 150ms ease, box-shadow 150ms ease;
+    }
+
+    & input:focus{
+        outline: none;
+        border-color: var(--color-primary-300);
+        box-shadow: 0 0 0 3px rgba(90, 175, 232, 0.18);
+    }
+
+    & select:focus{
+        outline: none;
+        border-color: var(--color-primary-300);
+        box-shadow: 0 0 0 3px rgba(90, 175, 232, 0.18);
+    }
+
+    & textarea:focus{
+        outline: none;
+        border-color: var(--color-primary-300);
+        box-shadow: 0 0 0 3px rgba(90, 175, 232, 0.18);
+    }
+
+    & button{
+        align-self: flex-start;
+        padding: 12px var(--gap-size);
+        border-radius: 12px;
+        border: 0;
+        background: var(--color-primary-500);
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 12px 24px rgba(90, 175, 232, 0.25);
+        transition: transform 150ms ease, box-shadow 150ms ease;
+    }
+
+    & button:hover{
+        transform: translateY(-1px);
+        box-shadow: 0 var(--gap-size) 32px rgba(90, 175, 232, 0.32);
+    }
+}
 
 nav{
-    max-width: 300px;
-    // height: 100vh;
-    background-color: var(--color-white);
-    border-right: 1px solid var(--color-light-gray);
-    box-shadow: 8px 0 24px rgba(90, 175, 232, 0.08);
+    flex: 0 0 260px;
+    max-width: 260px;
+    background: var(--color-white);
+    border: 1px solid var(--color-light-gray);
+    border-radius: var(--gap-size);
+    box-shadow: 0 var(--gap-size) 40px rgba(90, 175, 232, 0.12);
     color: var(--color-text);
-    padding: 20px 0 10px 0;
-
+    padding: var(--gap-size) 0 12px 0;
     display: flex;
     flex-direction: column;
+    position: relative;
+    overflow: hidden;
+
+    & > *{
+        position: relative;
+        z-index: 1;
+    }
 
     .material-symbols-rounded {
         font-variation-settings:
@@ -68,8 +224,7 @@ nav{
 
         a{
             text-decoration: none;
-            background: none;
-            border: none;
+            border: 1px solid transparent;
             border-radius: 12px;
             cursor: pointer;
             margin: 4px 0;
@@ -77,7 +232,7 @@ nav{
             font-size: 16px;
             font-weight: 500;
             color: var(--color-text-muted);
-            transition: background-color 150ms ease, color 150ms ease;
+            transition: background-color 150ms ease, color 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
 
             display: flex;
             gap: 10px;
@@ -87,14 +242,19 @@ nav{
             &.active{
                 background-color: var(--color-primary-100);
                 color: var(--color-primary-500);
+                border-color: rgba(90, 175, 232, 0.3);
+                box-shadow: inset 0 0 0 1px rgba(90, 175, 232, 0.12);
             }
 
             &:hover{
                 background-color: var(--color-primary-100);
                 color: var(--color-primary-500);
+                border-color: rgba(90, 175, 232, 0.3);
             }
 
-            &:hover .material-symbols-rounded,
+            &:hover .material-symbols-rounded{
+                color: var(--color-primary-500);
+            }
             &.active .material-symbols-rounded{
                 color: var(--color-primary-500);
             }
@@ -108,19 +268,25 @@ nav{
         font-size: 12px;
         color: var(--color-text-muted);
     }
+
+    .copyright{
+        margin: 0;
+        text-align: center;
+    }
 }
 
 
 .userbar{
-    background-color: var(--color-white);
-    border-bottom: 1px solid var(--color-light-gray);
-    box-shadow: 0 8px 24px rgba(90, 175, 232, 0.08);
+    background: var(--color-white);
+    border: 1px solid var(--color-light-gray);
+    border-radius: var(--gap-size);
+    box-shadow: 0 12px 24px rgba(90, 175, 232, 0.12);
     color: var(--color-text);
-    padding: 14px 20px;
+    padding: 7px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: var(--gap-size);
 
     .welkText{
         margin: 0;
@@ -236,9 +402,6 @@ nav{
     }
 }
 
-
-
-
 .down-arrow {
     border: solid currentColor;
     border-width: 0 2px 2px 0;
@@ -246,4 +409,57 @@ nav{
     padding: 4px;
     transform: rotate(45deg);
     transition: transform 150ms ease;
+}
+
+@media (max-width: 1100px){
+    .app-shell{
+        gap: var(--gap-size);
+        padding: var(--gap-size);
+    }
+
+    nav{
+        flex: 0 0 220px;
+        max-width: 220px;
+    }
+}
+
+@media (max-width: 900px){
+    .app-shell{
+        flex-direction: column;
+    }
+
+    nav{
+        width: 100%;
+        max-width: none;
+    }
+
+    nav .buttons{
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 8px;
+    }
+
+    .userbar{
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .page-content{
+        min-height: 0;
+    }
+}
+
+@media (max-width: 600px){
+    .app-shell{
+        gap: 14px;
+        padding: 14px;
+    }
+
+    .page-content{
+        padding: 16px;
+    }
+
+    .page-body{
+        padding: var(--gap-size);
+    }
 }

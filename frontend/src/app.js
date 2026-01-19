@@ -1,18 +1,20 @@
 const app = document.getElementById("app");
 
 const routes = [
-  { path: "/", file: "/pages/home.html" },
-  { path: "/depot", file: "/pages/depot.html" },
-  { path: "/concours", file: "/pages/concours.html" },
-  { path: "/result", file: "/pages/result.html" },
-  { path: "/statistique", file: "/pages/statistique.html" },
-
+  { path: "/", file: "/pages/home.html", data:"home"},
+  { path: "/depot", file: "/pages/depot.html", data:"depot" },
+  { path: "/concours", file: "/pages/concours.html", data:"concours" },
+  { path: "/result", file: "/pages/result.html", data:"result" },
+  { path: "/statistique", file: "/pages/statistique.html", data:"statistique" },
+  { path: "/administration", file: "/pages/administration.html", data:"administration" },
   { path: "/login", file: "/pages/login.html" },
 ];
 
 const notFoundRoute = { file: "/pages/error/404.html" };
 const ROUTE_STYLE_ATTR = "data-route-style";
 const loadedScripts = new Set();
+
+var currentDataRoute = "";
 
 function matchRoute(pathname) {
   return routes.find(r => r.path === pathname);
@@ -123,6 +125,7 @@ function loadScripts(scripts = []) {
 async function render() {
   const pathname = window.location.pathname;
   let activeRoute = matchRoute(pathname) || notFoundRoute;
+  currentDataRoute = activeRoute.data || "";
   let html = "";
 
   try {
@@ -137,6 +140,15 @@ async function render() {
   app.innerHTML = body;
   syncStyles(styles);
   await loadScripts(scripts);
+
+  // Get element by atribute data-nav-* and add class active
+  document.querySelectorAll("a[data-link]").forEach((a) => {
+    a.classList.remove("active");
+    const navAttr = `data-nav-${currentDataRoute}`;
+    if (a.hasAttribute(navAttr)) {
+      a.classList.add("active");
+    }
+  });
 }
 
 // navigation “comme React Router” : empêche le reload

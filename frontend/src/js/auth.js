@@ -90,15 +90,16 @@ async function login(event) {
     errorMessage.textContent = "Veuillez entrer une adresse e-mail valide.";
     return;
   }
-
-  // TODO: Implement actual login logic here
-  // console.log("Login attempt:", { email, password, remember });
+  
   const res = await apiFetch("/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({
+      "login": email,
+      "password": password
+    }),
   });
 
   if (res.success) {
@@ -138,15 +139,19 @@ async function signup(event){
     errorMessage.textContent = "Les mots de passe ne correspondent pas.";
     return;
   }
-
-  // TODO: Implement actual signup logic here
-  // console.log("Signup attempt:", { username, nom, prenom, email, password, confirmPassword });
+  
   const res = await apiFetch("/signup", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ username, nom, prenom, email, password }),
+    body: JSON.stringify({
+      "nom": username,
+      "prenom": nom,
+      "login": prenom,
+      "password": email,
+      "address": password
+    }),
   });
 
   if (res.success) {
