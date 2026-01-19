@@ -32,39 +32,40 @@ CREATE TABLE IF NOT EXISTS Utilisateur (
     adresse VARCHAR(255),
     login VARCHAR(100) UNIQUE NOT NULL,
     mot_de_passe VARCHAR(255) NOT NULL,
+    photo_profil_url VARCHAR(255),
     type_compte ENUM('prive', 'public') NOT NULL,
     num_club INT,
     CONSTRAINT fk_utilisateur_club FOREIGN KEY (num_club) REFERENCES Club(num_club)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS Competiteur (
-    num_utilisateur INT PRIMARY KEY,
+    num_competiteur INT PRIMARY KEY,
     date_premiere_participation DATE NOT NULL,
-    CONSTRAINT fk_competiteur_utilisateur FOREIGN KEY (num_utilisateur) REFERENCES Utilisateur(num_utilisateur)
+    CONSTRAINT fk_competiteur_utilisateur FOREIGN KEY (num_competiteur) REFERENCES Utilisateur(num_utilisateur)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS Evaluateur (
-    num_utilisateur INT PRIMARY KEY,
+    num_evaluateur INT PRIMARY KEY,
     specialite VARCHAR(255) NOT NULL,
-    CONSTRAINT fk_evaluateur_utilisateur FOREIGN KEY (num_utilisateur) REFERENCES Utilisateur(num_utilisateur)
+    CONSTRAINT fk_evaluateur_utilisateur FOREIGN KEY (num_evaluateur) REFERENCES Utilisateur(num_utilisateur)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS President (
-    num_utilisateur INT PRIMARY KEY,
+    num_president INT PRIMARY KEY,
     prime FLOAT,
-    CONSTRAINT fk_president_utilisateur FOREIGN KEY (num_utilisateur) REFERENCES Utilisateur(num_utilisateur)
+    CONSTRAINT fk_president_utilisateur FOREIGN KEY (num_president) REFERENCES Utilisateur(num_utilisateur)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS Administrateur (
-    num_utilisateur INT PRIMARY KEY,
+    num_administrateur INT PRIMARY KEY,
     date_debut DATE NOT NULL,
-    CONSTRAINT fk_administrateur_utilisateur FOREIGN KEY (num_utilisateur) REFERENCES Utilisateur(num_utilisateur)
+    CONSTRAINT fk_administrateur_utilisateur FOREIGN KEY (num_administrateur) REFERENCES Utilisateur(num_utilisateur)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS Directeur (
-    num_utilisateur INT PRIMARY KEY,
+    num_directeur INT PRIMARY KEY,
     date_debut DATE NOT NULL,
-    CONSTRAINT fk_directeur_utilisateur FOREIGN KEY (num_utilisateur) REFERENCES Utilisateur(num_utilisateur)
+    CONSTRAINT fk_directeur_utilisateur FOREIGN KEY (num_directeur) REFERENCES Utilisateur(num_utilisateur)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS Concours (
@@ -72,6 +73,7 @@ CREATE TABLE IF NOT EXISTS Concours (
     theme VARCHAR(255) NOT NULL,
     date_debut DATE NOT NULL,
     date_fin DATE NOT NULL,
+    description TEXT,
     etat ENUM('pas_commence', 'en_cours', 'attente', 'resultat', 'evalue') NOT NULL,
     num_club INT,
     num_president INT NOT NULL,
