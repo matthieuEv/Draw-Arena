@@ -7,6 +7,7 @@ const routes = [
   { path: "/result", file: "/pages/result.html", data:"result" },
   { path: "/statistique", file: "/pages/statistique.html", data:"statistique" },
   { path: "/administration", file: "/pages/administration.html", data:"administration" },
+  { path: "/club", file: "/pages/club.html", data:"club" },
   { path: "/login", file: "/pages/login.html" },
 ];
 
