@@ -7,7 +7,6 @@ class club {
     nom_club : String
     adresse : String
     num_telephone : String
-    nombre_adherents : int
     ville : String
     departement : String
     region : String

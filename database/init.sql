@@ -19,7 +19,6 @@ CREATE TABLE IF NOT EXISTS Club (
     nom_club VARCHAR(255) NOT NULL,
     adresse VARCHAR(255),
     num_telephone VARCHAR(20),
-    nombre_adherents INT NOT NULL,
     ville VARCHAR(100) NOT NULL,
     departement VARCHAR(100) NOT NULL,
     region VARCHAR(100) NOT NULL
