@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS Utilisateur (
     nom VARCHAR(100) NOT NULL,
     prenom VARCHAR(100) NOT NULL,
     adresse VARCHAR(255),
+    age INT NOT NULL,
     login VARCHAR(100) UNIQUE NOT NULL,
     mot_de_passe VARCHAR(255) NOT NULL,
     photo_profil_url VARCHAR(255),

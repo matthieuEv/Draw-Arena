@@ -17,6 +17,7 @@
 - nom : String
 - prenom : String
 - adresse : String
+- age : int
 - login : String
 - mot_de_passe : String
 - photo_profil_url : String
