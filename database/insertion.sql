@@ -2,14 +2,26 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- Clear all existing data
-TRUNCATE TABLE tokens;
-TRUNCATE TABLE posts;
-TRUNCATE TABLE users;
+TRUNCATE TABLE Club_Concours;
+TRUNCATE TABLE Concours_Competiteur;
+TRUNCATE TABLE Club_Directeur;
+TRUNCATE TABLE Concours_Evaluateur;
+TRUNCATE TABLE Evaluation;
+TRUNCATE TABLE Dessin;
+TRUNCATE TABLE Concours;
+TRUNCATE TABLE Directeur;
+TRUNCATE TABLE Administrateur;
+TRUNCATE TABLE President;
+TRUNCATE TABLE Evaluateur;
+TRUNCATE TABLE Competiteur;
+TRUNCATE TABLE Utilisateur;
+TRUNCATE TABLE Club;
 
 -- Re-enable foreign key checks
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- Insert sample data
-INSERT INTO users (username, password_hash) VALUES ('user', '$2y$10$bojNdcPNbpU8Cv6v9FXcxumADxk9KDLw5ijQT3exaekkRgQB6V7TW'); -- verybigpassword1
 
-INSERT INTO posts (id, user_id, title, body, image_url, created_at) VALUES (1, 1, 'First Post', 'This is the content of the first post.', NULL, '2024-01-01 10:00:00');
+-- Utilisateurs
+INSERT INTO Utilisateur (nom, prenom, adresse, login, mot_de_passe, type_compte, num_club) VALUES
+('Doe', 'John', '10 Rue A', 'johndoe', '$2y$10$hashedpassword1', 'public', NULL);
