@@ -7,10 +7,10 @@
 - nom_club : String
 - adresse : String
 - num_telephone : String
-- nombre_adherents : int
 - ville : String
 - departement : String
 - region : String
+- num_directeur* : ID
 
 ### 2. Utilisateur
 - <u>num_utilisateur</u> : ID
@@ -75,17 +75,7 @@
 - num_evaluateur* : ID
 - Cle primaire composite* : (num_concours, num_evaluateur)
 
-### 12. Club_Directeur
-- num_club* : ID
-- num_directeur* : ID 
-- Cle primaire* : (num_club, num_directeur)
-
-### 13. Concours_Competiteur
-- num_concours* : ID
-- num_competiteur* : ID
-- Cle primaire* : (num_concours, num_competiteur)
-
-### 14. Club_Concours
-- num_club* : ID
-- num_concours* : ID
-- Cle primaire* : (num_concours, num_club)
+## Contraintes et remarques
+- Un club a un seul directeur et un directeur dirige un seul club (FK num_directeur dans Club).
+- Chaque dessin doit avoir exactement 2 evaluateurs : contrainte applicative ou trigger SQL.
+- Les enums doivent etre traduites en tables de reference ou via CHECK selon le SGBD.
