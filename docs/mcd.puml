@@ -76,7 +76,7 @@ utilisateur <|-- directeur
 
 ' Associations
 club "1" -- "*" utilisateur : adherents >
-club "1" -- "*" concours : participe >
+club "6..*" -- "*" concours : participe >
 club "1" - "1" directeur : dirige <
 
 concours "1" -- "*" dessin : porte_sur >
