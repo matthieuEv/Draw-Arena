@@ -5,6 +5,7 @@ namespace DrawArena\Handlers;
 
 use DrawArena\Core\Request;
 use DrawArena\Core\Response;
+use DrawArena\Models\Club;
 use DrawArena\Models\Utilisateur;
 use DrawArena\Models\UtilisateurType;
 use DrawArena\Utils\JwtManager;
@@ -34,6 +35,13 @@ class AuthHandler
         // Check if user exists
         if (Utilisateur::existsByLogin($data['login'])) {
             $response->error('Login already registered', 409)->send();
+        }
+
+        // Validate club exists if num_club is provided
+        if (isset($data['num_club']) && $data['num_club'] !== null) {
+            if (!Club::findById($data['num_club'])) {
+                $response->error('Club not found', 404)->send();
+            }
         }
 
         // Create user
