@@ -6,7 +6,7 @@
     <title>Depot</title>
 </head>
     <body>
-        <div class="app-shell">
+        <!-- <div class="app-shell">
             <include src="modules/navigation.html"></include>
                 <div class="page-content">
                     <include src="modules/userbar.html"></include>
@@ -20,7 +20,74 @@
                     </div>
                 </div>
             </div>
+        </div> -->
+
+
+
+
+
+
+        <div class="app-shell">
+            <include src="modules/navigation.html"></include>
+                <div class="page-content">
+                    <include src="modules/userbar.html"></include>
+                    <div class="page-body">
+                        <h1>Déposer une image</h1>
+            
+                        <div class="upload-section">
+                            <label for="imageInput" class="upload-label">
+                                Choisir une image
+                            </label>
+                            <input type="file" id="imageInput" accept="image/*">
+                        </div>
+
+                        <div id="imagePreview" class="image-preview hidden">
+                            <div class="preview-container">
+                                <img id="previewImg" alt="Aperçu de l'image">
+                            </div>
+                            <input type="text" id="commentInput" class="commentInput" placeholder="Ajouter un commentaire">
+                            <p id="errorMessage"></p>
+                            <button id="captchaButton" class="captcha-button">Soumettre</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
+
+
+        <!-- Popup Modal -->
+        <div id="puzzleModal" class="modal hidden">
+            <div class="modal-overlay"></div>
+            <div class="modal-content">
+                <button id="closeModal" class="close-button">✕</button>
+                
+                <div class="modal-header">
+                    <h2>Résolvez le puzzle</h2>
+                </div>
+
+                <div class="game-area">
+                    <div class="puzzle-container">
+                        <div id="puzzleGrid" class="puzzle-grid"></div>
+                    </div>
+
+                    <div class="pieces-container">
+                        <h3>Pièces disponibles</h3>
+                        <div id="piecesArea" class="pieces-area"></div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button id="sendButton" class="send-button">Envoyer</button>
+                    <div id="message" class="message"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Élément pour le drag visuel -->
+        <div id="dragPreview" class="drag-preview"></div>
+
+        <canvas id="canvas" style="display: none;"></canvas>
 
         <script src="js/captcha.js" async defer></script>
     </body>

@@ -9,6 +9,7 @@ const routes = [
   { path: "/administration", file: "/pages/administration.html", data:"administration" },
   { path: "/club", file: "/pages/club.html", data:"club" },
   { path: "/login", file: "/pages/login.html" },
+  { path: "/profil", file: "/pages/profil.html" },
 ];
 
 const notFoundRoute = { file: "/pages/error/404.html" };
