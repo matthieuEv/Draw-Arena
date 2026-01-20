@@ -27,6 +27,7 @@ class AuthHandler
             'typeCompte' => 'string|typeCompte',
             'adresse' => 'string|min:2|max:255',
             'photo_profil_url' => 'string|min:2|max:255',
+            'age' => 'int',
         ])) {
             $response->error('Validation failed', 422, ['errors' => $validator->getErrors()])->send();
         }
@@ -46,7 +47,8 @@ class AuthHandler
             $typeCompte,
             $data['adresse'] ?? null,
             $data['num_club'] ?? null,
-            $data['photo_profil_url'] ?? null
+            $data['photo_profil_url'] ?? null,
+            $data['age'] ?? 0
         )) {
             $response->error('Failed to create user', 500)->send();
         }
