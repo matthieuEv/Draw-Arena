@@ -2,44 +2,48 @@ var clubInfo = null;
 var clubUsers = null;
 
 function getClubInfo(clubId) {
-    return fetch(`/api/club/${clubId}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-            return {
-                id: data.id,
-                name: data.name,
-                members: data.members,
-                createdAt: new Date(data.created_at)
-            };
-        })
-        .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
-        });
+    var data = apiFetch(`/club/${clubId}`);
+    return data;
+    // return fetch(`/api/club/${clubId}`)
+    //     .then(response => {
+    //         if (!response.ok) {
+    //             throw new Error('Network response was not ok ' + response.statusText);
+    //         }
+    //         return response.json();
+    //     })
+    //     .then(data => {
+    //         return {
+    //             id: data.id,
+    //             name: data.name,
+    //             members: data.members,
+    //             createdAt: new Date(data.created_at)
+    //         };
+    //     })
+    //     .catch(error => {
+    //         console.error('There was a problem with the fetch operation:', error);
+    //     });
 }
 
 function getClubUsers(clubId) {
-    return fetch(`/api/club/${clubId}/users`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-            return data.users.map(user => ({
-                id: user.id,
-                username: user.username,
-                joinedAt: new Date(user.joined_at)
-            }));
-        })
-        .catch(error => {
-            console.error('There was a problem with the fetch operation:', error);
-        });
+    var data = apiFetch(`/club/${clubId}/users`);
+    return data;
+    // return fetch(`/api/club/${clubId}/users`)
+    //     .then(response => {
+    //         if (!response.ok) {
+    //             throw new Error('Network response was not ok ' + response.statusText);
+    //         }
+    //         return response.json();
+    //     })
+    //     .then(data => {
+    //         return data.users.map(user => ({
+    //             id: user.id,
+    //             username: user.username,
+    //             joinedAt: new Date(user.joined_at)
+    //         }));
+    //     })
+    //     .catch(error => {
+    //         console.error('There was a problem with the fetch operation:', error);
+    //     });
 }
 
 function displayClubInfo() {
