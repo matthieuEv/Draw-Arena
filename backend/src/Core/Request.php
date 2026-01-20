@@ -10,6 +10,7 @@ class Request
     private array $queryParams;
     private array $body;
     private array $headers;
+    private array $params = [];
 
     public function __construct()
     {
@@ -18,6 +19,30 @@ class Request
         $this->queryParams = $_GET;
         $this->headers = $this->getAllHeaders();
         $this->body = $this->parseBody();
+    }
+
+    /**
+     * Set route parameters (e.g., {id}, {slug})
+     */
+    public function setParams(array $params): void
+    {
+        $this->params = $params;
+    }
+
+    /**
+     * Get a specific route parameter
+     */
+    public function getParam(string $key, mixed $default = null): mixed
+    {
+        return $this->params[$key] ?? $default;
+    }
+
+    /**
+     * Get all route parameters
+     */
+    public function getParams(): array
+    {
+        return $this->params;
     }
 
     public function getMethod(): string
@@ -96,6 +121,16 @@ class Request
     private function getAllHeaders(): array
     {
         $headers = [];
+
+        // Use getallheaders() if available (most reliable, especially for Authorization header)
+        if (function_exists('getallheaders')) {
+            foreach (getallheaders() as $key => $value) {
+                $headers[strtolower(str_replace('-', '_', $key))] = $value;
+            }
+            return $headers;
+        }
+
+        // Fallback for environments without getallheaders()
         foreach ($_SERVER as $key => $value) {
             if (strpos($key, 'HTTP_') === 0) {
                 $headerKey = strtolower(substr($key, 5));

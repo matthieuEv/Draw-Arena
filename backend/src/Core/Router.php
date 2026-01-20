@@ -80,7 +80,11 @@ class Router
 
         // Find matching route
         foreach ($this->routes as $route) {
-            if ($route['method'] === $method && $this->pathMatches($route['path'], $path)) {
+            $params = $this->matchPath($route['path'], $path);
+            if ($route['method'] === $method && $params !== false) {
+                // Store extracted parameters in the request
+                $this->request->setParams($params);
+
                 // Run route-specific middlewares
                 foreach ($route['middlewares'] as $middleware) {
                     $middleware->handle($this->request, $this->response);
@@ -95,11 +99,47 @@ class Router
         $this->response->error('Route not found', 404)->send();
     }
 
-    private function pathMatches(string $routePath, string $requestPath): bool
+    /**
+     * Match a route path with the request path and extract parameters.
+     * Returns an array of parameters if matched, or false if no match.
+     *
+     * Supports:
+     * - Static segments: /api/users
+     * - Dynamic parameters: /api/users/{id}
+     * - Multiple parameters: /api/clubs/{clubId}/members/{memberId}
+     * - Optional trailing slash
+     */
+    private function matchPath(string $routePath, string $requestPath): array|false
     {
         $routePath = rtrim($routePath, '/');
         $requestPath = rtrim($requestPath, '/');
-        return $routePath === $requestPath;
+
+        // Split into segments
+        $routeSegments = array_filter(explode('/', $routePath));
+        $requestSegments = array_filter(explode('/', $requestPath));
+
+        // Quick check: different number of segments = no match
+        if (count($routeSegments) !== count($requestSegments)) {
+            return false;
+        }
+
+        $params = [];
+
+        // Match each segment
+        foreach ($routeSegments as $index => $routeSegment) {
+            $requestSegment = $requestSegments[$index];
+
+            // Check if route segment is a parameter (e.g., {id})
+            if (preg_match('/^\{(\w+)\}$/', $routeSegment, $matches)) {
+                $paramName = $matches[1];
+                $params[$paramName] = $requestSegment;
+            } elseif ($routeSegment !== $requestSegment) {
+                // Static segment must match exactly
+                return false;
+            }
+        }
+
+        return $params;
     }
 
     private function executeHandler(callable|array $handler): void
