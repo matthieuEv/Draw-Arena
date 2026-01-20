@@ -56,6 +56,26 @@ class Club
         return $result ? self::hydrateFromArray($result) : null;
     }
 
+    public static function getUsersByClubId(int $clubId, int $limit, int $index): array
+    {
+        // Limit + 1 to check if there are more results
+        $limit++;
+        $stmt = Database::prepare(
+            'SELECT u.* FROM Utilisateur u
+             WHERE u.num_club = ?
+             ORDER BY u.nom, u.prenom
+             LIMIT ? OFFSET ?'
+        );
+        $stmt->bindValue(1, $clubId, PDO::PARAM_INT);
+        $stmt->bindValue(2, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(3, $index, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(fn($row) => Utilisateur::hydrateFromArray($row), $results);
+    }
+
     private static function hydrateFromArray(array $data): Club
     {
         $club = new self();

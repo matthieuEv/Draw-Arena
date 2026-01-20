@@ -8,6 +8,7 @@ use DrawArena\Core\Router;
 use DrawArena\Middleware\CorsMiddleware;
 use DrawArena\Middleware\AuthMiddleware;
 use DrawArena\Handlers\AuthHandler;
+use DrawArena\Handlers\ClubHandler;
 
 $router = new Router();
 
@@ -22,7 +23,9 @@ $router->post('/api/auth/register', [AuthHandler::class, 'register']);
 $router->post('/api/auth/login', [AuthHandler::class, 'login']);
 
 // PROTECTED ROUTES (require JWT authentication)
-// $router->get('/api/utilisateur/me', [UtilisateurHandler::class, 'getCurrentUser'], [new AuthMiddleware()]);
+$router->get('/api/club', [ClubHandler::class, 'getAllClub'], [new AuthMiddleware()]);
+$router->get('/api/club/{clubId}', [ClubHandler::class, 'findClubById'], [new AuthMiddleware()]);
+$router->get('/api/club/{clubId}/users', [ClubHandler::class, 'getClubUsers'], [new AuthMiddleware()]);
 // $router->put('/api/utilisateur/me', [UtilisateurHandler::class, 'updateCurrentUser'], [new AuthMiddleware()]);
 // $router->get('/api/utilisateurs', [UtilisateurHandler::class, 'listUsers'], [new AuthMiddleware()]);
 

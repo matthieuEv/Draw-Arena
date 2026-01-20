@@ -90,7 +90,10 @@ class Utilisateur
         return array_map(fn($row) => self::hydrateFromArray($row), $results);
     }
 
-    private static function hydrateFromArray(array $data): Utilisateur
+    /**
+     * @return Utilisateur
+     */
+    public static function hydrateFromArray(array $data): Utilisateur
     {
         $user = new self();
         $user->numUtilisateur = (int)$data['num_utilisateur'];
