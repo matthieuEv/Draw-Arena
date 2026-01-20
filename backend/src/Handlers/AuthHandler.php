@@ -40,7 +40,7 @@ class AuthHandler
         // Validate club exists if num_club is provided
         if (isset($data['num_club']) && $data['num_club'] !== null) {
             if (!Club::findById($data['num_club'])) {
-                $response->error('Club not found', 404)->send();
+                $response->error('Club not found', 422)->send();
             }
         }
 
