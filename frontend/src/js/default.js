@@ -1,5 +1,8 @@
 // Userbar menu toggle functionality
 
+var isCollapsed = true;
+
+
 function closeUserbarMenus(exceptUserbar = null) {
   document.querySelectorAll(".userbar.is-open").forEach((userbar) => {
     if (userbar === exceptUserbar) return;
@@ -24,6 +27,11 @@ document.addEventListener("click", (e) => {
   if (e.target.closest(".userbar")) return;
   closeUserbarMenus();
 });
+
+function toggleMenu() {
+  isCollapsed = !isCollapsed;
+  document.querySelector("#collapseMenu").classList.toggle("collapsed", isCollapsed);
+}
 
 function logout() {
     clearSession();
