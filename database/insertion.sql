@@ -38,8 +38,22 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- Un évaluateur d’un concours ne peut pas concourir dans celui-ci 
 
 
+-- =============================================================================-- CLUBS (10 clubs)
 -- =============================================================================
--- UTILISATEURS (200 utilisateurs répartis dans les 10 clubs)
+
+INSERT INTO Club (nom_club, adresse, num_telephone, ville, departement, region) VALUES
+('Club Artistique Paris', '1 Rue des Arts', '0123456701', 'Paris', 'Paris', 'Île-de-France'),
+('Atelier Créatif Lyon', '2 Avenue de la Créativité', '0123456702', 'Lyon', 'Rhône', 'Auvergne-Rhône-Alpes'),
+('Association Dessin Marseille', '3 Boulevard des Pinceaux', '0123456703', 'Marseille', 'Bouches-du-Rhône', 'Provence-Alpes-Côte d''Azur'),
+('Club Illustration Toulouse', '4 Place des Couleurs', '0123456704', 'Toulouse', 'Haute-Garonne', 'Occitanie'),
+('Académie Art Nice', '5 Promenade des Artistes', '0123456705', 'Nice', 'Alpes-Maritimes', 'Provence-Alpes-Côte d''Azur'),
+('Cercle des Dessinateurs Nantes', '6 Quai de la Palette', '0123456706', 'Nantes', 'Loire-Atlantique', 'Pays de la Loire'),
+('Atelier Graphique Strasbourg', '7 Rue du Crayon', '0123456707', 'Strasbourg', 'Bas-Rhin', 'Grand Est'),
+('Club Art Moderne Bordeaux', '8 Cours des Beaux-Arts', '0123456708', 'Bordeaux', 'Gironde', 'Nouvelle-Aquitaine'),
+('Association Artistique Lille', '9 Avenue de l''Esquisse', '0123456709', 'Lille', 'Nord', 'Hauts-de-France'),
+('Cercle Créatif Rennes', '10 Place de l''Illustration', '0123456710', 'Rennes', 'Ille-et-Vilaine', 'Bretagne');
+
+-- =============================================================================-- UTILISATEURS (200 utilisateurs répartis dans les 10 clubs)
 -- Password hash for "password" using PASSWORD_BCRYPT
 -- =============================================================================
 
