@@ -17,7 +17,7 @@ backend/
 ├── index.php           # Redirection vers public/
 ├── composer.json       # Dépendances PHP
 ├── Dockerfile          # Configuration Docker
-└── apache.conf         # Configuration Apache
+└── nginx.local.conf    # Configuration Nginx (local)
 
 database/
 ├── init.sql            # Création des tables
@@ -191,7 +191,7 @@ STORAGE_BLOB_ENDPOINT=http://azurite:10000/devstoreaccount1
 
 ## Technologies
 
-- **PHP 8.2** avec Apache
+- **PHP 8.2** (FPM) avec Nginx
 - **MariaDB 10.8** pour la base de données
 - **Firebase JWT** pour l'authentification
 - **Docker** pour l'orchestration

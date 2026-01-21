@@ -12,9 +12,9 @@ if [ -f /home/site/wwwroot/default ]; then
     echo "✅ Nginx configuration copied"
 
     # Test nginx configuration
-    nginx -t
-    if [ $? -eq 0 ]; then
+    if nginx -t; then
         echo "✅ Nginx configuration is valid"
+        nginx -s reload || echo "⚠️  Unable to reload Nginx"
     else
         echo "❌ Nginx configuration is invalid, using default"
     fi

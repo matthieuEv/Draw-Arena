@@ -109,7 +109,6 @@ resource "azurerm_linux_web_app" "backend" {
   app_settings = {
     ALLOWED_ORIGINS                     = join(",", local.backend_allowed_origins)
     WEBSITES_ENABLE_APP_SERVICE_STORAGE = "false"
-    POST_BUILD_SCRIPT_PATH              = "startup.sh"
     DB_HOST                             = azurerm_mysql_flexible_server.this.fqdn
     DB_NAME                             = azurerm_mysql_flexible_database.app.name
     DB_USER                             = var.mysql_admin_user
@@ -128,6 +127,7 @@ resource "azurerm_linux_web_app" "backend" {
     minimum_tls_version               = "1.2"
     scm_minimum_tls_version           = "1.2"
     vnet_route_all_enabled            = false
+    app_command_line                  = "bash /home/site/wwwroot/startup.sh"
 
     # Health check path for Azure App Service Linux PHP
     health_check_path                 = "/api/health"

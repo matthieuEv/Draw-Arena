@@ -48,6 +48,43 @@ function deploy_infra() {
     echo "✅ Infrastructure deployed"
 }
 
+function run_composer_install() {
+    local target_dir="$1"
+
+    if command -v composer >/dev/null 2>&1; then
+        (cd "$target_dir" && composer install --no-dev --no-scripts --prefer-dist --optimize-autoloader)
+        return 0
+    fi
+
+    if ! command -v docker >/dev/null 2>&1; then
+        echo "❌ composer not found and docker is unavailable."
+        echo "   Install composer or docker to build backend dependencies."
+        exit 1
+    fi
+
+    docker run --rm \
+        -e COMPOSER_ALLOW_SUPERUSER=1 \
+        -v "$target_dir":/app \
+        -w /app \
+        composer:2 \
+        install --no-dev --no-scripts --prefer-dist --optimize-autoloader
+}
+
+function build_backend_package() {
+    local tmp_dir
+    tmp_dir=$(mktemp -d)
+
+    tar -C "$PROJECT_ROOT/backend" -cf - . | tar -C "$tmp_dir" -xf -
+    rm -rf "$tmp_dir/.git" "$tmp_dir/__pycache__" "$tmp_dir/vendor"
+    rm -f "$tmp_dir/readme.md"
+
+    run_composer_install "$tmp_dir"
+
+    (cd "$tmp_dir" && zip -r "$PROJECT_ROOT/backend.zip" . -x "*.git*" -x "__pycache__/*" -x "readme.md")
+
+    rm -rf "$tmp_dir"
+}
+
 function load_db_password() {
     if [[ -n "${MYSQL_PWD:-}" ]]; then
         return 0
@@ -162,8 +199,7 @@ function deploy_db() {
 
 function deploy_backend() {
     echo "📦 Creating backend package..."
-    cd "$PROJECT_ROOT/backend"
-    zip -r "$PROJECT_ROOT/backend.zip" . -x "*.git*" -x "readme.md" -x "__pycache__/*"
+    build_backend_package
     
     cd "$PROJECT_ROOT/infra"
     
@@ -183,6 +219,7 @@ function deploy_backend() {
     echo "🔍 Verifying health check..."
     API_URL=$(terraform output -raw backend_api_url)
     sleep 5
+    echo "curl  $API_URL/health..."
     curl -f "$API_URL/health" || echo "⚠️  Health check failed"
     
     echo "✅ Backend deployed: $API_URL"
