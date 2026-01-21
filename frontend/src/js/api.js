@@ -91,5 +91,5 @@ async function checkApiHealth() {
         console.warn("API: OFFLINE");
     }
 }
-// Check API health every 5 seconds
-setInterval(checkApiHealth, 5000);
+// Check API health every 15 seconds
+setInterval(checkApiHealth, 15000);
