@@ -21,6 +21,7 @@ services:
     volumes:
       - db-data:/var/lib/mysql
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./database/insertion.sql:/docker-entrypoint-initdb.d/insertion.sql:ro # Seed data
     ports:
       - "3306:3306"
 
@@ -32,16 +33,22 @@ services:
       - azurite
       - db
     environment:
+      APP_DEBUG: true
+      APP_TIMEZONE: UTC
+      APP_ENV: development
       DB_HOST: db
+      DB_PORT: 3306
       DB_NAME: drawarena
       DB_USER: drawarena
       DB_PASS: drawarena
+      JWT_SECRET: your_super_secret_jwt_key_change_in_production_abc123xyz
+      JWT_EXPIRY: 3600
+      ALLOWED_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
       STORAGE_ACCOUNT_NAME: devstoreaccount1
       STORAGE_ACCOUNT_KEY: Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==
       STORAGE_BLOB_ENDPOINT: http://azurite:10000/devstoreaccount1
       STORAGE_PUBLIC_BASE_URL: http://localhost:10000/devstoreaccount1
       STORAGE_CONTAINER: post-images
-      ALLOWED_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
     volumes:
       - ./backend:/var/www/html
       - backend-vendor:/var/www/html/vendor

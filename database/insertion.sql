@@ -22,6 +22,13 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 -- Insert sample data
 
--- Utilisateurs
+-- Clubs
+INSERT INTO Club (nom_club, adresse, num_telephone, nombre_adherents, ville, departement, region) VALUES
+('Club des Artistes', '123 Rue de Paris', '0123456789', 50, 'Paris', '75', 'Île-de-France'),
+('Club des Peintres', '456 Rue de Lyon', '0987654321', 30, 'Lyon', '69', 'Auvergne-Rhône-Alpes');
+
+-- Utilisateurs (password hash for "password" using PASSWORD_BCRYPT)
 INSERT INTO Utilisateur (nom, prenom, adresse, login, mot_de_passe, type_compte, num_club) VALUES
-('Doe', 'John', '10 Rue A', 'johndoe', '$2y$10$hashedpassword1', 'public', NULL);
+('Dupont', 'Jean', '10 Rue A', 'a@a.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', 1),
+('Martin', 'Marie', '20 Rue B', 'marie@example.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'prive', 2),
+('Admin', 'User', '30 Rue C', 'admin@example.fr', '$2y$10$QVg80szbDY2Mta5PoysTo.pCcRFpMb2hnYzmTTIch72fp/LD3xSIu', 'public', NULL);

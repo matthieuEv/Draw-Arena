@@ -128,9 +128,9 @@ resource "azurerm_linux_web_app" "backend" {
     minimum_tls_version               = "1.2"
     scm_minimum_tls_version           = "1.2"
     vnet_route_all_enabled            = false
-    
+
     # Health check path for Azure App Service Linux PHP
-    health_check_path                 = "/index.php/api/health"
+    health_check_path                 = "/api/health"
     health_check_eviction_time_in_min = 5
 
     application_stack {

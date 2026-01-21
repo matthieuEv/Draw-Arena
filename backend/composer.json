@@ -1,12 +1,21 @@
 {
     "name": "draw-arena/backend",
-    "description": "Draw Arena Backend API",
+    "description": "Draw Arena REST API with JWT Auth",
     "type": "project",
     "require": {
         "php": ">=8.2",
-        "microsoft/azure-storage-blob": "^1.5"
+        "microsoft/azure-storage-blob": "^1.5",
+        "firebase/php-jwt": "^6.10"
     },
     "autoload": {
-        "files": []
+        "psr-4": {
+            "DrawArena\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/installers": true
+        }
     }
 }
