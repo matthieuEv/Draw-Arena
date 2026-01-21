@@ -26,11 +26,11 @@
             <div class="single__forms">
                 <form onsubmit="login(event)" class="single__form single__form--login is-active" data-auth-panel="login" autocomplete="on">
                     <div class="single__field">
-                        <label class="single__label" for="login-email">Email</label>
+                        <label class="single__label" for="login-email">Email <span class="required">*</span></label>
                         <input class="single__input" id="login-email" type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
                     </div>
                     <div class="single__field">
-                        <label class="single__label" for="login-password">Mot de passe</label>
+                        <label class="single__label" for="login-password">Mot de passe <span class="required">*</span></label>
                         <input class="single__input" id="login-password" type="password" name="password" autocomplete="current-password" placeholder="********" required />
                     </div>
                     <div class="single__row">
@@ -45,31 +45,31 @@
                 </form>
 
                 <form onsubmit="signup(event)" class="single__form single__form--signup" data-auth-panel="signup" autocomplete="on">
-                    <div class="single__field">
-                        <label class="single__label" for="signup-name">Pseudo</label>
-                        <input class="single__input" id="signup-name" type="text" name="username" autocomplete="username" placeholder="sketchking" required />
-                    </div>
                     <div class="single__field--inline">
                         <div class="single__field">
-                            <label class="single__label" for="signup-firstname">Prenom</label>
+                            <label class="single__label" for="signup-firstname">Prenom <span class="required">*</span></label>
                             <input class="single__input" id="signup-firstname" type="text" name="firstname" autocomplete="given-name" placeholder="John" required />
                         </div>
                         <div class="single__field">
-                            <label class="single__label" for="signup-lastname">Nom</label>
+                            <label class="single__label" for="signup-lastname">Nom <span class="required">*</span></label>
                             <input class="single__input" id="signup-lastname" type="text" name="lastname" autocomplete="family-name" placeholder="Doe" required />
                         </div>
                     </div>
                     <div class="single__field">
-                        <label class="single__label" for="signup-email">Email</label>
+                        <label class="single__label" for="signup-email">Email <span class="required">*</span></label>
                         <input class="single__input" id="signup-email" type="email" name="email" autocomplete="email" placeholder="you@example.com" required />
+                    </div>
+                    <div class="single__field">
+                        <label class="single__label" for="signup-address">Adresse</label>
+                        <input class="single__input" id="signup-address" type="text" name="address" autocomplete="address-line1" placeholder="123 Main St" />
                     </div>
                     <div class="single__field--inline">
                         <div class="single__field">
-                            <label class="single__label" for="signup-password">Mot de passe</label>
+                            <label class="single__label" for="signup-password">Mot de passe <span class="required">*</span></label>
                             <input class="single__input" id="signup-password" type="password" name="password" autocomplete="new-password" placeholder="********" required />
                         </div>
                         <div class="single__field">
-                            <label class="single__label" for="signup-password-confirm">Confirmer le mot de passe</label>
+                            <label class="single__label" for="signup-password-confirm">Confirmer le mot de passe <span class="required">*</span></label>
                             <input class="single__input" id="signup-password-confirm" type="password" name="passwordConfirm" autocomplete="new-password" placeholder="********" required />
                         </div>
                     </div>

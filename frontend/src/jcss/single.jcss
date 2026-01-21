@@ -142,6 +142,10 @@
     color: var(--color-primary-500);
 }
 
+.required{
+    color: var(--color-error);
+}
+
 .single__forms{
     position: relative;
     margin-top: 22px;

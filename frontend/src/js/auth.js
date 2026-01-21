@@ -91,7 +91,7 @@ async function login(event) {
     return;
   }
   
-  const res = await apiFetch("/login", {
+  const res = await apiFetch("/auth/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -118,14 +118,14 @@ async function signup(event){
   errorMessage.textContent = "";
 
   const form = event.target;
-  const username = form.username.value;
   const nom = form.lastname.value;
   const prenom = form.firstname.value;
   const email = form.email.value;
+  const address = form.address.value;
   const password = form.password.value;
   const confirmPassword = form.passwordConfirm.value;
 
-  if (!username || !nom || !prenom || !email || !password || !confirmPassword) {
+  if (!nom || !prenom || !email || !address || !password || !confirmPassword) {
     errorMessage.textContent = "Veuillez remplir tous les champs.";
     return;
   }
@@ -140,23 +140,23 @@ async function signup(event){
     return;
   }
   
-  const res = await apiFetch("/signup", {
+  const res = await apiFetch("/auth/register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      "nom": username,
-      "prenom": nom,
-      "login": prenom,
-      "password": email,
-      "address": password
+      "nom": nom,
+      "prenom": prenom,
+      "login": email,
+      "password": password,
+      "address": address
     }),
   });
 
   if (res.success) {
-    saveSession(res.token, res.username);
-    console.log(`Compte créé avec succès. Bienvenue, ${res.username} !`);
+    saveSession(res.token, res.nom);
+    console.log(`Compte créé avec succès. Bienvenue, ${res.nom} !`);
     await loadPosts();
   } else {
     errorMessage.textContent = res.message || "Échec de la création du compte.";
