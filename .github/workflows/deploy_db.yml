@@ -1,0 +1,97 @@
+name: 🌱 Deploy Database
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_schema_preprod:
+        description: 'Deploy schema to preprod'
+        required: false
+        type: boolean
+        default: false
+      deploy_schema_prod:
+        description: 'Deploy schema to prod'
+        required: false
+        type: boolean
+        default: false
+      seed_example_data_preprod:
+        description: 'Seed example data on preprod'
+        required: false
+        type: boolean
+        default: false
+      seed_example_data_prod:
+        description: 'Seed example data on prod'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  deploy-db:
+    runs-on: ubuntu-latest
+    environment: azure
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Install MySQL client
+        run: sudo apt-get update && sudo apt-get install -y default-mysql-client
+
+      - name: Deploy schema (Preprod)
+        if: inputs.deploy_schema_preprod == true
+        env:
+          MYSQL_HOST: ${{ secrets.MYSQL_HOST_PREPROD }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER_PREPROD }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD_PREPROD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE_PREPROD }}
+        run: |
+          echo "🗄️ Deploying schema on preprod environment..."
+          mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < database/init.sql
+
+      - name: Deploy schema (Prod)
+        if: inputs.deploy_schema_prod == true
+        env:
+          MYSQL_HOST: ${{ secrets.MYSQL_HOST_PROD }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER_PROD }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD_PROD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE_PROD }}
+        run: |
+          echo "🗄️ Deploying schema on prod environment..."
+          mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < database/init.sql
+      
+      - name: Seed example data (Preprod)
+        if: inputs.seed_example_data_preprod == true
+        env:
+          MYSQL_HOST: ${{ secrets.MYSQL_HOST_PREPROD }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER_PREPROD }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD_PREPROD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE_PREPROD }}
+        run: |
+          echo "🌱 Seeding database on preprod environment..."
+          mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < database/insertion.sql
+
+      - name: Seed example data (Prod)
+        if: inputs.seed_example_data_prod == true
+        env:
+          MYSQL_HOST: ${{ secrets.MYSQL_HOST_PROD }}
+          MYSQL_USER: ${{ secrets.MYSQL_USER_PROD }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD_PROD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE_PROD }}
+        run: |
+          echo "🌱 Seeding database on prod environment..."
+          mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_DATABASE < database/insertion.sql
+
+      - name: Write summary
+        run: |
+          echo "## 🗄️ Database Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ inputs.deploy_schema_preprod }}" == "true" ]; then
+            echo "Schema: preprod deployed" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ "${{ inputs.deploy_schema_prod }}" == "true" ]; then
+            echo "Schema: prod deployed" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ "${{ inputs.seed_example_data_preprod }}" == "true" ]; then
+            echo "Example data: preprod deployed" >> $GITHUB_STEP_SUMMARY
+          fi
+          if [ "${{ inputs.seed_example_data_prod }}" == "true" ]; then
+            echo "Example data: prod deployed" >> $GITHUB_STEP_SUMMARY
+          fi
