@@ -10,16 +10,17 @@ class Evaluateur
 {
     private int $numEvaluateur;
     private string $specialite;
+    private int $xp;
 
     private function __construct() {}
 
-    public static function create(int $numEvaluateur, string $specialite): bool
+    public static function create(int $numEvaluateur, string $specialite, int $xp): bool
     {
         $stmt = Database::prepare(
-            'INSERT INTO Evaluateur (num_evaluateur, specialite) VALUES (?, ?)'
+            'INSERT INTO Evaluateur (num_evaluateur, specialite, xp) VALUES (?, ?, ?)'
         );
 
-        return $stmt->execute([$numEvaluateur, $specialite]);
+        return $stmt->execute([$numEvaluateur, $specialite, $xp]);
     }
 
     public static function findById(int $numEvaluateur): ?Evaluateur
@@ -63,6 +64,7 @@ class Evaluateur
         $evaluateur = new self();
         $evaluateur->numEvaluateur = (int)$data['num_evaluateur'];
         $evaluateur->specialite = $data['specialite'];
+        $evaluateur->xp = (int)$data['xp'];
         return $evaluateur;
     }
 
@@ -71,6 +73,7 @@ class Evaluateur
         return [
             'numEvaluateur' => $this->numEvaluateur,
             'specialite' => $this->specialite,
+            'xp' => $this->xp,
         ];
     }
 
@@ -82,5 +85,10 @@ class Evaluateur
     public function getSpecialite(): string
     {
         return $this->specialite;
+    }
+
+    public function getXp(): int
+    {
+        return $this->xp;
     }
 }
