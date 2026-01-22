@@ -44,6 +44,7 @@ function hasAClub(){
 }
 
 function getMoreClubs(){
+    hasAClub();
     const currentCount = clubsInfo ? clubsInfo.length : 0;
     apiFetch(`/club?limit=12&index=${currentCount}`).then(clubs => {
         if(clubs.clubs.length !== 13) {
