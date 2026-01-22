@@ -125,6 +125,16 @@ function loadScripts(scripts = []) {
   }, Promise.resolve());
 }
 
+function dispatchRouteChange(pathname) {
+  const event = new CustomEvent("route-change", {
+    detail: {
+      route: currentDataRoute,
+      path: pathname,
+    },
+  });
+  document.dispatchEvent(event);
+}
+
 async function render() {
   const pathname = window.location.pathname;
   let activeRoute = matchRoute(pathname) || notFoundRoute;
@@ -152,6 +162,8 @@ async function render() {
       a.classList.add("active");
     }
   });
+
+  dispatchRouteChange(pathname);
 }
 
 // navigation “comme React Router” : empêche le reload
