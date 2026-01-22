@@ -102,10 +102,12 @@ async function login(event) {
     }),
   });
 
+  console.log(res);
+
   if (res.success) {
     saveSession(res.token, res.username);
     console.log(`Bienvenue, ${res.username} !`);
-    await loadPosts();
+    window.location.href = "/"; 
   } else {
     errorMessage.textContent = res.message || "Échec de la connexion.";
   }
@@ -157,7 +159,7 @@ async function signup(event){
   if (res.success) {
     saveSession(res.token, res.nom);
     console.log(`Compte créé avec succès. Bienvenue, ${res.nom} !`);
-    await loadPosts();
+    window.location.href = "/login";
   } else {
     errorMessage.textContent = res.message || "Échec de la création du compte.";
   }

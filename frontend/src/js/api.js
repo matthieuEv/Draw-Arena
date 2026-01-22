@@ -9,7 +9,6 @@ const state = {
 
 async function apiFetch(path, options = {}) {
     const isFormData = options.body instanceof FormData;
-    console.log("State :", state);
     const headers = {
         ...(options.headers || {}),
     };
