@@ -9,6 +9,7 @@ use DrawArena\Middleware\CorsMiddleware;
 use DrawArena\Middleware\AuthMiddleware;
 use DrawArena\Handlers\AuthHandler;
 use DrawArena\Handlers\ClubHandler;
+use DrawArena\Handlers\ConcoursHandler;
 
 $router = new Router();
 
@@ -28,5 +29,10 @@ $router->get('/api/club', [ClubHandler::class, 'getAllClub'], [new AuthMiddlewar
 $router->get('/api/club/{clubId}', [ClubHandler::class, 'getClubById'], [new AuthMiddleware()]);
 $router->get('/api/club/{clubId}/users', [ClubHandler::class, 'getClubUsers'], [new AuthMiddleware()]);
 
+// concours routes
+$router->get('/api/concours', [ConcoursHandler::class, 'getAllConcours'], [new AuthMiddleware()]);
+$router->get('/api/concours/{concoursId}', [ConcoursHandler::class, 'getConcoursById'], [new AuthMiddleware()]);
+$router->get('/api/concours/{concoursId}/users', [ConcoursHandler::class, 'getConcoursCompetiteur'], [new AuthMiddleware()]);
+// $router->get('/api/concours/{concoursId}/dessins', [ConcoursHandler::class, 'getConcoursDessins'], [new AuthMiddleware()]);
 // Dispatch the request to matching route
 $router->dispatch();
