@@ -83,6 +83,6 @@ function getUsers(concoursID){
             users.users.pop();
         }
         concoursUsers[concoursID] = (concoursUsers[concoursID] || []).concat(users.users);
-        displayUsers(users.users);
+        displayUsers(concoursID, users.users);
     });
 }
