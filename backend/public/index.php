@@ -10,6 +10,7 @@ use DrawArena\Middleware\AuthMiddleware;
 use DrawArena\Handlers\AuthHandler;
 use DrawArena\Handlers\ClubHandler;
 use DrawArena\Handlers\ConcoursHandler;
+use DrawArena\Handlers\EvaluationHandler;
 
 $router = new Router();
 
@@ -34,5 +35,10 @@ $router->get('/api/concours', [ConcoursHandler::class, 'getAllConcours'], [new A
 $router->get('/api/concours/{concoursId}', [ConcoursHandler::class, 'getConcoursById'], [new AuthMiddleware()]);
 $router->get('/api/concours/{concoursId}/users', [ConcoursHandler::class, 'getConcoursCompetiteur'], [new AuthMiddleware()]);
 // $router->get('/api/concours/{concoursId}/dessins', [ConcoursHandler::class, 'getConcoursDessins'], [new AuthMiddleware()]);
+
+// Evaluation routes
+// Cas sans year filter - Obligation 3
+// Cas avec year filter - Obligation 2
+$router->get('/api/evaluation', [EvaluationHandler::class, 'getAllEvaluation'], [new AuthMiddleware()]);
 // Dispatch the request to matching route
 $router->dispatch();
