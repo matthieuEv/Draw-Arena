@@ -1,12 +1,6 @@
 concoursData = [];
 concoursUsers = {};
 
-document.getElementById("year-select").addEventListener("change", function() {
-    const selectedYear = this.value;
-
-    getConcours(selectedYear);
-});
-
 function distplayConcours(){
     var dataToLoad = concoursData;
     if (dataToLoad) {
@@ -89,6 +83,13 @@ function getUsers(concoursID){
 
 function onRouteChange(event) {
     getConcours("all");
+
+
+    document.getElementById("year-select").addEventListener("change", function() {
+        const selectedYear = this.value;
+
+        getConcours(selectedYear);
+    });
 }
 
 document.addEventListener("route-change", onRouteChange);
