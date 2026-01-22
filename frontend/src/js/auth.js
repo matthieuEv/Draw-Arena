@@ -110,6 +110,8 @@ async function login(event) {
       nom: payload.nom,
       prenom: payload.prenom,
       login: payload.login,
+      role: res.role,
+      club: res.club,
     });
 
     saveSession(res.token, userJSON);

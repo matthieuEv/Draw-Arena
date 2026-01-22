@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Club</title>
+    <title>Clubs</title>
     <link rel="stylesheet" href="/css/club.css">
 </head>
     <body>
@@ -11,19 +11,11 @@
             <div class="page-content">
                 <include src="modules/userbar.html"></include>
                 <div class="page-body">
-                    <div class="club-header-card">
-                        <h1 id="club-name"></h1>
-                        <div class="club-meta">
-                            <span id="club-address"></span>
-                            <span id="club-city"></span>, 
-                            <span id="club-dept"></span>
-                            (<span id="club-region"></span>)
-                            <br>
-                            Tél: <span id="club-phone"></span>
-                        </div>
-                    </div>
 
-                    <h2>Membres</h2>
+                    <div class="header-with-action">
+                        <h2>Membres</h2>
+                        <button onclick="location.href='/club/1'" id="my-club-button" class="load-more-button myBtn">Mon Club</button>
+                    </div>
                     <div class="users-grid" id="users-list">
                         <!-- Template card -->
                          
@@ -35,15 +27,15 @@
                                 <p class="user-address">10 Rue de l'Exemple</p>
                             </div>
                         </div> -->
-                        
+
                     </div>
                     <div class="load-more-container">
-                        <button id="load-more-users" class="load-more-button">Charger plus de membres</button>
+                        <button id="load-more-clubs" class="load-more-button">Charger plus de clubs</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <script src="/js/club.js"></script>
+        <script src="/js/clubs.js"></script>
     </body>
 </html>

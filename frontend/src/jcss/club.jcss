@@ -123,3 +123,13 @@
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+
+.header-with-action{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.myBtn{
+    margin-left: auto;
+}

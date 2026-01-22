@@ -1,5 +1,6 @@
 var clubInfo = null;
 var clubUsers = [];
+var currentClubId = null;
 
 function displayClubInfo() {
     if (clubInfo) {
@@ -42,7 +43,8 @@ function displayClubUsers(users = null) {
 document.addEventListener("click", function(event) {
     const button = event.target.closest("#load-more-users");
     if (!button) return;
-    getMoreUsers(1);
+    if (!currentClubId) return;
+    getMoreUsers(currentClubId);
 });
 
 function resetClubState() {
@@ -69,6 +71,7 @@ function getMoreUsers(clubId){
 }
 
 function loadClubData(clubId) {
+    currentClubId = clubId;
     apiFetch(`/club/${clubId}`).then(info => {
         clubInfo = info.club;
         displayClubInfo();
@@ -77,10 +80,14 @@ function loadClubData(clubId) {
 }
 
 function onRouteChange(event) {
-    const route = event && event.detail ? event.detail.route : "";
-    if (route !== "club") return;
+    const detail = event && event.detail ? event.detail : {};
+    const path = detail.path || "";
+    if (!/^\/club(\/|$)/.test(path)) return;
+    const rawId = detail.params ? detail.params.id : null;
+    const clubId = rawId ? Number(rawId) : null;
+    if (!clubId || Number.isNaN(clubId)) return;
     resetClubState();
-    loadClubData(1);
+    loadClubData(clubId);
 }
 
 document.addEventListener("route-change", onRouteChange);
