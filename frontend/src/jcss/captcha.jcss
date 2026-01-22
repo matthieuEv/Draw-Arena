@@ -1,0 +1,474 @@
+h1 {
+    text-align: center;
+    color: white;
+    margin-bottom: 30px;
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+h3 {
+    color: #555;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+.commentInput{
+    margin-bottom: 20px;
+}
+
+#errorMessage{
+    color: red;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.upload-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.upload-label {
+    display: inline-block;
+    padding: 15px 30px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.3s;
+}
+
+.upload-label:hover {
+    background-color: #45a049;
+}
+
+#imageInput {
+    display: none;
+}
+
+.image-preview {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 30px;
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.image-preview h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.preview-container {
+    margin-bottom: 25px;
+    border: 3px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    display: inline-block;
+    max-width: 100%;
+}
+
+.preview-container img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    max-height: 400px;
+}
+
+.captcha-button {
+    padding: 15px 40px;
+    background-color: #FF5722;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-weight: bold;
+}
+
+.captcha-button:hover {
+    background-color: #E64A19;
+}
+
+/* Modal Popup */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    position: relative;
+    background-color: white;
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 95vw;
+    max-height: 95vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    z-index: 1001;
+    animation: modalAppear 0.3s ease-out;
+    max-width: 1000px;
+}
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+} 
+
+.modal-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #999;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s;
+}
+
+.close-button:hover {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.game-area {
+    display: flex;
+    gap: 30px;
+    // margin-bottom: 30px;
+    // max-height: calc(95vh - 200px);
+    overflow: hidden;
+}
+
+.puzzle-container,
+.pieces-container {
+    flex: 1;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.puzzle-container {
+    flex-shrink: 0;
+    margin: 0 auto;
+}
+
+.pieces-container {
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+.puzzle-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 150px);
+    grid-template-rows: repeat(3, 150px);
+    gap: 0;
+    margin: 0 auto;
+    width: fit-content;
+    position: relative;
+    transition: all 0.8s ease-in-out;
+}
+
+.puzzle-slot {
+    background-color: rgba(200, 200, 200, 0.3);
+    position: relative;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.puzzle-slot.filled {
+    /* background-color: transparent; */
+}
+
+.puzzle-slot.drag-over {
+    background-color: rgba(76, 175, 80, 0.2);
+}
+
+.pieces-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 20px;
+    background-color: white;
+    border: 2px dashed #ccc;
+    border-radius: 5px;
+    justify-content: center;
+    align-items: flex-start;
+    flex: 1;
+    overflow-y: auto;
+    align-content: flex-start;
+}
+
+.puzzle-piece {
+    width: 180px;
+    height: 180px;
+    cursor: grab;
+    position: relative;
+    transition: transform 0.2s;
+}
+
+.puzzle-piece svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.puzzle-piece:hover {
+    transform: scale(1.05);
+}
+
+.puzzle-piece:hover svg {
+    filter: drop-shadow(3px 3px 8px rgba(0, 0, 0, 0.4));
+}
+
+.puzzle-piece.dragging {
+    opacity: 0.3;
+    cursor: grabbing;
+}
+
+.puzzle-piece.in-grid {
+    cursor: grab;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.puzzle-piece.in-grid:hover {
+    transform: translate(-50%, -50%) scale(1.05);
+}
+
+/* Drag Preview */
+.drag-preview {
+    position: fixed;
+    width: 180px;
+    height: 180px;
+    pointer-events: none;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.1s;
+}
+
+.drag-preview svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(4px 4px 12px rgba(0, 0, 0, 0.5));
+}
+
+.drag-preview.active {
+    opacity: 0.9;
+}
+
+.controls {
+    text-align: center;
+    padding: 20px;
+}
+
+.send-button {
+    padding: 15px 40px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.send-button:hover {
+    background-color: #0b7dda;
+}
+
+.message {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    min-height: 20px;
+}
+
+.message.error {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 2px solid #c62828;
+}
+
+.message.success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 2px solid #2e7d32;
+    animation: successPulse 0.5s ease-in-out;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Animation pour le puzzle correct - Simple glow */
+@keyframes puzzleComplete {
+    0%, 100% {
+        box-shadow: 0 0 0 rgba(76, 175, 80, 0);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(76, 175, 80, 0.8);
+    }
+}
+
+.puzzle-grid.complete {
+    animation: puzzleComplete 0.6s ease-in-out;
+}
+
+.puzzle-grid.final-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 450px;
+    height: 450px;
+}
+
+.final-image-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.final-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+    // box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.puzzle-grid.compressed {
+    gap: 0;
+}
+
+.puzzle-grid.compressed .puzzle-piece svg {
+    filter: none !important;
+}
+
+.puzzle-grid.compressed .puzzle-piece svg path {
+    d: path("M 15,15 L 165,15 L 165,165 L 15,165 Z") !important;
+}
+
+@keyframes successPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Animation de pièce correctement placée */
+@keyframes pieceCorrect {
+    0% {
+        transform: scale(1) rotate(0deg);
+    }
+    25% {
+        transform: scale(1.05) rotate(3deg);
+    }
+    50% {
+        transform: scale(1.05) rotate(-3deg);
+    }
+    75% {
+        transform: scale(1.05) rotate(3deg);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+.piece-correct-animation {
+    animation: pieceCorrect 0.5s ease-in-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .game-area {
+        flex-direction: column;
+    }
+    
+    .modal-content {
+        padding: 20px;
+    }
+    
+    .puzzle-grid {
+        grid-template-columns: repeat(3, 120px);
+        grid-template-rows: repeat(3, 120px);
+    }
+    
+    .puzzle-piece,
+    .drag-preview {
+        width: 120px;
+        height: 120px;
+    }
+}

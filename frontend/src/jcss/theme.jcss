@@ -1,0 +1,29 @@
+:root {
+  /* Neutrals */
+  --color-white: #F4F4F3;
+  --color-light-gray: #E6EBF1;
+  --color-gray-100: #D7DCE3;
+  --color-gray-200: #A3A4A4;
+  --color-text: #4B4E52;
+  --color-text-muted: #8A9198;
+
+  /* Primary (Blue UI) */
+  --color-primary-100: #DDEDF9;
+  --color-primary-300: #9ED0EE;
+  --color-primary-500: #5AAFE8;
+
+  /* Accent Colors */
+  --color-accent-orange: #F7A659;
+  --color-accent-peach: #E6D4AE;
+  --color-accent-pink-light: #F0A6A7;
+  --color-accent-pink: #F95671;
+  --color-accent-green: #B4D1A2;
+
+  /* Optional semantic usage */
+  --color-success: #B4D1A2;
+  --color-warning: #F7A659;
+  --color-error: #F95671;
+
+
+  --gap-size: 10px;
+}

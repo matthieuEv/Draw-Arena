@@ -1,0 +1,114 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/statistique.css">
+    <title>Statistique</title>
+</head>
+    <body>
+        <div class="app-shell">
+            <include src="modules/navigation.html"></include>
+            <div class="page-content">
+                <include src="modules/userbar.html"></include>
+                <div class="page-body">
+                    <div class="stats-page">
+                        <section class="stats-hero">
+                            <div class="stats-hero-text">
+                                <h1>Statistiques</h1>
+                                <p>Vue rapide des performances recentes avec des donnees fictives.</p>
+                            </div>
+                            <div class="stats-badge">
+                                <span class="badge-title">Semaine 32</span>
+                                <span class="badge-value">+18% d'activite</span>
+                            </div>
+                        </section>
+
+                        <section class="stats-summary">
+                            <article class="stat-card">
+                                <span class="stat-label">Participants</span>
+                                <span class="stat-value">1 284</span>
+                                <span class="stat-trend up">+12%</span>
+                            </article>
+                            <article class="stat-card">
+                                <span class="stat-label">Depots</span>
+                                <span class="stat-value">342</span>
+                                <span class="stat-trend up">+6%</span>
+                            </article>
+                            <article class="stat-card">
+                                <span class="stat-label">Votes</span>
+                                <span class="stat-value">9 410</span>
+                                <span class="stat-trend down">-3%</span>
+                            </article>
+                        </section>
+
+                        <section class="charts-grid">
+                            <article class="chart-card" data-chart="bars">
+                                <div class="chart-header">
+                                    <div>
+                                        <h3>Participations par theme</h3>
+                                        <p>Graphique en barres</p>
+                                    </div>
+                                    <span class="chart-tag">Bar</span>
+                                </div>
+                                <div class="chart-canvas">
+                                    <canvas id="chartBars" role="img" aria-label="Bar chart"></canvas>
+                                    <div class="chart-tooltip" data-tooltip></div>
+                                </div>
+                            </article>
+
+                            <article class="chart-card" data-chart="line">
+                                <div class="chart-header">
+                                    <div>
+                                        <h3>Evolution quotidienne</h3>
+                                        <p>Courbe continue</p>
+                                    </div>
+                                    <span class="chart-tag">Courbe</span>
+                                </div>
+                                <div class="chart-canvas">
+                                    <canvas id="chartCurve" role="img" aria-label="Line chart"></canvas>
+                                    <div class="chart-tooltip" data-tooltip></div>
+                                </div>
+                            </article>
+
+                            <article class="chart-card" data-chart="pie">
+                                <div class="chart-header">
+                                    <div>
+                                        <h3>Repartition des styles</h3>
+                                        <p>Camembert</p>
+                                    </div>
+                                    <span class="chart-tag">Pie</span>
+                                </div>
+                                <div class="chart-canvas chart-canvas--pie">
+                                    <canvas id="chartPie" role="img" aria-label="Pie chart"></canvas>
+                                    <div class="chart-tooltip" data-tooltip></div>
+                                </div>
+                                <div class="chart-legend" data-legend-for="chartPie"></div>
+                            </article>
+
+                            <article class="chart-card" data-chart="multi">
+                                <div class="chart-header">
+                                    <div>
+                                        <h3>Comparatif multi-lignes</h3>
+                                        <p>Lignes de data</p>
+                                    </div>
+                                    <span class="chart-tag">Lignes</span>
+                                </div>
+                                <div class="chart-canvas">
+                                    <canvas id="chartMulti" role="img" aria-label="Multi line chart"></canvas>
+                                    <div class="chart-tooltip" data-tooltip></div>
+                                </div>
+                                <div class="chart-legend" data-legend-for="chartMulti"></div>
+                            </article>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="js/statistique.js"></script>
+        <script>
+            if (window.initStatistique) {
+                window.initStatistique();
+            }
+        </script>
+    </body>
+</html>

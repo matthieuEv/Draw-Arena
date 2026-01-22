@@ -1,0 +1,97 @@
+const API_BASE = window.API_BASE || "http://localhost:8000/api";
+const TOKEN_KEY = "drawarena_token";
+const USER_KEY = "drawarena_user";
+
+const state = {
+    token: localStorage.getItem(TOKEN_KEY) || "",
+    userInfo: localStorage.getItem(USER_KEY)
+        ? JSON.parse(localStorage.getItem(USER_KEY))
+        : null
+};
+
+async function apiFetch(path, options = {}) {
+    const isFormData = options.body instanceof FormData;
+    const headers = {
+        ...(options.headers || {}),
+    };
+
+    if (!isFormData) {
+        headers["Content-Type"] = "application/json";
+    }
+
+    if (state.token) {
+        headers.Authorization = `Bearer ${state.token}`;
+        headers["X-Auth-Token"] = state.token;
+    }
+
+    const response = await fetch(`${API_BASE}${path}`, {
+        ...options,
+        headers,
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+        const message = data.error || "API Error";
+        throw new Error(message);
+    }
+
+    return data;
+}
+
+function saveSession(token, username) {
+    state.token = token;
+    state.username = username;
+    localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem(USER_KEY, username);
+}
+
+function clearSession() {
+    state.token = "";
+    state.username = "";
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+}
+
+
+async function init() {
+    // Check API health immediately
+    checkApiHealth();
+
+    console.log(state.userInfo);
+
+    if (!state.token) {
+        const path = window.location.pathname;
+        if (path !== "/login") {
+            window.location.href = "/login";
+            return;
+        }
+    }else{
+        if (window.location.pathname === "/login") {
+            window.location.href = "/";
+            return;
+        }
+    }
+}
+
+init();
+
+
+
+// TODO : Temporary API Health check function
+
+async function checkApiHealth() {
+    try {
+        const response = await apiFetch(`/health`);
+
+        if (response.ok) {
+            console.log("API: Online");
+        } else {
+            console.warn("API: ERROR");
+        }
+    } catch (error) {
+        console.warn("API: OFFLINE");
+    }
+}
+// Check API health every 15 seconds
+setInterval(checkApiHealth, 15000);

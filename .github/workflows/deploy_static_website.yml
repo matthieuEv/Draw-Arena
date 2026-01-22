@@ -26,19 +26,27 @@ jobs:
             echo "DEPLOY_TYPE=preprod" >> $GITHUB_ENV
           fi
 
+      - name : Build Frontend
+        working-directory: ./frontend
+        run: |
+          chmod +x ./build.sh
+          chmod +x ./jcss.sh
+          ./build.sh
+          echo "✅ Frontend build completed"
+
       - name: Get Account Name
         run: |
           if [[ "${{ env.DEPLOY_TYPE }}" == "prod" ]]; then
             echo "ACCOUNT_NAME=drawarenastaticprod" >> $GITHUB_ENV
-            echo "BACKEND_URL=https://draw-arena-backend-app.azurewebsites.net/index.php/api" >> $GITHUB_ENV
+            echo "BACKEND_URL=https://draw-arena-backend-app.azurewebsites.net/api" >> $GITHUB_ENV
           else
             echo "ACCOUNT_NAME=drawarenastaticpreprod" >> $GITHUB_ENV
-            echo "BACKEND_URL=https://draw-arena-backend-app-preprod.azurewebsites.net/index.php/api" >> $GITHUB_ENV
+            echo "BACKEND_URL=https://draw-arena-backend-app-preprod.azurewebsites.net/api" >> $GITHUB_ENV
           fi
 
       - name: Configure frontend with backend URL
         run: |
-          sed -i "s|BACKEND_API_URL_PLACEHOLDER|${{ env.BACKEND_URL }}|g" ./frontend/config.js
+          sed -i "s|BACKEND_API_URL_PLACEHOLDER|${{ env.BACKEND_URL }}|g" ./frontend/dist/config.js
           echo "✅ Configured frontend with backend URL: ${{ env.BACKEND_URL }}"
 
       - name: Upload to $web (Storage key)
@@ -48,14 +56,14 @@ jobs:
               --account-name "${{ env.ACCOUNT_NAME }}" \
               --account-key "${{ secrets.AZURE_STORAGE_KEY_PROD }}" \
               --destination '$web' \
-              --source ./frontend \
+              --source ./frontend/dist \
               --overwrite
           else
             az storage blob upload-batch \
               --account-name "${{ env.ACCOUNT_NAME }}" \
               --account-key "${{ secrets.AZURE_STORAGE_KEY_PREPROD }}" \
               --destination '$web' \
-              --source ./frontend \
+              --source ./frontend/dist \
               --overwrite
           fi
 
