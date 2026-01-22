@@ -25,17 +25,17 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- =============================================================================
 
 -- La base de données doit contenir au moins  les données suivantes :
--- 8 concours, réalisés durant 2 années successives comme 2024 et 2025 (4 concours/année). 
+-- 8 concours, réalisés durant 2 années successives comme 2024 et 2025 (4 concours/année).
 -- Les données à insérer dans la base de données doivent respecter les contraintes du cahier des charges, en particulier les contraintes suivantes :
 
 -- Il ne peut y avoir que 4 concours par année durant les 4 saisons (1 concours par saison).
 -- Un évaluateur ne pourra pas évaluer plus de 8 dessins en tout dans un même concours,
 -- Un dessin doit être évalué par deux évaluateurs qui constituent un Jury.
--- Tout président d’un concours ne pourra pas être évaluateur ou compétiteur de ce même concours. 
--- Tout compétiteur ne peut pas déposer plus de trois dessins dans un même concours donné 
+-- Tout président d’un concours ne pourra pas être évaluateur ou compétiteur de ce même concours.
+-- Tout compétiteur ne peut pas déposer plus de trois dessins dans un même concours donné
 -- Un concours pour être organisé doit mobiliser au moins 6 Clubs.
 -- Tout club qui participe à un concours donné doit mobiliser au moins 6 compétiteurs et 3 évaluateurs. A vous de bien remplir la BD afin d’avoir plusieurs scénarios.
--- Un évaluateur d’un concours ne peut pas concourir dans celui-ci 
+-- Un évaluateur d’un concours ne peut pas concourir dans celui-ci
 
 
 -- =============================================================================-- CLUBS (10 clubs)

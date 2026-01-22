@@ -17,6 +17,7 @@ class Utilisateur
     private UtilisateurType $typeCompte;
     private ?int $numClub;
     private ?string $photoProfilUrl;
+    private int $age;
 
     private function __construct() {}
 
@@ -28,16 +29,17 @@ class Utilisateur
         UtilisateurType $typeCompte,
         ?string $adresse = null,
         ?int $numClub = null,
-        ?string $photoProfilUrl = null
+        ?string $photoProfilUrl = null,
+        ?int $age = 0
     ): bool {
         $hashedPassword = password_hash($motDePasse, PASSWORD_BCRYPT);
 
         $stmt = Database::prepare(
-            'INSERT INTO Utilisateur (nom, prenom, adresse, login, mot_de_passe, type_compte, num_club, photo_profil_url)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+            'INSERT INTO Utilisateur (nom, prenom, age, adresse, login, mot_de_passe, type_compte, num_club, photo_profil_url)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
         );
 
-        return $stmt->execute([$nom, $prenom, $adresse, $login, $hashedPassword, $typeCompte->value, $numClub, $photoProfilUrl]);
+        return $stmt->execute([$nom, $prenom, $age, $adresse, $login, $hashedPassword, $typeCompte->value, $numClub, $photoProfilUrl]);
     }
 
     public static function findByLogin(string $login): ?Utilisateur
@@ -88,7 +90,10 @@ class Utilisateur
         return array_map(fn($row) => self::hydrateFromArray($row), $results);
     }
 
-    private static function hydrateFromArray(array $data): Utilisateur
+    /**
+     * @return Utilisateur
+     */
+    public static function hydrateFromArray(array $data): Utilisateur
     {
         $user = new self();
         $user->numUtilisateur = (int)$data['num_utilisateur'];
@@ -100,19 +105,26 @@ class Utilisateur
         $user->typeCompte = UtilisateurType::from($data['type_compte']);
         $user->numClub = $data['num_club'] ? (int)$data['num_club'] : null;
         $user->photoProfilUrl = $data['photo_profil_url'] ?? null;
+        $user->age = (int)$data['age'];
         return $user;
     }
 
     public function getRole(): ?string
     {
-        if (Administrateur::existsForUser($this->numUtilisateur)) {
-            return 'administrateur';
-        }
-        if (Directeur::existsForUser($this->numUtilisateur)) {
-            return 'directeur';
-        }
-
-        return null;
+        $stmt = Database::prepare(
+            "SELECT CASE
+                WHEN EXISTS (
+                    SELECT 1 FROM Administrateur WHERE num_administrateur = ?)
+                    THEN 'administrateur'
+                WHEN EXISTS (
+                    SELECT 1 FROM Directeur WHERE num_directeur = ?)
+                    THEN 'directeur'
+                ELSE NULL
+            END AS role;"
+        );
+        $stmt->execute([$this->numUtilisateur, $this->numUtilisateur]);
+        $role = $stmt->fetchColumn();
+        return $role !== false ? $role : null;
     }
 
     public function toArray(): array
@@ -126,6 +138,7 @@ class Utilisateur
             'typeCompte' => $this->typeCompte->value,
             'numClub' => $this->numClub,
             'photoProfilUrl' => $this->photoProfilUrl,
+            'age' => $this->age,
         ];
     }
 
@@ -172,5 +185,10 @@ class Utilisateur
     public function getPhotoProfilUrl(): ?string
     {
         return $this->photoProfilUrl;
+    }
+
+    public function getAge(): int
+    {
+        return $this->age;
     }
 }

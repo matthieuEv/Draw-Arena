@@ -24,8 +24,8 @@ output "backend_app_url" {
 }
 
 output "backend_api_url" {
-  value       = "https://${azurerm_linux_web_app.backend.default_hostname}/index.php/api"
-  description = "Backend API base URL (App Service Linux uses /index.php/api)."
+  value       = "https://${azurerm_linux_web_app.backend.default_hostname}/api"
+  description = "Backend API base URL (App Service Linux uses /api)."
 }
 
 output "backend_identity_principal_id" {

@@ -12,7 +12,6 @@ class Club
     private string $nomClub;
     private ?string $adresse;
     private ?string $numTelephone;
-    private int $nombreAdherents;
     private string $ville;
     private string $departement;
     private string $region;
@@ -21,7 +20,6 @@ class Club
 
     public static function create(
         string $nomClub,
-        int $nombreAdherents,
         string $ville,
         string $departement,
         string $region,
@@ -29,11 +27,11 @@ class Club
         ?string $numTelephone = null
     ): bool {
         $stmt = Database::prepare(
-            'INSERT INTO Club (nom_club, adresse, num_telephone, nombre_adherents, ville, departement, region)
-             VALUES (?, ?, ?, ?, ?, ?, ?)'
+            'INSERT INTO Club (nom_club, adresse, num_telephone, ville, departement, region)
+             VALUES (?, ?, ?, ?, ?, ?)'
         );
 
-        return $stmt->execute([$nomClub, $adresse, $numTelephone, $nombreAdherents, $ville, $departement, $region]);
+        return $stmt->execute([$nomClub, $adresse, $numTelephone, $ville, $departement, $region]);
     }
 
     /**
@@ -58,6 +56,26 @@ class Club
         return $result ? self::hydrateFromArray($result) : null;
     }
 
+    public static function getUsersByClubId(int $clubId, int $limit, int $index): array
+    {
+        // Limit + 1 to check if there are more results
+        $limit++;
+        $stmt = Database::prepare(
+            'SELECT u.* FROM Utilisateur u
+             WHERE u.num_club = ?
+             ORDER BY u.nom, u.prenom
+             LIMIT ? OFFSET ?'
+        );
+        $stmt->bindValue(1, $clubId, PDO::PARAM_INT);
+        $stmt->bindValue(2, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(3, $index, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(fn($row) => Utilisateur::hydrateFromArray($row), $results);
+    }
+
     private static function hydrateFromArray(array $data): Club
     {
         $club = new self();
@@ -65,7 +83,6 @@ class Club
         $club->nomClub = $data['nom_club'];
         $club->adresse = $data['adresse'] ?? null;
         $club->numTelephone = $data['num_telephone'] ?? null;
-        $club->nombreAdherents = (int)$data['nombre_adherents'];
         $club->ville = $data['ville'];
         $club->departement = $data['departement'];
         $club->region = $data['region'];
@@ -79,7 +96,6 @@ class Club
             'nomClub' => $this->nomClub,
             'adresse' => $this->adresse,
             'numTelephone' => $this->numTelephone,
-            'nombreAdherents' => $this->nombreAdherents,
             'ville' => $this->ville,
             'departement' => $this->departement,
             'region' => $this->region,
@@ -104,11 +120,6 @@ class Club
     public function getNumTelephone(): ?string
     {
         return $this->numTelephone;
-    }
-
-    public function getNombreAdherents(): int
-    {
-        return $this->nombreAdherents;
     }
 
     public function getVille(): string
