@@ -612,6 +612,24 @@ INSERT INTO Dessin (commentaire, classement, date_remise, le_dessin, num_concour
 ('Prairie', NULL, '2024-04-28', '/uploads/dessin_c1_p89_1.jpg', 1, 89),
 ('Champ', NULL, '2024-05-18', '/uploads/dessin_c1_p89_2.jpg', 1, 89);
 
+-- Concours 1 (ajout : dépôts depuis 5 autres clubs pour avoir 6 clubs actifs)
+-- Club 2 : compétiteur 96 (2 dessins)
+-- Club 3 : compétiteur 108 (2 dessins)
+-- Club 4 : compétiteur 120 (2 dessins)
+-- Club 5 : compétiteur 132 (2 dessins)
+-- Club 6 : compétiteur 144 (2 dessins)
+INSERT INTO Dessin (commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
+('Rue fleurie', NULL, '2024-04-16', '/uploads/dessin_c1_p96_1.jpg', 1, 96),
+('Parc urbain', NULL, '2024-05-11', '/uploads/dessin_c1_p96_2.jpg', 1, 96),
+('Forêt lumineuse', NULL, '2024-04-19', '/uploads/dessin_c1_p108_1.jpg', 1, 108),
+('Ruisseau', NULL, '2024-05-13', '/uploads/dessin_c1_p108_2.jpg', 1, 108),
+('Fleurs sauvages', NULL, '2024-04-23', '/uploads/dessin_c1_p120_1.jpg', 1, 120),
+('Jardin botanique', NULL, '2024-05-09', '/uploads/dessin_c1_p120_2.jpg', 1, 120),
+('Ciel de printemps', NULL, '2024-04-26', '/uploads/dessin_c1_p132_1.jpg', 1, 132),
+('Champ de coquelicots', NULL, '2024-05-16', '/uploads/dessin_c1_p132_2.jpg', 1, 132),
+('Monts verdoyants', NULL, '2024-04-29', '/uploads/dessin_c1_p144_1.jpg', 1, 144),
+('Lac au matin', NULL, '2024-05-19', '/uploads/dessin_c1_p144_2.jpg', 1, 144);
+
 -- =============================================================================
 -- ÉVALUATIONS (chaque dessin évalué par 2 évaluateurs)
 -- Maximum 8 dessins évalués par évaluateur dans un même concours
@@ -644,6 +662,84 @@ INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, comme
 (11, 30, '2024-05-31', 14.2, 'Passable'),
 (12, 26, '2024-06-01', 16.0, 'Bon travail'),
 (12, 30, '2024-06-01', 16.3, 'Bien');
+
+-- Concours 1: ajout évaluations pour les nouveaux dessins (13-22)
+-- Chaque dessin est évalué par 2 évaluateurs, et chaque évaluateur reste <= 8 dessins sur le concours.
+INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire) VALUES
+(13, 30, '2024-05-20', 15.9, 'Bonne ambiance'),
+(13, 31, '2024-05-20', 16.4, 'Détails intéressants'),
+(14, 30, '2024-05-21', 16.8, 'Composition solide'),
+(14, 32, '2024-05-21', 16.2, 'Couleurs équilibrées'),
+(15, 31, '2024-05-22', 17.1, 'Très bon rendu'),
+(15, 32, '2024-05-22', 17.4, 'Beau contraste'),
+(16, 36, '2024-05-22', 16.6, 'Trait maîtrisé'),
+(16, 37, '2024-05-22', 16.9, 'Très agréable'),
+(17, 36, '2024-05-23', 15.7, 'Correct et propre'),
+(17, 38, '2024-05-23', 15.9, 'Bon potentiel'),
+(18, 37, '2024-05-23', 16.3, 'Harmonieux'),
+(18, 38, '2024-05-23', 16.1, 'Bien réalisé'),
+(19, 42, '2024-05-24', 17.6, 'Très expressif'),
+(19, 43, '2024-05-24', 17.2, 'Belles formes'),
+(20, 42, '2024-05-24', 16.9, 'Belle profondeur'),
+(20, 44, '2024-05-24', 17.1, 'Très bon niveau'),
+(21, 43, '2024-05-25', 16.0, 'Bien mais perfectible'),
+(21, 44, '2024-05-25', 16.4, 'Bon équilibre'),
+(22, 48, '2024-05-25', 17.0, 'Très réussi'),
+(22, 49, '2024-05-25', 17.3, 'Remarquable');
+
+-- =============================================================================
+-- DONNÉES SUPPLÉMENTAIRES : CONCOURS 2 (Ville en Été)
+-- Objectif : avoir des dépôts + évaluations multi-clubs pour tester les classements par concours
+-- =============================================================================
+
+-- Concours 2 : 12 dessins (6 clubs × 2 dessins)
+-- Clubs : 2, 3, 4, 5, 6, 7 via compétiteurs 96, 108, 120, 132, 144, 156
+INSERT INTO Dessin (commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
+('Rue animée', NULL, '2024-06-15', '/uploads/dessin_c2_p96_1.jpg', 2, 96),
+('Marché d\'été', NULL, '2024-07-10', '/uploads/dessin_c2_p96_2.jpg', 2, 96),
+('Tram au soleil', NULL, '2024-06-18', '/uploads/dessin_c2_p108_1.jpg', 2, 108),
+('Place centrale', NULL, '2024-07-12', '/uploads/dessin_c2_p108_2.jpg', 2, 108),
+('Façades colorées', NULL, '2024-06-20', '/uploads/dessin_c2_p120_1.jpg', 2, 120),
+('Café en terrasse', NULL, '2024-07-15', '/uploads/dessin_c2_p120_2.jpg', 2, 120),
+('Pont au crépuscule', NULL, '2024-06-22', '/uploads/dessin_c2_p132_1.jpg', 2, 132),
+('Quai en fête', NULL, '2024-07-18', '/uploads/dessin_c2_p132_2.jpg', 2, 132),
+('Rues pavées', NULL, '2024-06-25', '/uploads/dessin_c2_p144_1.jpg', 2, 144),
+('Vitrine d\'atelier', NULL, '2024-07-20', '/uploads/dessin_c2_p144_2.jpg', 2, 144),
+('Skyline d\'été', NULL, '2024-06-28', '/uploads/dessin_c2_p156_1.jpg', 2, 156),
+('Parc urbain', NULL, '2024-07-25', '/uploads/dessin_c2_p156_2.jpg', 2, 156);
+
+-- Concours 2 : évaluations pour les nouveaux dessins (23-34)
+-- Répartition simple pour respecter la contrainte "<= 8 dessins/évaluateur/concours".
+INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire) VALUES
+(23, 30, '2024-08-05', 16.2, 'Bonne scène de rue'),
+(23, 31, '2024-08-05', 16.8, 'Dynamique'),
+(24, 30, '2024-08-06', 15.7, 'Sympa'),
+(24, 31, '2024-08-06', 16.1, 'Bien composé'),
+
+(25, 30, '2024-08-07', 17.3, 'Très réussi'),
+(25, 31, '2024-08-07', 17.0, 'Bon rythme'),
+(26, 30, '2024-08-08', 16.6, 'Solide'),
+(26, 31, '2024-08-08', 16.9, 'Très propre'),
+
+(27, 32, '2024-08-09', 15.9, 'Correct'),
+(27, 36, '2024-08-09', 16.4, 'Bon rendu'),
+(28, 32, '2024-08-10', 16.8, 'Belle atmosphère'),
+(28, 36, '2024-08-10', 16.2, 'Harmonieux'),
+
+(29, 32, '2024-08-11', 17.1, 'Très bon'),
+(29, 36, '2024-08-11', 17.4, 'Excellent'),
+(30, 32, '2024-08-12', 16.0, 'Bien'),
+(30, 36, '2024-08-12', 16.6, 'Bonne perspective'),
+
+(31, 37, '2024-08-13', 16.9, 'Beau travail'),
+(31, 38, '2024-08-13', 16.5, 'Propre'),
+(32, 37, '2024-08-14', 15.8, 'Peut mieux faire'),
+(32, 38, '2024-08-14', 16.2, 'Correct'),
+
+(33, 37, '2024-08-15', 17.2, 'Très bon niveau'),
+(33, 38, '2024-08-15', 17.6, 'Remarquable'),
+(34, 37, '2024-08-16', 16.1, 'Bien équilibré'),
+(34, 38, '2024-08-16', 16.4, 'Bonne lecture');
 
 -- =============================================================================
 -- FIN DU FICHIER D'INSERTION
