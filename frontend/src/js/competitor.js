@@ -7,7 +7,7 @@ document.getElementById("year-select").addEventListener("change", function() {
     getConcours(selectedYear);
 });
 
-getConcours(2026);
+getConcours("all");
 
 function distplayConcours(){
     var dataToLoad = concoursData;
