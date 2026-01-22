@@ -37,3 +37,4 @@ function logout() {
     clearSession();
     window.location.href = "/login";
 }
+

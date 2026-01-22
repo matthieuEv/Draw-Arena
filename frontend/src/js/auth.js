@@ -104,9 +104,19 @@ async function login(event) {
 
   console.log(res);
 
-  if (res.success) {
-    saveSession(res.token, res.username);
-    console.log(`Bienvenue, ${res.username} !`);
+  if (res.token) {
+    // Decode token to get user info (optional)
+    const payload = JSON.parse(atob(res.token.split('.')[1]));
+    const userData = JSON.stringify(payload.user);
+
+    var userJSON = JSON.stringify({
+      id: payload.numUtilisateur,
+      nom: payload.nom,
+      prenom: payload.prenom,
+      login: payload.login,
+    });
+
+    saveSession(res.token, userJSON);
     window.location.href = "/"; 
   } else {
     errorMessage.textContent = res.message || "Échec de la connexion.";
@@ -158,7 +168,6 @@ async function signup(event){
 
   if (res.success) {
     saveSession(res.token, res.nom);
-    console.log(`Compte créé avec succès. Bienvenue, ${res.nom} !`);
     window.location.href = "/login";
   } else {
     errorMessage.textContent = res.message || "Échec de la création du compte.";

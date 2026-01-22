@@ -4,7 +4,9 @@ const USER_KEY = "drawarena_user";
 
 const state = {
     token: localStorage.getItem(TOKEN_KEY) || "",
-    username: localStorage.getItem(USER_KEY) || "",
+    userInfo: localStorage.getItem(USER_KEY)
+        ? JSON.parse(localStorage.getItem(USER_KEY))
+        : null
 };
 
 async function apiFetch(path, options = {}) {
@@ -56,18 +58,19 @@ async function init() {
     // Check API health immediately
     checkApiHealth();
 
-    if (!state.token) {
-        return;
-    }
+    console.log(state.userInfo);
 
-    try {
-        const me = await apiFetch("/me");
-        saveSession(state.token, me.username);
-        console.log(`Welcome back, ${me.username}!`);
-        await loadPosts();
-    } catch (error) {
-        clearSession();
-        console.error("Session invalid, please log in again.");
+    if (!state.token) {
+        const path = window.location.pathname;
+        if (path !== "/login") {
+            window.location.href = "/login";
+            return;
+        }
+    }else{
+        if (window.location.pathname === "/login") {
+            window.location.href = "/";
+            return;
+        }
     }
 }
 
