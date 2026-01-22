@@ -599,18 +599,18 @@ INSERT INTO Concours_Competiteur (num_concours, num_competiteur) VALUES
 -- =============================================================================
 -- Concours 1 (42 compétiteurs × 2 dessins = 84 dessins)
 INSERT INTO Dessin (commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
-('Un arbre magnifique', 1, '2024-04-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/1.jpg', 1, 84),
-('Paysage de printemps', NULL, '2024-05-10', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/2.jpg', 1, 84),
-('Fleurs colorées', 2, '2024-04-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/3.jpg', 1, 85),
-('Jardin fleuri', NULL, '2024-05-05', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/4.jpg', 1, 85),
-('Nature sauvage', 3, '2024-04-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/5.jpg', 1, 86),
-('Forêt', NULL, '2024-05-12', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/6.jpg', 1, 86),
-('Rivière', NULL, '2024-04-22', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/7.jpg', 1, 87),
-('Montagne', NULL, '2024-05-08', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/8.jpg', 1, 87),
-('Cascade', NULL, '2024-04-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/9.jpg', 1, 88),
-('Lac', NULL, '2024-05-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/10.jpg', 1, 88),
-('Prairie', NULL, '2024-04-28', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/11.jpg', 1, 89),
-('Champ', NULL, '2024-05-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/12.jpg', 1, 89);
+('Un arbre magnifique', 1, '2024-04-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/dessins/1.jpg', 1, 84),
+('Paysage de printemps', NULL, '2024-05-10', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/2.jpg', 1, 84),
+('Fleurs colorées', 2, '2024-04-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/3.jpg', 1, 85),
+('Jardin fleuri', NULL, '2024-05-05', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/4.jpg', 1, 85),
+('Nature sauvage', 3, '2024-04-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/5.jpg', 1, 86),
+('Forêt', NULL, '2024-05-12', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/6.jpg', 1, 86),
+('Rivière', NULL, '2024-04-22', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/7.jpg', 1, 87),
+('Montagne', NULL, '2024-05-08', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/8.jpg', 1, 87),
+('Cascade', NULL, '2024-04-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/9.jpg', 1, 88),
+('Lac', NULL, '2024-05-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/10.jpg', 1, 88),
+('Prairie', NULL, '2024-04-28', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/11.jpg', 1, 89),
+('Champ', NULL, '2024-05-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/12.jpg', 1, 89);
 
 -- Concours 1 (ajout : dépôts depuis 5 autres clubs pour avoir 6 clubs actifs)
 -- Club 2 : compétiteur 96 (2 dessins)
@@ -619,16 +619,16 @@ INSERT INTO Dessin (commentaire, classement, date_remise, le_dessin, num_concour
 -- Club 5 : compétiteur 132 (2 dessins)
 -- Club 6 : compétiteur 144 (2 dessins)
 INSERT INTO Dessin (commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
-('Rue fleurie', NULL, '2024-04-16', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/13.jpg', 1, 96),
-('Parc urbain', NULL, '2024-05-11', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/14.jpg', 1, 96),
-('Forêt lumineuse', NULL, '2024-04-19', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/15.jpg', 1, 108),
-('Ruisseau', NULL, '2024-05-13', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/16.jpg', 1, 108),
-('Fleurs sauvages', NULL, '2024-04-23', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/17.jpg', 1, 120),
-('Jardin botanique', NULL, '2024-05-09', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/18.jpg', 1, 120),
-('Ciel de printemps', NULL, '2024-04-26', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/19.jpg', 1, 132),
-('Champ de coquelicots', NULL, '2024-05-16', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/20.jpg', 1, 132),
-('Monts verdoyants', NULL, '2024-04-29', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/21.jpg', 1, 144),
-('Lac au matin', NULL, '2024-05-19', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/22.jpg', 1, 144);
+('Rue fleurie', NULL, '2024-04-16', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/13.jpg', 1, 96),
+('Parc urbain', NULL, '2024-05-11', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/14.jpg', 1, 96),
+('Forêt lumineuse', NULL, '2024-04-19', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/15.jpg', 1, 108),
+('Ruisseau', NULL, '2024-05-13', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/16.jpg', 1, 108),
+('Fleurs sauvages', NULL, '2024-04-23', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/17.jpg', 1, 120),
+('Jardin botanique', NULL, '2024-05-09', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/18.jpg', 1, 120),
+('Ciel de printemps', NULL, '2024-04-26', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/19.jpg', 1, 132),
+('Champ de coquelicots', NULL, '2024-05-16', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/20.jpg', 1, 132),
+('Monts verdoyants', NULL, '2024-04-29', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/21.jpg', 1, 144),
+('Lac au matin', NULL, '2024-05-19', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/22.jpg', 1, 144);
 
 -- =============================================================================
 -- ÉVALUATIONS (chaque dessin évalué par 2 évaluateurs)
@@ -695,18 +695,18 @@ INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, comme
 -- Concours 2 : 12 dessins (6 clubs × 2 dessins)
 -- Clubs : 2, 3, 4, 5, 6, 7 via compétiteurs 96, 108, 120, 132, 144, 156
 INSERT INTO Dessin (commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
-('Rue animée', NULL, '2024-06-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/23.jpg', 2, 96),
-('Marché d''été', NULL, '2024-07-10', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/24.jpg', 2, 96),
-('Tram au soleil', NULL, '2024-06-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/25.jpg', 2, 108),
-('Place centrale', NULL, '2024-07-12', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/26.jpg', 2, 108),
-('Façades colorées', NULL, '2024-06-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/27.jpg', 2, 120),
-('Café en terrasse', NULL, '2024-07-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/28.jpg', 2, 120),
-('Pont au crépuscule', NULL, '2024-06-22', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/29.jpg', 2, 132),
-('Quai en fête', NULL, '2024-07-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/30.jpg', 2, 132),
-('Rues pavées', NULL, '2024-06-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/31.jpg', 2, 144),
-('Vitrine d''atelier', NULL, '2024-07-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/32.jpg', 2, 144),
-('Skyline d''été', NULL, '2024-06-28', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/33.jpg', 2, 156),
-('Parc urbain au crépuscule', NULL, '2024-07-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/34.jpg', 2, 156);
+('Rue animée', NULL, '2024-06-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/23.jpg', 2, 96),
+('Marché d''été', NULL, '2024-07-10', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/24.jpg', 2, 96),
+('Tram au soleil', NULL, '2024-06-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/25.jpg', 2, 108),
+('Place centrale', NULL, '2024-07-12', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/26.jpg', 2, 108),
+('Façades colorées', NULL, '2024-06-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/27.jpg', 2, 120),
+('Café en terrasse', NULL, '2024-07-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/28.jpg', 2, 120),
+('Pont au crépuscule', NULL, '2024-06-22', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/29.jpg', 2, 132),
+('Quai en fête', NULL, '2024-07-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/30.jpg', 2, 132),
+('Rues pavées', NULL, '2024-06-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/31.jpg', 2, 144),
+('Vitrine d''atelier', NULL, '2024-07-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/32.jpg', 2, 144),
+('Skyline d''été', NULL, '2024-06-28', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/33.jpg', 2, 156),
+('Parc urbain au crépuscule', NULL, '2024-07-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/34.jpg', 2, 156);
 -- Concours 2 : évaluations pour les nouveaux dessins (23-34)
 -- Répartition simple pour respecter la contrainte "<= 8 dessins/évaluateur/concours".
 INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire) VALUES
@@ -754,18 +754,18 @@ INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, comme
 -- Clubs via compétiteurs : 1, 3, 4, 5, 6, 7 (84, 108, 120, 132, 144, 156)
 -- =============================================================================
 INSERT INTO Dessin (num_dessin, commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
-(35, 'Portrait au fusain', NULL, '2024-09-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/35.jpg', 3, 84),
-(36, 'Regard d''automne', NULL, '2024-10-05', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/36.jpg', 3, 84),
-(37, 'Sourire en clair-obscur', NULL, '2024-09-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/37.jpg', 3, 108),
-(38, 'Profil mélancolique', NULL, '2024-10-10', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/38.jpg', 3, 108),
-(39, 'Portrait à l''encre', NULL, '2024-09-22', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/39.jpg', 3, 120),
-(40, 'Autoportrait', NULL, '2024-10-12', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/40.jpg', 3, 120),
-(41, 'Expression fragile', NULL, '2024-09-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/41.jpg', 3, 132),
-(42, 'Lumière sur le visage', NULL, '2024-10-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/42.jpg', 3, 132),
-(43, 'Rides et sagesse', NULL, '2024-09-28', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/43.jpg', 3, 144),
-(44, 'Silhouette d''automne', NULL, '2024-10-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/44.jpg', 3, 144),
-(45, 'Portrait pastel', NULL, '2024-10-01', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/45.jpg', 3, 156),
-(46, 'Ombres et contrastes', NULL, '2024-10-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/46.jpg', 3, 156);
+(35, 'Portrait au fusain', NULL, '2024-09-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/35.jpg', 3, 84),
+(36, 'Regard d''automne', NULL, '2024-10-05', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/36.jpg', 3, 84),
+(37, 'Sourire en clair-obscur', NULL, '2024-09-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/37.jpg', 3, 108),
+(38, 'Profil mélancolique', NULL, '2024-10-10', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/38.jpg', 3, 108),
+(39, 'Portrait à l''encre', NULL, '2024-09-22', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/39.jpg', 3, 120),
+(40, 'Autoportrait', NULL, '2024-10-12', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/40.jpg', 3, 120),
+(41, 'Expression fragile', NULL, '2024-09-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/41.jpg', 3, 132),
+(42, 'Lumière sur le visage', NULL, '2024-10-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/42.jpg', 3, 132),
+(43, 'Rides et sagesse', NULL, '2024-09-28', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/43.jpg', 3, 144),
+(44, 'Silhouette d''automne', NULL, '2024-10-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/44.jpg', 3, 144),
+(45, 'Portrait pastel', NULL, '2024-10-01', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/45.jpg', 3, 156),
+(46, 'Ombres et contrastes', NULL, '2024-10-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/46.jpg', 3, 156);
 
 -- Concours 3 : évaluations (35-46)
 INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire) VALUES
@@ -799,18 +799,18 @@ INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, comme
 -- Clubs via compétiteurs : 1, 2, 4, 5, 6, 7 (84, 96, 120, 132, 144, 156)
 -- =============================================================================
 INSERT INTO Dessin (num_dessin, commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
-(47, 'Formes géométriques', NULL, '2025-01-05', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/47.jpg', 4, 84),
-(48, 'Abstrait glacé', NULL, '2025-02-01', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/48.jpg', 4, 84),
-(49, 'Couleurs d''hiver', NULL, '2025-01-08', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/49.jpg', 4, 96),
-(50, 'Textures froides', NULL, '2025-02-03', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/50.jpg', 4, 96),
-(51, 'Composition minimaliste', NULL, '2025-01-12', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/51.jpg', 4, 120),
-(52, 'Rythme abstrait', NULL, '2025-02-06', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/52.jpg', 4, 120),
-(53, 'Taches et lumière', NULL, '2025-01-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/53.jpg', 4, 132),
-(54, 'Contrastes', NULL, '2025-02-10', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/54.jpg', 4, 132),
-(55, 'Fragments', NULL, '2025-01-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/55.jpg', 4, 144),
-(56, 'Vagues abstraites', NULL, '2025-02-14', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/56.jpg', 4, 144),
-(57, 'Éclats', NULL, '2025-01-22', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/57.jpg', 4, 156),
-(58, 'Hiver chromatique', NULL, '2025-02-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/58.jpg', 4, 156);
+(47, 'Formes géométriques', NULL, '2025-01-05', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/47.jpg', 4, 84),
+(48, 'Abstrait glacé', NULL, '2025-02-01', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/48.jpg', 4, 84),
+(49, 'Couleurs d''hiver', NULL, '2025-01-08', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/49.jpg', 4, 96),
+(50, 'Textures froides', NULL, '2025-02-03', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/50.jpg', 4, 96),
+(51, 'Composition minimaliste', NULL, '2025-01-12', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/51.jpg', 4, 120),
+(52, 'Rythme abstrait', NULL, '2025-02-06', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/52.jpg', 4, 120),
+(53, 'Taches et lumière', NULL, '2025-01-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/53.jpg', 4, 132),
+(54, 'Contrastes', NULL, '2025-02-10', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/54.jpg', 4, 132),
+(55, 'Fragments', NULL, '2025-01-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/55.jpg', 4, 144),
+(56, 'Vagues abstraites', NULL, '2025-02-14', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/56.jpg', 4, 144),
+(57, 'Éclats', NULL, '2025-01-22', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/57.jpg', 4, 156),
+(58, 'Hiver chromatique', NULL, '2025-02-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/58.jpg', 4, 156);
 
 -- Concours 4 : évaluations (47-58)
 INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire) VALUES
@@ -844,18 +844,18 @@ INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, comme
 -- Clubs via compétiteurs : 1, 2, 3, 4, 5, 6 (84, 96, 108, 120, 132, 144)
 -- =============================================================================
 INSERT INTO Dessin (num_dessin, commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
-(59, 'Chat au soleil', NULL, '2025-03-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/59.jpg', 5, 84),
-(60, 'Oiseau en vol', NULL, '2025-04-10', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/60.jpg', 5, 84),
-(61, 'Renard discret', NULL, '2025-03-22', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/61.jpg', 5, 96),
-(62, 'Lapin dans l''herbe', NULL, '2025-04-12', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/62.jpg', 5, 96),
-(63, 'Cheval au galop', NULL, '2025-03-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/63.jpg', 5, 108),
-(64, 'Poisson abstrait', NULL, '2025-04-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/64.jpg', 5, 108),
-(65, 'Chien fidèle', NULL, '2025-03-28', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/65.jpg', 5, 120),
-(66, 'Papillon', NULL, '2025-04-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/66.jpg', 5, 120),
-(67, 'Hibou nocturne', NULL, '2025-04-01', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/67.jpg', 5, 132),
-(68, 'Biche', NULL, '2025-04-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/68.jpg', 5, 132),
-(69, 'Tortue', NULL, '2025-04-05', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/69.jpg', 5, 144),
-(70, 'Loup', NULL, '2025-04-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/70.jpg', 5, 144);
+(59, 'Chat au soleil', NULL, '2025-03-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/59.jpg', 5, 84),
+(60, 'Oiseau en vol', NULL, '2025-04-10', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/60.jpg', 5, 84),
+(61, 'Renard discret', NULL, '2025-03-22', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/61.jpg', 5, 96),
+(62, 'Lapin dans l''herbe', NULL, '2025-04-12', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/62.jpg', 5, 96),
+(63, 'Cheval au galop', NULL, '2025-03-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/63.jpg', 5, 108),
+(64, 'Poisson abstrait', NULL, '2025-04-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/64.jpg', 5, 108),
+(65, 'Chien fidèle', NULL, '2025-03-28', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/65.jpg', 5, 120),
+(66, 'Papillon', NULL, '2025-04-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/66.jpg', 5, 120),
+(67, 'Hibou nocturne', NULL, '2025-04-01', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/67.jpg', 5, 132),
+(68, 'Biche', NULL, '2025-04-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/68.jpg', 5, 132),
+(69, 'Tortue', NULL, '2025-04-05', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/69.jpg', 5, 144),
+(70, 'Loup', NULL, '2025-04-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/70.jpg', 5, 144);
 
 -- Concours 5 : évaluations (59-70)
 INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire) VALUES
@@ -889,18 +889,18 @@ INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, comme
 -- Clubs via compétiteurs : 3, 4, 5, 6, 7, 8 (108, 120, 132, 144, 156, 168)
 -- =============================================================================
 INSERT INTO Dessin (num_dessin, commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
-(71, 'Côte ensoleillée', NULL, '2025-06-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/71.jpg', 6, 108),
-(72, 'Plage au matin', NULL, '2025-07-10', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/72.jpg', 6, 108),
-(73, 'Montagnes lointaines', NULL, '2025-06-22', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/73.jpg', 6, 120),
-(74, 'Vallée d''été', NULL, '2025-07-12', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/74.jpg', 6, 120),
-(75, 'Forêt lumineuse', NULL, '2025-06-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/75.jpg', 6, 132),
-(76, 'Rivière claire', NULL, '2025-07-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/76.jpg', 6, 132),
-(77, 'Champ doré', NULL, '2025-06-28', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/77.jpg', 6, 144),
-(78, 'Nuages d''été', NULL, '2025-07-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/78.jpg', 6, 144),
-(79, 'Ville au loin', NULL, '2025-07-01', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/79.jpg', 6, 156),
-(80, 'Port au crépuscule', NULL, '2025-07-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/80.jpg', 6, 156),
-(81, 'Lac tranquille', NULL, '2025-07-05', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/81.jpg', 6, 168),
-(82, 'Route vers l''horizon', NULL, '2025-07-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/82.jpg', 6, 168);
+(71, 'Côte ensoleillée', NULL, '2025-06-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/71.jpg', 6, 108),
+(72, 'Plage au matin', NULL, '2025-07-10', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/72.jpg', 6, 108),
+(73, 'Montagnes lointaines', NULL, '2025-06-22', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/73.jpg', 6, 120),
+(74, 'Vallée d''été', NULL, '2025-07-12', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/74.jpg', 6, 120),
+(75, 'Forêt lumineuse', NULL, '2025-06-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/75.jpg', 6, 132),
+(76, 'Rivière claire', NULL, '2025-07-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/76.jpg', 6, 132),
+(77, 'Champ doré', NULL, '2025-06-28', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/77.jpg', 6, 144),
+(78, 'Nuages d''été', NULL, '2025-07-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/78.jpg', 6, 144),
+(79, 'Ville au loin', NULL, '2025-07-01', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/79.jpg', 6, 156),
+(80, 'Port au crépuscule', NULL, '2025-07-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/80.jpg', 6, 156),
+(81, 'Lac tranquille', NULL, '2025-07-05', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/81.jpg', 6, 168),
+(82, 'Route vers l''horizon', NULL, '2025-07-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/82.jpg', 6, 168);
 
 -- Concours 6 : évaluations (71-82)
 INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire) VALUES
@@ -934,18 +934,18 @@ INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, comme
 -- Clubs via compétiteurs : 1, 2, 5, 6, 7, 8 (84, 96, 132, 144, 156, 168)
 -- =============================================================================
 INSERT INTO Dessin (num_dessin, commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
-(83, 'Façade ancienne', NULL, '2025-09-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/83.jpg', 7, 84),
-(84, 'Pont métallique', NULL, '2025-10-10', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/84.jpg', 7, 84),
-(85, 'Immeuble moderne', NULL, '2025-09-22', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/85.jpg', 7, 96),
-(86, 'Escalier en spirale', NULL, '2025-10-12', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/86.jpg', 7, 96),
-(87, 'Cathédrale', NULL, '2025-09-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/87.jpg', 7, 132),
-(88, 'Place urbaine', NULL, '2025-10-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/88.jpg', 7, 132),
-(89, 'Arcades', NULL, '2025-09-28', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/89.jpg', 7, 144),
-(90, 'Toits d''ardoise', NULL, '2025-10-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/90.jpg', 7, 144),
-(91, 'Gare', NULL, '2025-10-01', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/91.jpg', 7, 156),
-(92, 'Bibliothèque', NULL, '2025-10-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/92.jpg', 7, 156),
-(93, 'Tour panoramique', NULL, '2025-10-05', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/93.jpg', 7, 168),
-(94, 'Rue historique', NULL, '2025-10-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/94.jpg', 7, 168);
+(83, 'Façade ancienne', NULL, '2025-09-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/83.jpg', 7, 84),
+(84, 'Pont métallique', NULL, '2025-10-10', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/84.jpg', 7, 84),
+(85, 'Immeuble moderne', NULL, '2025-09-22', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/85.jpg', 7, 96),
+(86, 'Escalier en spirale', NULL, '2025-10-12', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/86.jpg', 7, 96),
+(87, 'Cathédrale', NULL, '2025-09-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/87.jpg', 7, 132),
+(88, 'Place urbaine', NULL, '2025-10-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/88.jpg', 7, 132),
+(89, 'Arcades', NULL, '2025-09-28', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/89.jpg', 7, 144),
+(90, 'Toits d''ardoise', NULL, '2025-10-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/90.jpg', 7, 144),
+(91, 'Gare', NULL, '2025-10-01', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/91.jpg', 7, 156),
+(92, 'Bibliothèque', NULL, '2025-10-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/92.jpg', 7, 156),
+(93, 'Tour panoramique', NULL, '2025-10-05', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/93.jpg', 7, 168),
+(94, 'Rue historique', NULL, '2025-10-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/94.jpg', 7, 168);
 
 -- Concours 7 : évaluations (83-94)
 INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire) VALUES
@@ -979,18 +979,18 @@ INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, comme
 -- Clubs via compétiteurs : 1, 2, 3, 4, 5, 6 (84, 96, 108, 120, 132, 144)
 -- =============================================================================
 INSERT INTO Dessin (num_dessin, commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
-(95, 'Dragon endormi', NULL, '2025-12-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/95.jpg', 8, 84),
-(96, 'Forêt enchantée', NULL, '2026-01-10', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/96.jpg', 8, 84),
-(97, 'Château dans les nuages', NULL, '2025-12-22', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/97.jpg', 8, 96),
-(98, 'Chevalier perdu', NULL, '2026-01-12', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/98.jpg', 8, 96),
-(99, 'Sorcière', NULL, '2025-12-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/99.jpg', 8, 108),
-(100, 'Potion lumineuse', NULL, '2026-01-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/100.jpg', 8, 108),
-(101, 'Créature marine', NULL, '2025-12-28', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/101.jpg', 8, 120),
-(102, 'Portail', NULL, '2026-01-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/102.jpg', 8, 120),
-(103, 'Géant de glace', NULL, '2026-01-02', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/103.jpg', 8, 132),
-(104, 'Lune violette', NULL, '2026-01-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/104.jpg', 8, 132),
-(105, 'Phénix', NULL, '2026-01-05', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/105.jpg', 8, 144),
-(106, 'Cité fantastique', NULL, '2026-01-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/106.jpg', 8, 144);
+(95, 'Dragon endormi', NULL, '2025-12-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/95.jpg', 8, 84),
+(96, 'Forêt enchantée', NULL, '2026-01-10', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/96.jpg', 8, 84),
+(97, 'Château dans les nuages', NULL, '2025-12-22', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/97.jpg', 8, 96),
+(98, 'Chevalier perdu', NULL, '2026-01-12', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/98.jpg', 8, 96),
+(99, 'Sorcière', NULL, '2025-12-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/99.jpg', 8, 108),
+(100, 'Potion lumineuse', NULL, '2026-01-15', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/100.jpg', 8, 108),
+(101, 'Créature marine', NULL, '2025-12-28', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/101.jpg', 8, 120),
+(102, 'Portail', NULL, '2026-01-18', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/102.jpg', 8, 120),
+(103, 'Géant de glace', NULL, '2026-01-02', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/103.jpg', 8, 132),
+(104, 'Lune violette', NULL, '2026-01-20', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/104.jpg', 8, 132),
+(105, 'Phénix', NULL, '2026-01-05', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/105.jpg', 8, 144),
+(106, 'Cité fantastique', NULL, '2026-01-25', 'https://drawarenastaticpreprod.blob.core.windows.net/post-images/dessins/106.jpg', 8, 144);
 
 -- Concours 8 : évaluations (95-106)
 INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire) VALUES
