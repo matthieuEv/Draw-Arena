@@ -498,3 +498,60 @@ nav{
         padding: var(--gap-size);
     }
 }
+
+
+/* Header Card */
+.header-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+
+    
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--color-primary, #3b82f6), var(--color-secondary, #8b5cf6));
+    }
+
+    h1 {
+        margin: 0 0 1rem 0;
+        color: var(--color-text, #1e293b);
+        font-size: 2.5rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+    }
+
+    .right{
+        margin-left: auto;
+    }
+
+    &.header-with-action{
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    &.flex, .flex{
+        display: flex;
+    }
+
+    .select-label{
+        text-wrap: nowrap;
+        margin: auto 10px;
+    }
+}
+
+.hori-list{
+    gap: var(--gap-size);
+}

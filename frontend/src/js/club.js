@@ -12,10 +12,10 @@ function displayClubInfo() {
         const phone = document.getElementById("club-phone");
         if (name) name.textContent = clubInfo.nomClub;
         if (address) address.textContent = clubInfo.adresse;
-        if (city) city.textContent = clubInfo.ville;
+        if (city) city.textContent = clubInfo.ville+", ";
         if (dept) dept.textContent = clubInfo.departement;
-        if (region) region.textContent = clubInfo.region;
-        if (phone) phone.textContent = clubInfo.numTelephone;
+        if (region) region.textContent = "("+clubInfo.region+")";
+        if (phone) phone.textContent = "Tél : "+clubInfo.numTelephone;
     }
 }
 
@@ -25,7 +25,7 @@ function displayClubUsers(users = null) {
         const clubUsersDiv = document.getElementById('users-list');
         if (!clubUsersDiv) return;
         dataToLoad.forEach(user => {
-            const profileImg = user.pp ? user.pp : "/img/default_profile.png";
+            const profileImg = user.photoProfilUrl ? user.photoProfilUrl : "/img/default_profile.png";
             clubUsersDiv.insertAdjacentHTML('beforeend', `
                 <div class="user-card">
                     <img src="${profileImg}" alt="Profile" class="user-avatar">

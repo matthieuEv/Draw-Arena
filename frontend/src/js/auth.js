@@ -112,6 +112,7 @@ async function login(event) {
       login: payload.login,
       role: res.role,
       club: res.club,
+      photoProfilUrl: payload.photoProfilUrl || null,
     });
 
     saveSession(res.token, userJSON);
