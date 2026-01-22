@@ -46,5 +46,10 @@ $router->get('/api/competiteur/warriors', [CompetiteurHandler::class, 'getWarrio
 // Cas sans year filter - Obligation 3
 // Cas avec year filter - Obligation 2
 $router->get('/api/evaluation', [EvaluationHandler::class, 'getAllEvaluation'], [new AuthMiddleware()]);
+// Obligation 5
+$router->get('/api/evaluation/best/region', [EvaluationHandler::class, 'getBestRegion'], [new AuthMiddleware()]);
+// Obligation 5.1 (For the fun beacause it's easy to do)
+$router->get('/api/evaluation/best/competiteur', [EvaluationHandler::class, 'getBestCompetiteur'], [new AuthMiddleware()]);
+
 // Dispatch the request to matching route
 $router->dispatch();

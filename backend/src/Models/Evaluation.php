@@ -96,6 +96,56 @@ class Evaluation
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public static function getBestRegions(int $limit = 20, int $offset = 0): array
+    {
+        $sql = 'SELECT cl.region, AVG(e.note) AS moyenne
+                FROM Evaluation e
+                JOIN Dessin d ON d.num_dessin = e.num_dessin
+                JOIN Utilisateur u ON u.num_utilisateur = d.num_competiteur
+                JOIN Club cl ON cl.num_club = u.num_club
+                GROUP BY cl.region
+                HAVING AVG(e.note) >= ALL (
+                    SELECT AVG(e2.note)
+                    FROM Evaluation e2
+                    JOIN Dessin d2 ON d2.num_dessin = e2.num_dessin
+                    JOIN Utilisateur u2 ON u2.num_utilisateur = d2.num_competiteur
+                    JOIN Club cl2 ON cl2.num_club = u2.num_club
+                    GROUP BY cl2.region
+                )
+                LIMIT ? OFFSET ?';
+
+        $stmt = Database::prepare($sql);
+        $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(2, $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getBestCompetiteurs(int $limit = 20, int $offset = 0): array
+    {
+        $sql = 'SELECT u.num_utilisateur, u.nom, u.prenom, AVG(e.note) AS moyenne
+                FROM Evaluation e
+                JOIN Dessin d ON d.num_dessin = e.num_dessin
+                JOIN Utilisateur u ON u.num_utilisateur = d.num_competiteur
+                GROUP BY u.num_utilisateur, u.nom, u.prenom
+                HAVING AVG(e.note) >= ALL (
+                    SELECT AVG(e2.note)
+                    FROM Evaluation e2
+                    JOIN Dessin d2 ON d2.num_dessin = e2.num_dessin
+                    JOIN Utilisateur u2 ON u2.num_utilisateur = d2.num_competiteur
+                    GROUP BY u2.num_utilisateur, u2.nom, u2.prenom
+                )
+                LIMIT ? OFFSET ?';
+
+        $stmt = Database::prepare($sql);
+        $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(2, $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);}
+
     private static function hydrateFromArray(array $data): Evaluation
     {
         $evaluation = new self();
