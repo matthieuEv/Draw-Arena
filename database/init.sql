@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS Competiteur (
 CREATE TABLE IF NOT EXISTS Evaluateur (
     num_evaluateur INT PRIMARY KEY,
     specialite VARCHAR(255) NOT NULL,
+    xp INT NOT NULL,
     CONSTRAINT fk_evaluateur_utilisateur FOREIGN KEY (num_evaluateur) REFERENCES Utilisateur(num_utilisateur)
 ) ENGINE=InnoDB;
 

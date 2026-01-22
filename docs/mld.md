@@ -58,6 +58,7 @@
 ### 7. Evaluateur
 - <u>num_utilisateur*</u> : ID
 - specialite : String
+- xp : int
 
 ### 8. President
 - <u>num_utilisateur*</u> : ID
