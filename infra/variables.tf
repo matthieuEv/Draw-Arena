@@ -119,6 +119,12 @@ variable "mysql_admin_password" {
   }
 }
 
+variable "backend_jwt_secret" {
+  type        = string
+  description = "Secret key for JWT authentication in the backend."
+  sensitive   = true
+}
+
 variable "mysql_database_name" {
   type        = string
   description = "Application database name."

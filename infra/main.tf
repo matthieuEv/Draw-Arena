@@ -118,6 +118,7 @@ resource "azurerm_linux_web_app" "backend" {
     STORAGE_BLOB_ENDPOINT               = azurerm_storage_account.this.primary_blob_endpoint
     STORAGE_PUBLIC_BASE_URL             = azurerm_storage_account.this.primary_blob_endpoint
     STORAGE_CONTAINER                   = azurerm_storage_container.uploads.name
+    JWT_SECRET                          = var.backend_jwt_secret
   }
 
   site_config {
