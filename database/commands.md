@@ -18,7 +18,7 @@ Petite collection de requêtes SQL utiles pour analyser les concours.
 Liste les compétiteurs inscrits à des concours sur une année donnée, avec leurs infos (dont l’âge), le concours et le club.
 
 ```sql
-SELECT DISTINCT
+SELECT
   u.nom,
   u.prenom,
   u.adresse,
