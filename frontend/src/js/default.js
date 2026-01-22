@@ -1,5 +1,3 @@
-// Userbar menu toggle functionality
-
 var isCollapsed = true;
 
 

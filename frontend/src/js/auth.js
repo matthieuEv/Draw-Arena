@@ -66,10 +66,6 @@ if (document.readyState === "loading") {
   observeAuthPanels();
 }
 
-
-
-
-
 async function login(event) {
   event.preventDefault();
 
@@ -105,7 +101,7 @@ async function login(event) {
   console.log(res);
 
   if (res.token) {
-    // Decode token to get user info (optional)
+    // Decode token to get user info
     const payload = JSON.parse(atob(res.token.split('.')[1]));
     const userData = JSON.stringify(payload.user);
 
