@@ -66,6 +66,8 @@ function displayUsers(concoursID, users = null){
 function getConcours(year){
     concoursData = [];
     concoursUsers = {};
+
+    var param = year === "all" ? "" : year;
     
     apiFetch(`/concours?year=${year}`).then(info => {
         concoursData = info.concours;
