@@ -7,8 +7,6 @@ document.getElementById("year-select").addEventListener("change", function() {
     getConcours(selectedYear);
 });
 
-getConcours("all");
-
 function distplayConcours(){
     var dataToLoad = concoursData;
     if (dataToLoad) {
@@ -88,3 +86,9 @@ function getUsers(concoursID){
         displayUsers(concoursID, users.users);
     });
 }
+
+function onRouteChange(event) {
+    getConcours("all");
+}
+
+document.addEventListener("route-change", onRouteChange);
