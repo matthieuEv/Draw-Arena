@@ -7,6 +7,7 @@
 - Frontend: `http://localhost:8080`
 - Backend API: `http://localhost:8000/api`
 - MariaDB: `localhost:3306` (db: `drawarena`, user/pass: `drawarena`)
+- Azurite Blob: `http://localhost:10000/devstoreaccount1`
 
 ## Devcontainer
 

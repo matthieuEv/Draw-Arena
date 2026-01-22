@@ -1,5 +1,29 @@
 backend.zip
 
+# Dépendances
+backend/vendor/
+backend/composer.lock
+node_modules/
+
 # Fichiers de configuration temporaires
 frontend/config.js.bak
 *.bak
+*.local
+
+# Terraform
+*.tfstate
+*.tfstate.backup
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

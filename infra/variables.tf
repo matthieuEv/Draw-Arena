@@ -39,6 +39,12 @@ variable "account_replication_type" {
   default     = "LRS"
 }
 
+variable "storage_container_name" {
+  type        = string
+  description = "Blob container name for uploaded images."
+  default     = "post-images"
+}
+
 variable "backend_service_plan_name" {
   type        = string
   description = "App Service plan name for the PHP backend."
@@ -77,5 +83,89 @@ variable "backend_ip_restrictions" {
     action      = string
   }))
   description = "Liste des restrictions IP pour le backend (optionnel)."
+  default     = []
+}
+
+variable "mysql_server_name" {
+  type        = string
+  description = "MySQL flexible server name (globally unique DNS)."
+  default     = "draw-arena-mysql"
+}
+
+variable "mysql_admin_user" {
+  type        = string
+  description = "Administrator username for MySQL."
+  default     = "drawarena"
+}
+
+variable "mysql_admin_password" {
+  type        = string
+  description = "Administrator password for MySQL."
+  sensitive   = true
+
+  validation {
+    condition = length(var.mysql_admin_password) >= 8
+    error_message = "mysql_admin_password must be at least 8 characters."
+  }
+
+  validation {
+    condition = (
+      (length(regexall("[A-Z]", var.mysql_admin_password)) > 0 ? 1 : 0) +
+      (length(regexall("[a-z]", var.mysql_admin_password)) > 0 ? 1 : 0) +
+      (length(regexall("[0-9]", var.mysql_admin_password)) > 0 ? 1 : 0) +
+      (length(regexall("[^A-Za-z0-9]", var.mysql_admin_password)) > 0 ? 1 : 0)
+    ) >= 3
+    error_message = "mysql_admin_password must include characters from at least three categories: uppercase, lowercase, numbers, symbols."
+  }
+}
+
+variable "mysql_database_name" {
+  type        = string
+  description = "Application database name."
+  default     = "drawarena"
+}
+
+variable "mysql_version" {
+  type        = string
+  description = "MySQL version for flexible server."
+  default     = "8.0.21"
+
+  validation {
+    condition     = contains(["5.7", "8.0.21"], var.mysql_version)
+    error_message = "mysql_version must be one of: 5.7, 8.0.21."
+  }
+}
+
+variable "mysql_sku_name" {
+  type        = string
+  description = "MySQL flexible server SKU."
+  default     = "B_Standard_B1ms"
+}
+
+variable "mysql_storage_gb" {
+  type        = number
+  description = "Storage size in GB for MySQL."
+  default     = 20
+}
+
+variable "mysql_backup_retention_days" {
+  type        = number
+  description = "Backup retention in days for MySQL."
+  default     = 7
+}
+
+variable "mysql_allow_azure_services" {
+  type        = bool
+  description = "Allow Azure services to access the MySQL server."
+  default     = true
+}
+
+variable "mysql_firewall_rules" {
+  type = list(object({
+    name             = string
+    start_ip_address = string
+    end_ip_address   = string
+  }))
+  description = "Additional firewall rules for MySQL."
   default     = []
 }

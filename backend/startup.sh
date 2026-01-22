@@ -1,24 +1,24 @@
 #!/bin/bash
-# Configure nginx for proper routing
+# Azure App Service startup script for Draw-Arena backend
+# This script copies the custom nginx configuration and restarts nginx
 
-cat > /etc/nginx/sites-available/default << 'EOF'
-server {
-    listen 8080;
-    listen [::]:8080;
-    root /home/site/wwwroot;
-    index index.php index.html;
+echo "🚀 Starting Draw-Arena backend initialization..."
 
-    location / {
-        try_files $uri $uri/ /index.php?$query_string;
-    }
+# Copy custom nginx configuration
+if [ -f /home/site/wwwroot/default ]; then
+    echo "📝 Copying custom nginx configuration..."
+    cp /home/site/wwwroot/default /etc/nginx/sites-available/default
+    cp /home/site/wwwroot/default /etc/nginx/sites-enabled/default
+    echo "✅ Nginx configuration copied"
+else
+    echo "⚠️  Custom nginx config not found at /home/site/wwwroot/default"
+fi
 
-    location ~ \.php$ {
-        fastcgi_pass 127.0.0.1:9000;
-        fastcgi_index index.php;
-        include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-    }
-}
-EOF
+# Reload nginx to apply configuration
+if command -v nginx >/dev/null 2>&1; then
+    echo "🔄 Reloading nginx..."
+    nginx -t && nginx -s reload || echo "⚠️  Nginx reload failed"
+    echo "✅ Nginx reloaded"
+fi
 
-service nginx reload
+echo "✅ Draw-Arena backend initialization complete"

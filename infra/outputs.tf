@@ -37,3 +37,28 @@ output "backend_identity_tenant_id" {
   value       = azurerm_linux_web_app.backend.identity[0].tenant_id
   description = "Tenant ID of the backend managed identity."
 }
+
+output "mysql_server_fqdn" {
+  value       = azurerm_mysql_flexible_server.this.fqdn
+  description = "MySQL server FQDN."
+}
+
+output "mysql_database_name" {
+  value       = azurerm_mysql_flexible_database.app.name
+  description = "MySQL database name."
+}
+
+output "mysql_admin_user" {
+  value       = var.mysql_admin_user
+  description = "MySQL administrator username."
+}
+
+output "blob_endpoint" {
+  value       = azurerm_storage_account.this.primary_blob_endpoint
+  description = "Storage blob endpoint base URL."
+}
+
+output "blob_container_name" {
+  value       = azurerm_storage_container.uploads.name
+  description = "Blob container for uploads."
+}

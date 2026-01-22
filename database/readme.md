@@ -18,6 +18,18 @@ You can also connect as root:
 docker exec -it draw-arena-db mariadb -u root -proot
 ```
 
+## Insert test data
+
+To populate the database with test data, run:
+
+```bash
+docker exec -i draw-arena-db mariadb -u drawarena -pdrawarena drawarena < database/insertion.sql
+```
+
+This will insert:
+- A test user (username: `user`, password: `verybigpassword1`)
+- A sample post
+
 ## Useful SQL commands
 
 ```sql
@@ -50,3 +62,39 @@ TRUNCATE TABLE users;
 
 The schema is initialized from `database/init.sql` when the container is
 created.
+
+## Connect to Azure MySQL (Production & Preprod)
+
+### Get connection information
+
+For **production**:
+
+```bash
+terraform -chdir=infra workspace select prod
+echo "MYSQL_HOST_PROD=$(terraform -chdir=infra output -raw mysql_server_fqdn)"
+echo "MYSQL_USER_PROD=$(terraform -chdir=infra output -raw mysql_admin_user)"
+echo "MYSQL_DATABASE_PROD=$(terraform -chdir=infra output -raw mysql_database_name)"
+```
+
+For **preprod**:
+
+```bash
+terraform -chdir=infra workspace select preprod
+echo "MYSQL_HOST_PREPROD=$(terraform -chdir=infra output -raw mysql_server_fqdn)"
+echo "MYSQL_USER_PREPROD=$(terraform -chdir=infra output -raw mysql_admin_user)"
+echo "MYSQL_DATABASE_PREPROD=$(terraform -chdir=infra output -raw mysql_database_name)"
+```
+
+### Connect with MySQL client
+
+Once you have the credentials, connect using:
+
+```bash
+mysql -h <MYSQL_HOST> -u <MYSQL_USER> -p<MYSQL_PASSWORD> <MYSQL_DATABASE>
+```
+
+Example for production:
+
+```bash
+mysql -h draw-arena-mysql-prod.mysql.database.azure.com -u drawarena -p drawarena
+```
