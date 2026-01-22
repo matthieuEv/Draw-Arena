@@ -8,7 +8,9 @@ const routes = [
   // { path: "/result", file: "/pages/result.html", data:"result" },
   { path: "/statistique", file: "/pages/statistique.html", data:"statistique" },
   { path: "/administration", file: "/pages/administration.html", data:"administration" },
-  { path: "/club", file: "/pages/club.html", data:"club" },
+  { path: "/clubs", file: "/pages/clubs.html", data:"clubs" },
+  { path: "/club/:id", file: "/pages/club.html", data:"clubs" },
+  { path: "/competitor", file: "/pages/competitor.html", data:"competitor" },
   { path: "/login", file: "/pages/login.html" },
   { path: "/profil", file: "/pages/profil.html" },
 ];
@@ -19,8 +21,60 @@ const loadedScripts = new Set();
 
 var currentDataRoute = "";
 
+function normalizePath(pathname) {
+  if (!pathname) return "/";
+  const stripped = pathname.replace(/\/+$/, "");
+  return stripped === "" ? "/" : stripped;
+}
+
+function resolvePath(basePath, relativePath) {
+  if (!relativePath || relativePath.startsWith("/") || /^(http|https):\/\//.test(relativePath)) {
+    return relativePath;
+  }
+  
+  const stack = basePath.split("/");
+  // Remove filename from base path to get directory
+  stack.pop();
+  
+  const parts = relativePath.split("/");
+  for (const part of parts) {
+    if (part === ".") continue;
+    if (part === "..") {
+      if (stack.length > 0) stack.pop();
+    } else {
+      stack.push(part);
+    }
+  }
+  return stack.join("/") || "/";
+}
+
 function matchRoute(pathname) {
-  return routes.find(r => r.path === pathname);
+  const normalizedPath = normalizePath(pathname);
+  for (const route of routes) {
+    const routePath = normalizePath(route.path);
+    if (!routePath.includes(":")) {
+      if (routePath === normalizedPath) {
+        return { route, params: {} };
+      }
+      continue;
+    }
+
+    const paramNames = [];
+    const regexPath = routePath.replace(/:[^/]+/g, (match) => {
+      paramNames.push(match.slice(1));
+      return "([^/]+)";
+    });
+    const regex = new RegExp(`^${regexPath}$`);
+    const match = normalizedPath.match(regex);
+    if (!match) continue;
+
+    const params = {};
+    paramNames.forEach((name, index) => {
+      params[name] = decodeURIComponent(match[index + 1]);
+    });
+    return { route, params };
+  }
+  return null;
 }
 
 async function loadHtml(file) {
@@ -40,16 +94,18 @@ function uniqueList(items = []) {
   return result;
 }
 
-function parsePage(html) {
+function parsePage(html, sourcePath = "/") {
   const doc = new DOMParser().parseFromString(html, "text/html");
   const title = doc.querySelector("title")?.textContent?.trim();
+  
   const styles = uniqueList(
     Array.from(doc.querySelectorAll('link[rel="stylesheet"][href]')).map(
-      (link) => link.getAttribute("href")
+      (link) => resolvePath(sourcePath, link.getAttribute("href"))
     )
   );
+
   const scripts = Array.from(doc.querySelectorAll("script")).map((script) => ({
-    src: script.getAttribute("src"),
+    src: script.getAttribute("src") ? resolvePath(sourcePath, script.getAttribute("src")) : null,
     type: script.getAttribute("type"),
     text: script.textContent || "",
   }));
@@ -125,19 +181,22 @@ function loadScripts(scripts = []) {
   }, Promise.resolve());
 }
 
-function dispatchRouteChange(pathname) {
+function dispatchRouteChange(pathname, params = {}) {
   const event = new CustomEvent("route-change", {
     detail: {
       route: currentDataRoute,
       path: pathname,
+      params,
     },
   });
   document.dispatchEvent(event);
 }
 
 async function render() {
-  const pathname = window.location.pathname;
-  let activeRoute = matchRoute(pathname) || notFoundRoute;
+  const pathname = normalizePath(window.location.pathname);
+  const match = matchRoute(pathname);
+  let activeRoute = match ? match.route : notFoundRoute;
+  const params = match ? match.params : {};
   currentDataRoute = activeRoute.data || "";
   let html = "";
 
@@ -148,7 +207,7 @@ async function render() {
     html = await loadHtml(notFoundRoute.file);
   }
 
-  const { body, styles, scripts, title } = parsePage(html);
+  const { body, styles, scripts, title } = parsePage(html, activeRoute.file);
   if (title) document.title = title;
   app.innerHTML = body;
   syncStyles(styles);
@@ -163,7 +222,7 @@ async function render() {
     }
   });
 
-  dispatchRouteChange(pathname);
+  dispatchRouteChange(pathname, params);
 }
 
 // navigation “comme React Router” : empêche le reload

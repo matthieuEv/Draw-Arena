@@ -33,6 +33,10 @@ async function apiFetch(path, options = {}) {
 
     if (!response.ok) {
         const message = data.error || "API Error";
+        if (message.toLowerCase().includes("token")) {
+            clearSession();
+            window.location.href = "/login";
+        }
         throw new Error(message);
     }
 
@@ -57,8 +61,6 @@ function clearSession() {
 async function init() {
     // Check API health immediately
     checkApiHealth();
-
-    console.log(state.userInfo);
 
     if (!state.token) {
         const path = window.location.pathname;

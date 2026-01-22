@@ -1,5 +1,6 @@
 var clubInfo = null;
 var clubUsers = [];
+var currentClubId = null;
 
 function displayClubInfo() {
     if (clubInfo) {
@@ -11,10 +12,10 @@ function displayClubInfo() {
         const phone = document.getElementById("club-phone");
         if (name) name.textContent = clubInfo.nomClub;
         if (address) address.textContent = clubInfo.adresse;
-        if (city) city.textContent = clubInfo.ville;
+        if (city) city.textContent = clubInfo.ville+", ";
         if (dept) dept.textContent = clubInfo.departement;
-        if (region) region.textContent = clubInfo.region;
-        if (phone) phone.textContent = clubInfo.numTelephone;
+        if (region) region.textContent = "("+clubInfo.region+")";
+        if (phone) phone.textContent = "Tél : "+clubInfo.numTelephone;
     }
 }
 
@@ -24,7 +25,7 @@ function displayClubUsers(users = null) {
         const clubUsersDiv = document.getElementById('users-list');
         if (!clubUsersDiv) return;
         dataToLoad.forEach(user => {
-            const profileImg = user.pp ? user.pp : "/img/default_profile.png";
+            const profileImg = user.photoProfilUrl ? user.photoProfilUrl : "/img/default_profile.png";
             clubUsersDiv.insertAdjacentHTML('beforeend', `
                 <div class="user-card">
                     <img src="${profileImg}" alt="Profile" class="user-avatar">
@@ -42,7 +43,8 @@ function displayClubUsers(users = null) {
 document.addEventListener("click", function(event) {
     const button = event.target.closest("#load-more-users");
     if (!button) return;
-    getMoreUsers(1);
+    if (!currentClubId) return;
+    getMoreUsers(currentClubId);
 });
 
 function resetClubState() {
@@ -69,6 +71,7 @@ function getMoreUsers(clubId){
 }
 
 function loadClubData(clubId) {
+    currentClubId = clubId;
     apiFetch(`/club/${clubId}`).then(info => {
         clubInfo = info.club;
         displayClubInfo();
@@ -77,10 +80,14 @@ function loadClubData(clubId) {
 }
 
 function onRouteChange(event) {
-    const route = event && event.detail ? event.detail.route : "";
-    if (route !== "club") return;
+    const detail = event && event.detail ? event.detail : {};
+    const path = detail.path || "";
+    if (!/^\/club(\/|$)/.test(path)) return;
+    const rawId = detail.params ? detail.params.id : null;
+    const clubId = rawId ? Number(rawId) : null;
+    if (!clubId || Number.isNaN(clubId)) return;
     resetClubState();
-    loadClubData(1);
+    loadClubData(clubId);
 }
 
 document.addEventListener("route-change", onRouteChange);
