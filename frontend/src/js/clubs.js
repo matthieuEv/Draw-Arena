@@ -42,7 +42,9 @@ function hasAClub(){
         if (loadMoreButton) loadMoreButton.style.display = "none";
     }else{
         if (loadMoreButton) loadMoreButton.style.display = "inline-block";
-        loadMoreButton.href = "/club/"+state.userInfo.club;
+        loadMoreButton.onclick = function() {
+            location.href = "/club/"+state.userInfo.club;
+        };
     }
 }
 
