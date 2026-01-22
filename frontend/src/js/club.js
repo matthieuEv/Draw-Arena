@@ -1,86 +1,46 @@
 var clubInfo = null;
 var clubUsers = null;
 
-function getClubInfo(clubId) {
-    var data = apiFetch(`/club/${clubId}`);
-    return data;
-    // return fetch(`/api/club/${clubId}`)
-    //     .then(response => {
-    //         if (!response.ok) {
-    //             throw new Error('Network response was not ok ' + response.statusText);
-    //         }
-    //         return response.json();
-    //     })
-    //     .then(data => {
-    //         return {
-    //             id: data.id,
-    //             name: data.name,
-    //             members: data.members,
-    //             createdAt: new Date(data.created_at)
-    //         };
-    //     })
-    //     .catch(error => {
-    //         console.error('There was a problem with the fetch operation:', error);
-    //     });
-}
-
-function getClubUsers(clubId) {
-    var data = apiFetch(`/club/${clubId}/users`);
-    return data;
-    // return fetch(`/api/club/${clubId}/users`)
-    //     .then(response => {
-    //         if (!response.ok) {
-    //             throw new Error('Network response was not ok ' + response.statusText);
-    //         }
-    //         return response.json();
-    //     })
-    //     .then(data => {
-    //         return data.users.map(user => ({
-    //             id: user.id,
-    //             username: user.username,
-    //             joinedAt: new Date(user.joined_at)
-    //         }));
-    //     })
-    //     .catch(error => {
-    //         console.error('There was a problem with the fetch operation:', error);
-    //     });
-}
-
 function displayClubInfo() {
     if (clubInfo) {
-        const clubInfoDiv = document.getElementById('club-info');
-        clubInfoDiv.innerHTML = `
-            <h2>${clubInfo.name}</h2>
-            <p>Members: ${clubInfo.members}</p>
-            <p>Created At: ${clubInfo.createdAt.toDateString()}</p>
-        `;
+        document.getElementById("club-name").textContent = clubInfo.nomClub;
+        document.getElementById("club-address").textContent = clubInfo.adresse;
+        document.getElementById("club-city").textContent = clubInfo.ville;
+        document.getElementById("club-dept").textContent = clubInfo.departement;
+        document.getElementById("club-region").textContent = clubInfo.region;
+        document.getElementById("club-phone").textContent = clubInfo.numTelephone;
     }
 }
 
 function displayClubUsers() {
     if (clubUsers) {
-        const clubUsersDiv = document.getElementById('club-users');
-        clubUsersDiv.innerHTML = '<h3>Members:</h3>';
-        const userList = document.createElement('ul');
+        const clubUsersDiv = document.getElementById('users-list');
         clubUsers.forEach(user => {
-            const listItem = document.createElement('li');
-            listItem.textContent = `${user.username} (Joined: ${user.joinedAt.toDateString()})`;
-            userList.appendChild(listItem);
+            const profileImg = user.pp ? user.pp : "/img/default_profile.png";
+            clubUsersDiv.insertAdjacentHTML('beforeend', `
+                <div class="user-card">
+                    <img src="${profileImg}" alt="Profile" class="user-avatar">
+                    <div class="user-details">
+                        <h3 class="user-name">${user.prenom} ${user.nom} - ${user.age}</h3>
+                        <p class="user-login">${user.login}</p>
+                        <p class="user-address">${user.adresse}</p>
+                    </div>
+                </div>
+            `);
         });
-        clubUsersDiv.appendChild(userList);
     }
 }
 
 function loadClubData(clubId) {
-    getClubInfo(clubId).then(info => {
-        clubInfo = info;
+    apiFetch(`/club/${clubId}`).then(info => {
+        clubInfo = info.club;
         console.log('Club Info Loaded:', clubInfo);
     });
-    getClubUsers(clubId).then(users => {
-        clubUsers = users;
+    apiFetch(`/club/${clubId}/users`).then(users => {
+        clubUsers = users.users;
         console.log('Club Users Loaded:', clubUsers);
     });
 }
 
-// Example usage
+// TODO : implement when getting a club id
 loadClubData(1);
