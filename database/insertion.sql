@@ -696,7 +696,7 @@ INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, comme
 -- Clubs : 2, 3, 4, 5, 6, 7 via compétiteurs 96, 108, 120, 132, 144, 156
 INSERT INTO Dessin (commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
 ('Rue animée', NULL, '2024-06-15', '/uploads/dessin_c2_p96_1.jpg', 2, 96),
-('Marché d\'été', NULL, '2024-07-10', '/uploads/dessin_c2_p96_2.jpg', 2, 96),
+('Marché d''été', NULL, '2024-07-10', '/uploads/dessin_c2_p96_2.jpg', 2, 96),
 ('Tram au soleil', NULL, '2024-06-18', '/uploads/dessin_c2_p108_1.jpg', 2, 108),
 ('Place centrale', NULL, '2024-07-12', '/uploads/dessin_c2_p108_2.jpg', 2, 108),
 ('Façades colorées', NULL, '2024-06-20', '/uploads/dessin_c2_p120_1.jpg', 2, 120),
