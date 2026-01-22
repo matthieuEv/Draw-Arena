@@ -1,5 +1,5 @@
 var clubInfo = null;
-var clubUsers = null;
+var clubUsers = [];
 
 function displayClubInfo() {
     if (clubInfo) {
@@ -12,10 +12,11 @@ function displayClubInfo() {
     }
 }
 
-function displayClubUsers() {
-    if (clubUsers) {
+function displayClubUsers(users = null) {
+    var dataToLoad = users ? users : clubUsers;
+    if (dataToLoad) {
         const clubUsersDiv = document.getElementById('users-list');
-        clubUsers.forEach(user => {
+        dataToLoad.forEach(user => {
             const profileImg = user.pp ? user.pp : "/img/default_profile.png";
             clubUsersDiv.insertAdjacentHTML('beforeend', `
                 <div class="user-card">
@@ -31,15 +32,27 @@ function displayClubUsers() {
     }
 }
 
+document.getElementById("load-more-users").addEventListener("click", function() {
+    getMoreUsers();
+});
+
+function getMoreUsers(){
+    const currentCount = clubUsers ? clubUsers.length : 0;
+    apiFetch(`/club/${clubId}/users?limit=12&index=${currentCount}`).then(users => {
+        if(users.users.length !== 13) {
+            document.getElementById("load-more-users").style.display = "none";
+        } 
+        clubUsers = clubUsers.concat(users.users);
+        displayClubUsers(users.users);
+    });
+}
+
 function loadClubData(clubId) {
     apiFetch(`/club/${clubId}`).then(info => {
         clubInfo = info.club;
-        console.log('Club Info Loaded:', clubInfo);
+        displayClubInfo();
     });
-    apiFetch(`/club/${clubId}/users`).then(users => {
-        clubUsers = users.users;
-        console.log('Club Users Loaded:', clubUsers);
-    });
+    getMoreUsers();
 }
 
 // TODO : implement when getting a club id
