@@ -33,10 +33,10 @@ function displayClubUsers(users = null) {
 }
 
 document.getElementById("load-more-users").addEventListener("click", function() {
-    getMoreUsers();
+    getMoreUsers(1);
 });
 
-function getMoreUsers(){
+function getMoreUsers(clubId){
     const currentCount = clubUsers ? clubUsers.length : 0;
     apiFetch(`/club/${clubId}/users?limit=12&index=${currentCount}`).then(users => {
         if(users.users.length !== 13) {
@@ -52,7 +52,7 @@ function loadClubData(clubId) {
         clubInfo = info.club;
         displayClubInfo();
     });
-    getMoreUsers();
+    getMoreUsers(clubId);
 }
 
 // TODO : implement when getting a club id
