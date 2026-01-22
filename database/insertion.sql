@@ -612,6 +612,24 @@ INSERT INTO Dessin (commentaire, classement, date_remise, le_dessin, num_concour
 ('Prairie', NULL, '2024-04-28', '/uploads/dessin_c1_p89_1.jpg', 1, 89),
 ('Champ', NULL, '2024-05-18', '/uploads/dessin_c1_p89_2.jpg', 1, 89);
 
+-- Concours 1 (ajout : dépôts depuis 5 autres clubs pour avoir 6 clubs actifs)
+-- Club 2 : compétiteur 96 (2 dessins)
+-- Club 3 : compétiteur 108 (2 dessins)
+-- Club 4 : compétiteur 120 (2 dessins)
+-- Club 5 : compétiteur 132 (2 dessins)
+-- Club 6 : compétiteur 144 (2 dessins)
+INSERT INTO Dessin (commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
+('Rue fleurie', NULL, '2024-04-16', '/uploads/dessin_c1_p96_1.jpg', 1, 96),
+('Parc urbain', NULL, '2024-05-11', '/uploads/dessin_c1_p96_2.jpg', 1, 96),
+('Forêt lumineuse', NULL, '2024-04-19', '/uploads/dessin_c1_p108_1.jpg', 1, 108),
+('Ruisseau', NULL, '2024-05-13', '/uploads/dessin_c1_p108_2.jpg', 1, 108),
+('Fleurs sauvages', NULL, '2024-04-23', '/uploads/dessin_c1_p120_1.jpg', 1, 120),
+('Jardin botanique', NULL, '2024-05-09', '/uploads/dessin_c1_p120_2.jpg', 1, 120),
+('Ciel de printemps', NULL, '2024-04-26', '/uploads/dessin_c1_p132_1.jpg', 1, 132),
+('Champ de coquelicots', NULL, '2024-05-16', '/uploads/dessin_c1_p132_2.jpg', 1, 132),
+('Monts verdoyants', NULL, '2024-04-29', '/uploads/dessin_c1_p144_1.jpg', 1, 144),
+('Lac au matin', NULL, '2024-05-19', '/uploads/dessin_c1_p144_2.jpg', 1, 144);
+
 -- =============================================================================
 -- ÉVALUATIONS (chaque dessin évalué par 2 évaluateurs)
 -- Maximum 8 dessins évalués par évaluateur dans un même concours
@@ -644,6 +662,363 @@ INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, comme
 (11, 30, '2024-05-31', 14.2, 'Passable'),
 (12, 26, '2024-06-01', 16.0, 'Bon travail'),
 (12, 30, '2024-06-01', 16.3, 'Bien');
+
+-- Concours 1: ajout évaluations pour les nouveaux dessins (13-22)
+-- Chaque dessin est évalué par 2 évaluateurs, et chaque évaluateur reste <= 8 dessins sur le concours.
+INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire) VALUES
+(13, 30, '2024-05-20', 15.9, 'Bonne ambiance'),
+(13, 31, '2024-05-20', 16.4, 'Détails intéressants'),
+(14, 30, '2024-05-21', 16.8, 'Composition solide'),
+(14, 32, '2024-05-21', 16.2, 'Couleurs équilibrées'),
+(15, 31, '2024-05-22', 17.1, 'Très bon rendu'),
+(15, 32, '2024-05-22', 17.4, 'Beau contraste'),
+(16, 36, '2024-05-22', 16.6, 'Trait maîtrisé'),
+(16, 37, '2024-05-22', 16.9, 'Très agréable'),
+(17, 36, '2024-05-23', 15.7, 'Correct et propre'),
+(17, 38, '2024-05-23', 15.9, 'Bon potentiel'),
+(18, 37, '2024-05-23', 16.3, 'Harmonieux'),
+(18, 38, '2024-05-23', 16.1, 'Bien réalisé'),
+(19, 42, '2024-05-24', 17.6, 'Très expressif'),
+(19, 43, '2024-05-24', 17.2, 'Belles formes'),
+(20, 42, '2024-05-24', 16.9, 'Belle profondeur'),
+(20, 44, '2024-05-24', 17.1, 'Très bon niveau'),
+(21, 43, '2024-05-25', 16.0, 'Bien mais perfectible'),
+(21, 44, '2024-05-25', 16.4, 'Bon équilibre'),
+(22, 48, '2024-05-25', 17.0, 'Très réussi'),
+(22, 49, '2024-05-25', 17.3, 'Remarquable');
+
+-- =============================================================================
+-- DONNÉES SUPPLÉMENTAIRES : CONCOURS 2 (Ville en Été)
+-- Objectif : avoir des dépôts + évaluations multi-clubs pour tester les classements par concours
+-- =============================================================================
+
+-- Concours 2 : 12 dessins (6 clubs × 2 dessins)
+-- Clubs : 2, 3, 4, 5, 6, 7 via compétiteurs 96, 108, 120, 132, 144, 156
+INSERT INTO Dessin (commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
+('Rue animée', NULL, '2024-06-15', '/uploads/dessin_c2_p96_1.jpg', 2, 96),
+('Marché d''été', NULL, '2024-07-10', '/uploads/dessin_c2_p96_2.jpg', 2, 96),
+('Tram au soleil', NULL, '2024-06-18', '/uploads/dessin_c2_p108_1.jpg', 2, 108),
+('Place centrale', NULL, '2024-07-12', '/uploads/dessin_c2_p108_2.jpg', 2, 108),
+('Façades colorées', NULL, '2024-06-20', '/uploads/dessin_c2_p120_1.jpg', 2, 120),
+('Café en terrasse', NULL, '2024-07-15', '/uploads/dessin_c2_p120_2.jpg', 2, 120),
+('Pont au crépuscule', NULL, '2024-06-22', '/uploads/dessin_c2_p132_1.jpg', 2, 132),
+('Quai en fête', NULL, '2024-07-18', '/uploads/dessin_c2_p132_2.jpg', 2, 132),
+('Rues pavées', NULL, '2024-06-25', '/uploads/dessin_c2_p144_1.jpg', 2, 144),
+('Vitrine d''atelier', NULL, '2024-07-20', '/uploads/dessin_c2_p144_2.jpg', 2, 144),
+('Skyline d''été', NULL, '2024-06-28', '/uploads/dessin_c2_p156_1.jpg', 2, 156),
+('Parc urbain au crépuscule', NULL, '2024-07-25', '/uploads/dessin_c2_p156_2.jpg', 2, 156);
+
+-- Concours 2 : évaluations pour les nouveaux dessins (23-34)
+-- Répartition simple pour respecter la contrainte "<= 8 dessins/évaluateur/concours".
+INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire) VALUES
+(23, 30, '2024-08-05', 16.2, 'Bonne scène de rue'),
+(23, 31, '2024-08-05', 16.8, 'Dynamique'),
+(24, 30, '2024-08-06', 15.7, 'Sympa'),
+(24, 31, '2024-08-06', 16.1, 'Bien composé'),
+
+(25, 30, '2024-08-07', 17.3, 'Très réussi'),
+(25, 31, '2024-08-07', 17.0, 'Bon rythme'),
+(26, 30, '2024-08-08', 16.6, 'Solide'),
+(26, 31, '2024-08-08', 16.9, 'Très propre'),
+
+(27, 32, '2024-08-09', 15.9, 'Correct'),
+(27, 36, '2024-08-09', 16.4, 'Bon rendu'),
+(28, 32, '2024-08-10', 16.8, 'Belle atmosphère'),
+(28, 36, '2024-08-10', 16.2, 'Harmonieux'),
+
+(29, 32, '2024-08-11', 17.1, 'Très bon'),
+(29, 36, '2024-08-11', 17.4, 'Excellent'),
+(30, 32, '2024-08-12', 16.0, 'Bien'),
+(30, 36, '2024-08-12', 16.6, 'Bonne perspective'),
+
+(31, 37, '2024-08-13', 16.9, 'Beau travail'),
+(31, 38, '2024-08-13', 16.5, 'Propre'),
+(32, 37, '2024-08-14', 15.8, 'Peut mieux faire'),
+(32, 38, '2024-08-14', 16.2, 'Correct'),
+
+(33, 37, '2024-08-15', 17.2, 'Très bon niveau'),
+(33, 38, '2024-08-15', 17.6, 'Remarquable'),
+(34, 37, '2024-08-16', 16.1, 'Bien équilibré'),
+(34, 38, '2024-08-16', 16.4, 'Bonne lecture');
+
+-- =============================================================================
+-- DONNÉES SUPPLÉMENTAIRES : CONCOURS 3 À 8
+-- Objectif : ajouter des dépôts + évaluations pour couvrir l'ensemble des concours
+-- Notes :
+-- - On fixe explicitement num_dessin pour pouvoir référencer facilement les évaluations.
+-- - Chaque dessin est évalué par 2 évaluateurs.
+-- - Répartition pensée pour que chaque évaluateur reste <= 8 dessins évalués par concours.
+-- =============================================================================
+
+-- =============================================================================
+-- CONCOURS 3 (Portraits d'Automne) : 12 dessins (6 clubs × 2 dessins)
+-- Clubs via compétiteurs : 1, 3, 4, 5, 6, 7 (84, 108, 120, 132, 144, 156)
+-- =============================================================================
+INSERT INTO Dessin (num_dessin, commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
+(35, 'Portrait au fusain', NULL, '2024-09-15', '/uploads/dessin_c3_p84_1.jpg', 3, 84),
+(36, 'Regard d''automne', NULL, '2024-10-05', '/uploads/dessin_c3_p84_2.jpg', 3, 84),
+(37, 'Sourire en clair-obscur', NULL, '2024-09-18', '/uploads/dessin_c3_p108_1.jpg', 3, 108),
+(38, 'Profil mélancolique', NULL, '2024-10-10', '/uploads/dessin_c3_p108_2.jpg', 3, 108),
+(39, 'Portrait à l''encre', NULL, '2024-09-22', '/uploads/dessin_c3_p120_1.jpg', 3, 120),
+(40, 'Autoportrait', NULL, '2024-10-12', '/uploads/dessin_c3_p120_2.jpg', 3, 120),
+(41, 'Expression fragile', NULL, '2024-09-25', '/uploads/dessin_c3_p132_1.jpg', 3, 132),
+(42, 'Lumière sur le visage', NULL, '2024-10-15', '/uploads/dessin_c3_p132_2.jpg', 3, 132),
+(43, 'Rides et sagesse', NULL, '2024-09-28', '/uploads/dessin_c3_p144_1.jpg', 3, 144),
+(44, 'Silhouette d''automne', NULL, '2024-10-20', '/uploads/dessin_c3_p144_2.jpg', 3, 144),
+(45, 'Portrait pastel', NULL, '2024-10-01', '/uploads/dessin_c3_p156_1.jpg', 3, 156),
+(46, 'Ombres et contrastes', NULL, '2024-10-25', '/uploads/dessin_c3_p156_2.jpg', 3, 156);
+
+-- Concours 3 : évaluations (35-46)
+INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire) VALUES
+(35, 24, '2024-11-20', 16.8, 'Trait précis'),
+(35, 25, '2024-11-20', 17.1, 'Bonne expression'),
+(36, 24, '2024-11-21', 15.9, 'Correct'),
+(36, 25, '2024-11-21', 16.2, 'Belle ambiance'),
+(37, 24, '2024-11-22', 17.4, 'Très bon rendu'),
+(37, 25, '2024-11-22', 17.0, 'Solide'),
+(38, 24, '2024-11-23', 16.1, 'Bien'),
+(38, 25, '2024-11-23', 16.4, 'Propre'),
+(39, 24, '2024-11-24', 17.8, 'Excellent contraste'),
+(39, 25, '2024-11-24', 17.5, 'Très expressif'),
+(40, 24, '2024-11-25', 16.6, 'Bon travail'),
+(40, 25, '2024-11-25', 16.9, 'Harmonieux'),
+(41, 36, '2024-11-26', 16.3, 'Bonne composition'),
+(41, 37, '2024-11-26', 16.7, 'Belle lumière'),
+(42, 36, '2024-11-27', 17.2, 'Très réussi'),
+(42, 37, '2024-11-27', 17.0, 'Bon niveau'),
+(43, 36, '2024-11-28', 15.8, 'Peut mieux faire'),
+(43, 37, '2024-11-28', 16.0, 'Correct'),
+(44, 36, '2024-11-29', 16.9, 'Beau rendu'),
+(44, 37, '2024-11-29', 16.5, 'Propre'),
+(45, 36, '2024-11-30', 17.6, 'Très expressif'),
+(45, 37, '2024-11-30', 17.3, 'Remarquable'),
+(46, 36, '2024-11-30', 16.2, 'Bien'),
+(46, 37, '2024-11-30', 16.4, 'Bonne lecture');
+
+-- =============================================================================
+-- CONCOURS 4 (Abstrait d'Hiver) : 12 dessins (6 clubs × 2 dessins)
+-- Clubs via compétiteurs : 1, 2, 4, 5, 6, 7 (84, 96, 120, 132, 144, 156)
+-- =============================================================================
+INSERT INTO Dessin (num_dessin, commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
+(47, 'Formes géométriques', NULL, '2025-01-05', '/uploads/dessin_c4_p84_1.jpg', 4, 84),
+(48, 'Abstrait glacé', NULL, '2025-02-01', '/uploads/dessin_c4_p84_2.jpg', 4, 84),
+(49, 'Couleurs d''hiver', NULL, '2025-01-08', '/uploads/dessin_c4_p96_1.jpg', 4, 96),
+(50, 'Textures froides', NULL, '2025-02-03', '/uploads/dessin_c4_p96_2.jpg', 4, 96),
+(51, 'Composition minimaliste', NULL, '2025-01-12', '/uploads/dessin_c4_p120_1.jpg', 4, 120),
+(52, 'Rythme abstrait', NULL, '2025-02-06', '/uploads/dessin_c4_p120_2.jpg', 4, 120),
+(53, 'Taches et lumière', NULL, '2025-01-15', '/uploads/dessin_c4_p132_1.jpg', 4, 132),
+(54, 'Contrastes', NULL, '2025-02-10', '/uploads/dessin_c4_p132_2.jpg', 4, 132),
+(55, 'Fragments', NULL, '2025-01-18', '/uploads/dessin_c4_p144_1.jpg', 4, 144),
+(56, 'Vagues abstraites', NULL, '2025-02-14', '/uploads/dessin_c4_p144_2.jpg', 4, 144),
+(57, 'Éclats', NULL, '2025-01-22', '/uploads/dessin_c4_p156_1.jpg', 4, 156),
+(58, 'Hiver chromatique', NULL, '2025-02-18', '/uploads/dessin_c4_p156_2.jpg', 4, 156);
+
+-- Concours 4 : évaluations (47-58)
+INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire) VALUES
+(47, 30, '2025-02-15', 16.4, 'Bonne structure'),
+(47, 31, '2025-02-15', 16.8, 'Intéressant'),
+(48, 30, '2025-02-16', 15.7, 'Correct'),
+(48, 31, '2025-02-16', 16.0, 'Bien'),
+(49, 30, '2025-02-17', 17.0, 'Très bon'),
+(49, 31, '2025-02-17', 17.2, 'Solide'),
+(50, 30, '2025-02-18', 16.1, 'Propre'),
+(50, 31, '2025-02-18', 16.3, 'Bon rendu'),
+(51, 30, '2025-02-19', 17.5, 'Très réussi'),
+(51, 31, '2025-02-19', 17.1, 'Belle cohérence'),
+(52, 30, '2025-02-20', 16.6, 'Bien équilibré'),
+(52, 31, '2025-02-20', 16.9, 'Bonne énergie'),
+(53, 42, '2025-02-21', 16.0, 'Correct'),
+(53, 43, '2025-02-21', 16.4, 'Bonne lecture'),
+(54, 42, '2025-02-22', 17.3, 'Très bon'),
+(54, 43, '2025-02-22', 17.0, 'Bien'),
+(55, 42, '2025-02-23', 15.9, 'Peut mieux faire'),
+(55, 43, '2025-02-23', 16.1, 'Correct'),
+(56, 42, '2025-02-24', 16.8, 'Beau contraste'),
+(56, 43, '2025-02-24', 16.6, 'Propre'),
+(57, 42, '2025-02-25', 17.6, 'Excellent'),
+(57, 43, '2025-02-25', 17.2, 'Remarquable'),
+(58, 42, '2025-02-26', 16.2, 'Bien'),
+(58, 43, '2025-02-26', 16.5, 'Bonne harmonie');
+
+-- =============================================================================
+-- CONCOURS 5 (Animaux du Printemps) : 12 dessins (6 clubs × 2 dessins)
+-- Clubs via compétiteurs : 1, 2, 3, 4, 5, 6 (84, 96, 108, 120, 132, 144)
+-- =============================================================================
+INSERT INTO Dessin (num_dessin, commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
+(59, 'Chat au soleil', NULL, '2025-03-20', '/uploads/dessin_c5_p84_1.jpg', 5, 84),
+(60, 'Oiseau en vol', NULL, '2025-04-10', '/uploads/dessin_c5_p84_2.jpg', 5, 84),
+(61, 'Renard discret', NULL, '2025-03-22', '/uploads/dessin_c5_p96_1.jpg', 5, 96),
+(62, 'Lapin dans l''herbe', NULL, '2025-04-12', '/uploads/dessin_c5_p96_2.jpg', 5, 96),
+(63, 'Cheval au galop', NULL, '2025-03-25', '/uploads/dessin_c5_p108_1.jpg', 5, 108),
+(64, 'Poisson abstrait', NULL, '2025-04-15', '/uploads/dessin_c5_p108_2.jpg', 5, 108),
+(65, 'Chien fidèle', NULL, '2025-03-28', '/uploads/dessin_c5_p120_1.jpg', 5, 120),
+(66, 'Papillon', NULL, '2025-04-18', '/uploads/dessin_c5_p120_2.jpg', 5, 120),
+(67, 'Hibou nocturne', NULL, '2025-04-01', '/uploads/dessin_c5_p132_1.jpg', 5, 132),
+(68, 'Biche', NULL, '2025-04-20', '/uploads/dessin_c5_p132_2.jpg', 5, 132),
+(69, 'Tortue', NULL, '2025-04-05', '/uploads/dessin_c5_p144_1.jpg', 5, 144),
+(70, 'Loup', NULL, '2025-04-25', '/uploads/dessin_c5_p144_2.jpg', 5, 144);
+
+-- Concours 5 : évaluations (59-70)
+INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire) VALUES
+(59, 36, '2025-05-20', 16.7, 'Beau mouvement'),
+(59, 37, '2025-05-20', 16.9, 'Bien réalisé'),
+(60, 36, '2025-05-21', 17.4, 'Très bon'),
+(60, 37, '2025-05-21', 17.0, 'Propre'),
+(61, 36, '2025-05-22', 16.1, 'Correct'),
+(61, 37, '2025-05-22', 16.4, 'Bonne ambiance'),
+(62, 36, '2025-05-23', 15.8, 'Simple mais efficace'),
+(62, 37, '2025-05-23', 16.0, 'Bien'),
+(63, 36, '2025-05-24', 17.6, 'Excellent'),
+(63, 37, '2025-05-24', 17.2, 'Remarquable'),
+(64, 36, '2025-05-25', 16.5, 'Original'),
+(64, 37, '2025-05-25', 16.8, 'Créatif'),
+(65, 48, '2025-05-26', 16.2, 'Bon dessin'),
+(65, 49, '2025-05-26', 16.6, 'Propre'),
+(66, 48, '2025-05-27', 17.1, 'Très bon'),
+(66, 49, '2025-05-27', 16.9, 'Belle couleur'),
+(67, 48, '2025-05-28', 16.0, 'Correct'),
+(67, 49, '2025-05-28', 16.3, 'Bien'),
+(68, 48, '2025-05-29', 17.3, 'Très réussi'),
+(68, 49, '2025-05-29', 17.1, 'Solide'),
+(69, 48, '2025-05-30', 15.9, 'Peut mieux faire'),
+(69, 49, '2025-05-30', 16.1, 'Correct'),
+(70, 48, '2025-05-31', 17.8, 'Excellent'),
+(70, 49, '2025-05-31', 17.5, 'Remarquable');
+
+-- =============================================================================
+-- CONCOURS 6 (Paysages d'Été) : 12 dessins (6 clubs × 2 dessins)
+-- Clubs via compétiteurs : 3, 4, 5, 6, 7, 8 (108, 120, 132, 144, 156, 168)
+-- =============================================================================
+INSERT INTO Dessin (num_dessin, commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
+(71, 'Côte ensoleillée', NULL, '2025-06-20', '/uploads/dessin_c6_p108_1.jpg', 6, 108),
+(72, 'Plage au matin', NULL, '2025-07-10', '/uploads/dessin_c6_p108_2.jpg', 6, 108),
+(73, 'Montagnes lointaines', NULL, '2025-06-22', '/uploads/dessin_c6_p120_1.jpg', 6, 120),
+(74, 'Vallée d''été', NULL, '2025-07-12', '/uploads/dessin_c6_p120_2.jpg', 6, 120),
+(75, 'Forêt lumineuse', NULL, '2025-06-25', '/uploads/dessin_c6_p132_1.jpg', 6, 132),
+(76, 'Rivière claire', NULL, '2025-07-15', '/uploads/dessin_c6_p132_2.jpg', 6, 132),
+(77, 'Champ doré', NULL, '2025-06-28', '/uploads/dessin_c6_p144_1.jpg', 6, 144),
+(78, 'Nuages d''été', NULL, '2025-07-18', '/uploads/dessin_c6_p144_2.jpg', 6, 144),
+(79, 'Ville au loin', NULL, '2025-07-01', '/uploads/dessin_c6_p156_1.jpg', 6, 156),
+(80, 'Port au crépuscule', NULL, '2025-07-20', '/uploads/dessin_c6_p156_2.jpg', 6, 156),
+(81, 'Lac tranquille', NULL, '2025-07-05', '/uploads/dessin_c6_p168_1.jpg', 6, 168),
+(82, 'Route vers l''horizon', NULL, '2025-07-25', '/uploads/dessin_c6_p168_2.jpg', 6, 168);
+
+-- Concours 6 : évaluations (71-82)
+INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire) VALUES
+(71, 60, '2025-08-20', 16.6, 'Bonne profondeur'),
+(71, 61, '2025-08-20', 16.9, 'Beau travail'),
+(72, 60, '2025-08-21', 16.0, 'Correct'),
+(72, 61, '2025-08-21', 16.3, 'Bien'),
+(73, 60, '2025-08-22', 17.2, 'Très bon'),
+(73, 61, '2025-08-22', 17.0, 'Solide'),
+(74, 60, '2025-08-23', 16.4, 'Propre'),
+(74, 61, '2025-08-23', 16.6, 'Harmonieux'),
+(75, 60, '2025-08-24', 17.6, 'Excellent'),
+(75, 61, '2025-08-24', 17.3, 'Remarquable'),
+(76, 60, '2025-08-25', 16.8, 'Très agréable'),
+(76, 61, '2025-08-25', 17.1, 'Bon niveau'),
+(77, 66, '2025-08-26', 16.1, 'Correct'),
+(77, 67, '2025-08-26', 16.4, 'Bien composé'),
+(78, 66, '2025-08-27', 17.0, 'Très bon'),
+(78, 67, '2025-08-27', 16.7, 'Propre'),
+(79, 66, '2025-08-28', 15.8, 'Peut mieux faire'),
+(79, 67, '2025-08-28', 16.0, 'Correct'),
+(80, 66, '2025-08-29', 17.3, 'Très réussi'),
+(80, 67, '2025-08-29', 17.1, 'Belle atmosphère'),
+(81, 66, '2025-08-30', 16.5, 'Bien'),
+(81, 67, '2025-08-30', 16.8, 'Bonne lecture'),
+(82, 66, '2025-08-31', 17.7, 'Excellent'),
+(82, 67, '2025-08-31', 17.4, 'Remarquable');
+
+-- =============================================================================
+-- CONCOURS 7 (Architecture d'Automne) : 12 dessins (6 clubs × 2 dessins)
+-- Clubs via compétiteurs : 1, 2, 5, 6, 7, 8 (84, 96, 132, 144, 156, 168)
+-- =============================================================================
+INSERT INTO Dessin (num_dessin, commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
+(83, 'Façade ancienne', NULL, '2025-09-20', '/uploads/dessin_c7_p84_1.jpg', 7, 84),
+(84, 'Pont métallique', NULL, '2025-10-10', '/uploads/dessin_c7_p84_2.jpg', 7, 84),
+(85, 'Immeuble moderne', NULL, '2025-09-22', '/uploads/dessin_c7_p96_1.jpg', 7, 96),
+(86, 'Escalier en spirale', NULL, '2025-10-12', '/uploads/dessin_c7_p96_2.jpg', 7, 96),
+(87, 'Cathédrale', NULL, '2025-09-25', '/uploads/dessin_c7_p132_1.jpg', 7, 132),
+(88, 'Place urbaine', NULL, '2025-10-15', '/uploads/dessin_c7_p132_2.jpg', 7, 132),
+(89, 'Arcades', NULL, '2025-09-28', '/uploads/dessin_c7_p144_1.jpg', 7, 144),
+(90, 'Toits d''ardoise', NULL, '2025-10-18', '/uploads/dessin_c7_p144_2.jpg', 7, 144),
+(91, 'Gare', NULL, '2025-10-01', '/uploads/dessin_c7_p156_1.jpg', 7, 156),
+(92, 'Bibliothèque', NULL, '2025-10-20', '/uploads/dessin_c7_p156_2.jpg', 7, 156),
+(93, 'Tour panoramique', NULL, '2025-10-05', '/uploads/dessin_c7_p168_1.jpg', 7, 168),
+(94, 'Rue historique', NULL, '2025-10-25', '/uploads/dessin_c7_p168_2.jpg', 7, 168);
+
+-- Concours 7 : évaluations (83-94)
+INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire) VALUES
+(83, 72, '2025-11-20', 16.5, 'Bonne perspective'),
+(83, 73, '2025-11-20', 16.8, 'Propre'),
+(84, 72, '2025-11-21', 17.1, 'Très bon'),
+(84, 73, '2025-11-21', 16.9, 'Solide'),
+(85, 72, '2025-11-22', 16.0, 'Correct'),
+(85, 73, '2025-11-22', 16.2, 'Bien'),
+(86, 72, '2025-11-23', 16.7, 'Beau rendu'),
+(86, 73, '2025-11-23', 16.4, 'Bonne lecture'),
+(87, 72, '2025-11-24', 17.6, 'Excellent'),
+(87, 73, '2025-11-24', 17.3, 'Remarquable'),
+(88, 72, '2025-11-25', 16.9, 'Très agréable'),
+(88, 73, '2025-11-25', 17.0, 'Bon niveau'),
+(89, 78, '2025-11-26', 16.2, 'Correct'),
+(89, 79, '2025-11-26', 16.5, 'Bien'),
+(90, 78, '2025-11-27', 16.8, 'Beau contraste'),
+(90, 79, '2025-11-27', 16.6, 'Propre'),
+(91, 78, '2025-11-28', 15.9, 'Peut mieux faire'),
+(91, 79, '2025-11-28', 16.1, 'Correct'),
+(92, 78, '2025-11-29', 17.2, 'Très réussi'),
+(92, 79, '2025-11-29', 16.9, 'Solide'),
+(93, 78, '2025-11-30', 16.6, 'Bien'),
+(93, 79, '2025-11-30', 16.8, 'Bonne lecture'),
+(94, 78, '2025-11-30', 17.7, 'Excellent'),
+(94, 79, '2025-11-30', 17.4, 'Remarquable');
+
+-- =============================================================================
+-- CONCOURS 8 (Fantastique d'Hiver) : 12 dessins (6 clubs × 2 dessins)
+-- Clubs via compétiteurs : 1, 2, 3, 4, 5, 6 (84, 96, 108, 120, 132, 144)
+-- =============================================================================
+INSERT INTO Dessin (num_dessin, commentaire, classement, date_remise, le_dessin, num_concours, num_competiteur) VALUES
+(95, 'Dragon endormi', NULL, '2025-12-20', '/uploads/dessin_c8_p84_1.jpg', 8, 84),
+(96, 'Forêt enchantée', NULL, '2026-01-10', '/uploads/dessin_c8_p84_2.jpg', 8, 84),
+(97, 'Château dans les nuages', NULL, '2025-12-22', '/uploads/dessin_c8_p96_1.jpg', 8, 96),
+(98, 'Chevalier perdu', NULL, '2026-01-12', '/uploads/dessin_c8_p96_2.jpg', 8, 96),
+(99, 'Sorcière', NULL, '2025-12-25', '/uploads/dessin_c8_p108_1.jpg', 8, 108),
+(100, 'Potion lumineuse', NULL, '2026-01-15', '/uploads/dessin_c8_p108_2.jpg', 8, 108),
+(101, 'Créature marine', NULL, '2025-12-28', '/uploads/dessin_c8_p120_1.jpg', 8, 120),
+(102, 'Portail', NULL, '2026-01-18', '/uploads/dessin_c8_p120_2.jpg', 8, 120),
+(103, 'Géant de glace', NULL, '2026-01-02', '/uploads/dessin_c8_p132_1.jpg', 8, 132),
+(104, 'Lune violette', NULL, '2026-01-20', '/uploads/dessin_c8_p132_2.jpg', 8, 132),
+(105, 'Phénix', NULL, '2026-01-05', '/uploads/dessin_c8_p144_1.jpg', 8, 144),
+(106, 'Cité fantastique', NULL, '2026-01-25', '/uploads/dessin_c8_p144_2.jpg', 8, 144);
+
+-- Concours 8 : évaluations (95-106)
+INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire) VALUES
+(95, 54, '2026-02-10', 16.9, 'Très bon univers'),
+(95, 55, '2026-02-10', 17.2, 'Belle narration'),
+(96, 54, '2026-02-11', 16.2, 'Bien'),
+(96, 55, '2026-02-11', 16.5, 'Atmosphère réussie'),
+(97, 54, '2026-02-12', 17.4, 'Très bon'),
+(97, 55, '2026-02-12', 17.0, 'Solide'),
+(98, 54, '2026-02-13', 16.0, 'Correct'),
+(98, 55, '2026-02-13', 16.3, 'Bien'),
+(99, 54, '2026-02-14', 17.6, 'Excellent'),
+(99, 55, '2026-02-14', 17.3, 'Remarquable'),
+(100, 54, '2026-02-15', 16.7, 'Créatif'),
+(100, 55, '2026-02-15', 16.9, 'Bonne idée'),
+(101, 60, '2026-02-16', 16.1, 'Correct'),
+(101, 61, '2026-02-16', 16.4, 'Bien réalisé'),
+(102, 60, '2026-02-17', 17.0, 'Très bon'),
+(102, 61, '2026-02-17', 16.7, 'Propre'),
+(103, 60, '2026-02-18', 15.8, 'Peut mieux faire'),
+(103, 61, '2026-02-18', 16.0, 'Correct'),
+(104, 60, '2026-02-19', 17.2, 'Très réussi'),
+(104, 61, '2026-02-19', 16.9, 'Solide'),
+(105, 60, '2026-02-20', 16.6, 'Bien'),
+(105, 61, '2026-02-20', 16.8, 'Bonne lecture'),
+(106, 60, '2026-02-21', 17.7, 'Excellent'),
+(106, 61, '2026-02-21', 17.4, 'Remarquable');
 
 -- =============================================================================
 -- FIN DU FICHIER D'INSERTION
