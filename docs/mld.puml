@@ -73,6 +73,7 @@ class Evaluateur {
   +num_utilisateur : ID <<PK,FK>>
   --
   specialite : String
+  xp : int
 }
 
 class President {
