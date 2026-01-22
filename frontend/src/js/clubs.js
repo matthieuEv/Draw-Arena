@@ -37,9 +37,12 @@ function resetClubState() {
 }
 
 function hasAClub(){
+    const loadMoreButton = document.getElementById("my-club-button");
     if(!state.userInfo.club){
-        const loadMoreButton = document.getElementById("my-club-button");
         if (loadMoreButton) loadMoreButton.style.display = "none";
+    }else{
+        if (loadMoreButton) loadMoreButton.style.display = "inline-block";
+        loadMoreButton.href = "/club/"+state.userInfo.club;
     }
 }
 
