@@ -41,7 +41,9 @@ function getMoreUsers(clubId){
     apiFetch(`/club/${clubId}/users?limit=12&index=${currentCount}`).then(users => {
         if(users.users.length !== 13) {
             document.getElementById("load-more-users").style.display = "none";
-        } 
+        }else{
+            users.users.pop();
+        }
         clubUsers = clubUsers.concat(users.users);
         displayClubUsers(users.users);
     });
