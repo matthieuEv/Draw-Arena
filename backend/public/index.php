@@ -33,6 +33,8 @@ $router->get('/api/club/{clubId}/users', [ClubHandler::class, 'getClubUsers'], [
 
 // concours routes
 $router->get('/api/concours', [ConcoursHandler::class, 'getAllConcours'], [new AuthMiddleware()]);
+// Obligation 6
+$router->get('/api/concours/best', [ConcoursHandler::class, 'getBest'], [new AuthMiddleware()]);
 $router->get('/api/concours/{concoursId}', [ConcoursHandler::class, 'getConcoursById'], [new AuthMiddleware()]);
 $router->get('/api/concours/{concoursId}/users', [ConcoursHandler::class, 'getConcoursCompetiteur'], [new AuthMiddleware()]);
 // $router->get('/api/concours/{concoursId}/dessins', [ConcoursHandler::class, 'getConcoursDessins'], [new AuthMiddleware()]);
