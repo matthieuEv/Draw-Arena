@@ -47,7 +47,7 @@ class Club
         return array_map(fn($row) => self::hydrateFromArray($row), $results);
     }
 
-    public static function findById(int $numClub): ?Club
+    public static function getById(int $numClub): ?Club
     {
         $stmt = Database::prepare('SELECT * FROM Club WHERE num_club = ? LIMIT 1');
         $stmt->execute([$numClub]);
@@ -75,7 +75,6 @@ class Club
 
         return array_map(fn($row) => Utilisateur::hydrateFromArray($row), $results);
     }
-
     private static function hydrateFromArray(array $data): Club
     {
         $club = new self();

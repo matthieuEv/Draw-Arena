@@ -13,16 +13,7 @@ class Administrateur
 
     private function __construct() {}
 
-    public static function create(int $numAdministrateur, string $dateDebut): bool
-    {
-        $stmt = Database::prepare(
-            'INSERT INTO Administrateur (num_administrateur, date_debut) VALUES (?, ?)'
-        );
-
-        return $stmt->execute([$numAdministrateur, $dateDebut]);
-    }
-
-    public static function findById(int $numAdministrateur): ?Administrateur
+    public static function getById(int $numAdministrateur): ?Administrateur
     {
         $stmt = Database::prepare('SELECT * FROM Administrateur WHERE num_administrateur = ? LIMIT 1');
         $stmt->execute([$numAdministrateur]);

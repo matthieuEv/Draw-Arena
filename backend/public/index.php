@@ -23,11 +23,10 @@ $router->post('/api/auth/register', [AuthHandler::class, 'register']);
 $router->post('/api/auth/login', [AuthHandler::class, 'login']);
 
 // PROTECTED ROUTES (require JWT authentication)
+// Club routes
 $router->get('/api/club', [ClubHandler::class, 'getAllClub'], [new AuthMiddleware()]);
-$router->get('/api/club/{clubId}', [ClubHandler::class, 'findClubById'], [new AuthMiddleware()]);
+$router->get('/api/club/{clubId}', [ClubHandler::class, 'getClubById'], [new AuthMiddleware()]);
 $router->get('/api/club/{clubId}/users', [ClubHandler::class, 'getClubUsers'], [new AuthMiddleware()]);
-// $router->put('/api/utilisateur/me', [UtilisateurHandler::class, 'updateCurrentUser'], [new AuthMiddleware()]);
-// $router->get('/api/utilisateurs', [UtilisateurHandler::class, 'listUsers'], [new AuthMiddleware()]);
 
 // Dispatch the request to matching route
 $router->dispatch();

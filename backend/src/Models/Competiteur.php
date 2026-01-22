@@ -13,16 +13,7 @@ class Competiteur
 
     private function __construct() {}
 
-    public static function create(int $numCompetiteur, string $datePremiereParticipation): bool
-    {
-        $stmt = Database::prepare(
-            'INSERT INTO Competiteur (num_competiteur, date_premiere_participation) VALUES (?, ?)'
-        );
-
-        return $stmt->execute([$numCompetiteur, $datePremiereParticipation]);
-    }
-
-    public static function findById(int $numCompetiteur): ?Competiteur
+    public static function getById(int $numCompetiteur): ?Competiteur
     {
         $stmt = Database::prepare('SELECT * FROM Competiteur WHERE num_competiteur = ? LIMIT 1');
         $stmt->execute([$numCompetiteur]);

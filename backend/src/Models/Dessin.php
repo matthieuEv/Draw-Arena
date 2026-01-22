@@ -34,7 +34,7 @@ class Dessin
         return $stmt->execute([$commentaire, $classement, $dateRemise, $leDessin, $numConcours, $numCompetiteur]);
     }
 
-    public static function findById(int $numDessin): ?Dessin
+    public static function getById(int $numDessin): ?Dessin
     {
         $stmt = Database::prepare('SELECT * FROM Dessin WHERE num_dessin = ? LIMIT 1');
         $stmt->execute([$numDessin]);

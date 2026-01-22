@@ -70,7 +70,7 @@ class AuthHandler
         }
 
         // Find user by login
-        $user = Utilisateur::findByLogin($data['login']);
+        $user = Utilisateur::getByLogin($data['login']);
         if (!$user) {
             $response->error('Invalid credentials', 401)->send();
         }
@@ -87,6 +87,7 @@ class AuthHandler
             'nom' => $user->getNom(),
             'prenom' => $user->getPrenom(),
             'login' => $user->getLogin(),
+            'photoProfilUrl' => $user->getPhotoProfilUrl(),
             'typeCompte' => $user->getTypeCompte()->value,
         ]);
 

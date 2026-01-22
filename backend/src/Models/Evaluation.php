@@ -16,22 +16,7 @@ class Evaluation
 
     private function __construct() {}
 
-    public static function create(
-        int $numDessin,
-        int $numEvaluateur,
-        ?float $note = null,
-        ?string $dateEvaluation = null,
-        ?string $commentaire = null
-    ): bool {
-        $stmt = Database::prepare(
-            'INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire)
-             VALUES (?, ?, ?, ?, ?)'
-        );
-
-        return $stmt->execute([$numDessin, $numEvaluateur, $dateEvaluation, $note, $commentaire]);
-    }
-
-    public static function findById(int $numDessin, int $numEvaluateur): ?Evaluation
+    public static function getById(int $numDessin, int $numEvaluateur): ?Evaluation
     {
         $stmt = Database::prepare(
             'SELECT * FROM Evaluation WHERE num_dessin = ? AND num_evaluateur = ? LIMIT 1'

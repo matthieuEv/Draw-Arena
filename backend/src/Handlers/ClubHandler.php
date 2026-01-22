@@ -17,11 +17,11 @@ class ClubHandler
         $response->success(['clubs' => $clubsArray])->send();
     }
 
-    public function findClubById(Request $request, Response $response): void
+    public function getClubById(Request $request, Response $response): void
     {
         $clubId = (int)$request->getParam('clubId');
 
-        $club = Club::findById($clubId);
+        $club = Club::getById($clubId);
         if (!$club) {
             $response->error('Club not found', 404)->send();
         }
@@ -37,7 +37,7 @@ class ClubHandler
 
         // Print debug
         error_log("Fetching users for clubId: $clubId, limit: $limit, index: $index");
-        $club = Club::findById($clubId);
+        $club = Club::getById($clubId);
         if (!$club) {
             $response->error('Club not found', 404)->send();
         }

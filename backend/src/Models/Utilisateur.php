@@ -42,7 +42,7 @@ class Utilisateur
         return $stmt->execute([$nom, $prenom, $age, $adresse, $login, $hashedPassword, $typeCompte->value, $numClub, $photoProfilUrl]);
     }
 
-    public static function findByLogin(string $login): ?Utilisateur
+    public static function getByLogin(string $login): ?Utilisateur
     {
         $stmt = Database::prepare('SELECT * FROM Utilisateur WHERE login = ? LIMIT 1');
         $stmt->execute([$login]);
@@ -51,7 +51,7 @@ class Utilisateur
         return $result ? self::hydrateFromArray($result) : null;
     }
 
-    public static function findById(int $numUtilisateur): ?Utilisateur
+    public static function getById(int $numUtilisateur): ?Utilisateur
     {
         $stmt = Database::prepare('SELECT * FROM Utilisateur WHERE num_utilisateur = ? LIMIT 1');
         $stmt->execute([$numUtilisateur]);

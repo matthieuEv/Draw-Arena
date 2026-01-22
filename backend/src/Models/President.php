@@ -22,7 +22,7 @@ class President
         return $stmt->execute([$numPresident, $prime]);
     }
 
-    public static function findById(int $numPresident): ?President
+    public static function getById(int $numPresident): ?President
     {
         $stmt = Database::prepare('SELECT * FROM President WHERE num_president = ? LIMIT 1');
         $stmt->execute([$numPresident]);
