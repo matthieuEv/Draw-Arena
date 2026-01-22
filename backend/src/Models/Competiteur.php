@@ -13,6 +13,19 @@ class Competiteur
 
     private function __construct() {}
 
+    /**
+     * @return array
+     */
+    public static function getAll(int $limit = 20, int $offset = 0): array
+    {
+        $stmt = Database::prepare('SELECT * FROM Competiteur LIMIT ? OFFSET ?');
+        $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(2, $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public static function getById(int $numCompetiteur): ?Competiteur
     {
         $stmt = Database::prepare('SELECT * FROM Competiteur WHERE num_competiteur = ? LIMIT 1');
@@ -31,22 +44,30 @@ class Competiteur
         return (int)($result['count'] ?? 0) > 0;
     }
 
-    /**
-     * @return Competiteur[]
-     */
-    public static function getAll(int $limit = 20, int $offset = 0): array
+    public static function getWarriors(int $limit = 20, int $offset = 0): array
     {
-        $stmt = Database::prepare(
-            'SELECT c.* FROM Competiteur c
-             JOIN Utilisateur u ON c.num_competiteur = u.num_utilisateur
-             ORDER BY u.nom, u.prenom LIMIT ? OFFSET ?'
-        );
+        $sql = 'SELECT u.num_utilisateur
+                FROM Utilisateur u
+                JOIN Competiteur comp ON comp.num_competiteur = u.num_utilisateur
+                WHERE NOT EXISTS (
+                    SELECT *
+                    FROM Concours c
+                    WHERE NOT EXISTS (
+                        SELECT *
+                        FROM Concours_Competiteur cc
+                        WHERE cc.num_competiteur = comp.num_competiteur
+                        AND cc.num_concours = c.num_concours
+                    )
+                )
+                ORDER BY u.age ASC, u.nom, u.prenom
+                LIMIT ? OFFSET ?';
+
+        $stmt = Database::prepare($sql);
         $stmt->bindValue(1, $limit, PDO::PARAM_INT);
         $stmt->bindValue(2, $offset, PDO::PARAM_INT);
         $stmt->execute();
 
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return array_map(fn($row) => self::hydrateFromArray($row), $results);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     private static function hydrateFromArray(array $data): Competiteur
