@@ -704,9 +704,9 @@ INSERT INTO Dessin (commentaire, classement, date_remise, le_dessin, num_concour
 ('Pont au crépuscule', NULL, '2024-06-22', '/uploads/dessin_c2_p132_1.jpg', 2, 132),
 ('Quai en fête', NULL, '2024-07-18', '/uploads/dessin_c2_p132_2.jpg', 2, 132),
 ('Rues pavées', NULL, '2024-06-25', '/uploads/dessin_c2_p144_1.jpg', 2, 144),
-('Vitrine d\'atelier', NULL, '2024-07-20', '/uploads/dessin_c2_p144_2.jpg', 2, 144),
-('Skyline d\'été', NULL, '2024-06-28', '/uploads/dessin_c2_p156_1.jpg', 2, 156),
-('Parc urbain', NULL, '2024-07-25', '/uploads/dessin_c2_p156_2.jpg', 2, 156);
+('Vitrine d''atelier', NULL, '2024-07-20', '/uploads/dessin_c2_p144_2.jpg', 2, 144),
+('Skyline d''été', NULL, '2024-06-28', '/uploads/dessin_c2_p156_1.jpg', 2, 156),
+('Parc urbain au crépuscule', NULL, '2024-07-25', '/uploads/dessin_c2_p156_2.jpg', 2, 156);
 
 -- Concours 2 : évaluations pour les nouveaux dessins (23-34)
 -- Répartition simple pour respecter la contrainte "<= 8 dessins/évaluateur/concours".
