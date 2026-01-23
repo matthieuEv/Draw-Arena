@@ -23,4 +23,23 @@ class EvaluationHandler
             $response->success(['evaluations' => $evaluations])->send();
         }
     }
+
+    public function getBestRegion(Request $request, Response $response): void
+    {
+        $limit = (int) $request->getQuery('limit', 100);
+        $index = (int) $request->getQuery('index', 0);
+
+        $bestEvaluations = Evaluation::getBestRegions($limit, $index);
+        $response->success(['evaluations' => $bestEvaluations])->send();
+    }
+
+    public function getBestCompetiteur(Request $request, Response $response): void
+    {
+        $limit = (int) $request->getQuery('limit', 100);
+        $index = (int) $request->getQuery('index', 0);
+        $region = $request->getParam('region');
+
+        $bestEvaluations = Evaluation::getBestCompetiteurs($limit, $index);
+        $response->success(['evaluations' => $bestEvaluations])->send();
+    }
 }

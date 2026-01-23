@@ -40,7 +40,7 @@ class ConcoursHandler
         $response->success(['concours' => $concours->toArray()])->send();
     }
 
-    public function getConcoursCompetiteur(Request $request, Response $response): void
+    public function getConcoursCompetiteurs(Request $request, Response $response): void
     {
         $concoursId = (int)$request->getParam('concoursId');
         $limit = (int)($request->getQuery('limit', 100));
@@ -55,7 +55,44 @@ class ConcoursHandler
         $users = Concours::getUsersByConcoursId($concoursId, $limit, $index);
 
         $response->success([
-            'users' => array_map(fn($user) => $user->toArray(), $users)
+            'users' => array_map(fn($user) => $user->extendedToArray(), $users)
+        ])->send();
+    }
+
+    public function getConcoursCompetiteur(Request $request, Response $response): void
+    {
+        $concoursId = (int)$request->getParam('concoursId');
+        $userId = (int)$request->getParam('userId');
+
+        $concours = Concours::getById($concoursId);
+        if (!$concours) {
+            $response->error('concours not found', 404)->send();
+            return;
+        }
+
+        $users = Concours::getUserByConcoursId($concoursId, $userId);
+
+        $response->success([
+            'users' => array_map(fn($user) => $user->extendedToArray(), $users)
+        ])->send();
+    }
+
+    public function getConcoursDessins(Request $request, Response $response): void
+    {
+        $concoursId = (int)$request->getParam('concoursId');
+        $limit = (int)($request->getQuery('limit', 100));
+        $index = (int)($request->getQuery('index', 0));
+
+        $concours = Concours::getById($concoursId);
+        if (!$concours) {
+            $response->error('concours not found', 404)->send();
+            return;
+        }
+
+        $dessins = Concours::getDessinsByConcoursId($concoursId, $limit, $index);
+
+        $response->success([
+            'dessins' => array_map(fn($dessin) => $dessin->toArray(), $dessins)
         ])->send();
     }
 

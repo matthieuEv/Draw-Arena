@@ -11,6 +11,9 @@ class ClubHandler
 {
     public function getAllClub(Request $request, Response $response): void
     {
+        $limit = (int)($request->getQuery('limit', 100));
+        $index = (int)($request->getQuery('index', 0));
+        
         $clubs = Club::getAll();
         $clubsArray = array_map(fn($club) => $club->toArray(), $clubs);
 

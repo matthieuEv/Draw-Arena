@@ -35,8 +35,9 @@ $router->get('/api/concours', [ConcoursHandler::class, 'getAllConcours'], [new A
 // Obligation 6
 $router->get('/api/concours/best', [ConcoursHandler::class, 'getBest'], [new AuthMiddleware()]);
 $router->get('/api/concours/{concoursId}', [ConcoursHandler::class, 'getConcoursById'], [new AuthMiddleware()]);
-$router->get('/api/concours/{concoursId}/users', [ConcoursHandler::class, 'getConcoursCompetiteur'], [new AuthMiddleware()]);
-// $router->get('/api/concours/{concoursId}/dessins', [ConcoursHandler::class, 'getConcoursDessins'], [new AuthMiddleware()]);
+$router->get('/api/concours/{concoursId}/users', [ConcoursHandler::class, 'getConcoursCompetiteurs'], [new AuthMiddleware()]);
+$router->get('/api/concours/{concoursId}/user/{userId}', [ConcoursHandler::class, 'getConcoursCompetiteur'], [new AuthMiddleware()]);
+$router->get('/api/concours/{concoursId}/dessins', [ConcoursHandler::class, 'getConcoursDessins'], [new AuthMiddleware()]);
 
 // Competiteur routes
 $router->get('/api/competiteur', [CompetiteurHandler::class, 'getAllCompetiteur'], [new AuthMiddleware()]);

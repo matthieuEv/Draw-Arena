@@ -87,7 +87,7 @@ class Dessin
         return array_map(fn($row) => self::hydrateFromArray($row), $results);
     }
 
-    private static function hydrateFromArray(array $data): Dessin
+    public static function hydrateFromArray(array $data): Dessin
     {
         $dessin = new self();
         $dessin->numDessin = (int)$data['num_dessin'];

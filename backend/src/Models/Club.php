@@ -37,9 +37,15 @@ class Club
     /**
      * @return Club[]
      */
-    public static function getAll(): array
+    public static function getAll(int $limit, int $index): array
     {
-        $stmt = Database::prepare('SELECT * FROM Club ORDER BY nom_club ASC');
+        // Limit + 1 to check if there are more results
+        $limit++;
+        $stmt = Database::prepare('SELECT * FROM Club
+                                   ORDER BY nom_club ASC
+                                   LIMIT ? OFFSET ?');
+        $stmt->bindValue(1, $limit, PDO:PARAM_INT);
+        $stmt->bindValue(2, $index, PDO:PARAM_INT);
         $stmt->execute();
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);

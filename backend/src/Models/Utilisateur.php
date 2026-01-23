@@ -18,6 +18,7 @@ class Utilisateur
     private ?int $numClub;
     private ?string $photoProfilUrl;
     private int $age;
+    private ?string $role;
 
     private function __construct() {}
 
@@ -109,6 +110,13 @@ class Utilisateur
         return $user;
     }
 
+    public static function extendedHydrateFromArray(array $data): Utilisateur
+    {
+        $user = self::hydrateFromArray($data);
+        $user->role = $data['role'] ?? null;
+        return $user;
+    }
+
     public function getRole(): ?string
     {
         $stmt = Database::prepare(
@@ -140,6 +148,13 @@ class Utilisateur
             'photoProfilUrl' => $this->photoProfilUrl,
             'age' => $this->age,
         ];
+    }
+
+    public function extendedToArray(): array
+    {
+        $data = $this->toArray();
+        $data['role'] = $this->role;
+        return $data;
     }
 
     public function getNumUtilisateur(): int
