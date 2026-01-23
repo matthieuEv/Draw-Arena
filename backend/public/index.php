@@ -2,7 +2,6 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../src/bootstrap.php';
 
 use DrawArena\Core\Router;
 use DrawArena\Middleware\CorsMiddleware;
