@@ -25,7 +25,7 @@ function distplayConcours(){
                         
                     </div>
                     <div class="load-more-container">
-                        <button id="load-more-users-${concoursID}" onclick="getUsers(${concoursID})" class="load-more-button">Charger plus de membres</button>
+                        <button id="load-more-dessins-${concoursID}" onclick="getDessins(${concoursID})" class="load-more-button">Charger plus de dessins</button>
                     </div>
 
                 </div>
