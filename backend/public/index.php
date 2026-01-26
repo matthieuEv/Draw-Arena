@@ -11,11 +11,17 @@ use DrawArena\Handlers\ClubHandler;
 use DrawArena\Handlers\ConcoursHandler;
 use DrawArena\Handlers\CompetiteurHandler;
 use DrawArena\Handlers\EvaluationHandler;
+use DrawArena\Handlers\DocsHandler;
+use DrawArena\Handlers\OpenApiHandler;
 
 $router = new Router();
 
 // Global middlewares (applies to ALL routes)
 $router->use(new CorsMiddleware());
+
+// DOCUMENTATION ROUTES
+$router->get('/api/docs', [DocsHandler::class, 'getDocs']);
+$router->get('/api/openapi', [OpenApiHandler::class, 'getSpec']);
 
 // PUBLIC ROUTES (no authentication required)
 $router->get('/api/health', function ($request, $response) {

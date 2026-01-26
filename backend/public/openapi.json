@@ -1,0 +1,632 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Draw Arena API",
+    "version": "1.0.0",
+    "description": "API pour gérer les concours de dessins Draw Arena"
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8000/api",
+      "description": "Développement local"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Token JWT obtenu via /api/auth/login"
+      }
+    },
+    "schemas": {
+      "Utilisateur": {
+        "type": "object",
+        "properties": {
+          "numUtilisateur": {"type": "integer"},
+          "nom": {"type": "string"},
+          "prenom": {"type": "string"},
+          "adresse": {"type": "string", "nullable": true},
+          "login": {"type": "string", "format": "email"},
+          "typeCompte": {"type": "string", "enum": ["prive", "public"]},
+          "numClub": {"type": "integer", "nullable": true},
+          "photoProfilUrl": {"type": "string", "nullable": true},
+          "age": {"type": "integer"}
+        }
+      },
+      "Club": {
+        "type": "object",
+        "properties": {
+          "numClub": {"type": "integer"},
+          "nomClub": {"type": "string"},
+          "adresse": {"type": "string"},
+          "numTelephone": {"type": "string"},
+          "ville": {"type": "string"},
+          "departement": {"type": "string"},
+          "region": {"type": "string"}
+        }
+      },
+      "Concours": {
+        "type": "object",
+        "properties": {
+          "numConcours": {"type": "integer"},
+          "theme": {"type": "string"},
+          "dateDebut": {"type": "string", "format": "date"},
+          "dateFin": {"type": "string", "format": "date"},
+          "description": {"type": "string"},
+          "etat": {"type": "string", "enum": ["pas_commence", "en_cours", "attente", "resultat", "evalue"]},
+          "numClub": {"type": "integer", "nullable": true},
+          "numPresident": {"type": "integer"}
+        }
+      },
+      "Competiteur": {
+        "type": "object",
+        "properties": {
+          "num_competiteur": {"type": "integer"},
+          "date_premiere_participation": {"type": "string", "format": "date"}
+        }
+      },
+      "Dessin": {
+        "type": "object",
+        "properties": {
+          "numDessin": {"type": "integer"},
+          "commentaire": {"type": "string", "nullable": true},
+          "classement": {"type": "integer", "nullable": true},
+          "dateRemise": {"type": "string", "format": "date"},
+          "leDessin": {"type": "string"},
+          "numConcours": {"type": "integer"},
+          "numCompetiteur": {"type": "integer"}
+        }
+      },
+      "Evaluation": {
+        "type": "object",
+        "properties": {
+          "numDessin": {"type": "integer"},
+          "numEvaluateur": {"type": "integer"},
+          "dateEvaluation": {"type": "string", "format": "date"},
+          "note": {"type": "number"},
+          "commentaire": {"type": "string", "nullable": true}
+        }
+      }
+    }
+  },
+  "tags": [
+    {"name": "Health", "description": "Vérification de l'état de l'API"},
+    {"name": "Authentication", "description": "Authentification et gestion des comptes"},
+    {"name": "Club", "description": "Gestion des clubs"},
+    {"name": "Concours", "description": "Gestion des concours"},
+    {"name": "Compétiteur", "description": "Gestion des compétiteurs"},
+    {"name": "Evaluation", "description": "Gestion des évaluations"}
+  ],
+  "paths": {
+    "/api/health": {
+      "get": {
+        "summary": "Vérifier la santé de l'API",
+        "tags": ["Health"],
+        "responses": {
+          "200": {
+            "description": "L'API fonctionne correctement",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {"type": "boolean", "example": true}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/register": {
+      "post": {
+        "summary": "Créer un nouveau compte",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["nom", "prenom", "login", "password", "typeCompte"],
+                "properties": {
+                  "nom": {"type": "string", "example": "Dupont"},
+                  "prenom": {"type": "string", "example": "Jean"},
+                  "login": {"type": "string", "format": "email", "example": "jean.dupont@example.com"},
+                  "password": {"type": "string", "format": "password", "minLength": 6},
+                  "typeCompte": {"type": "string", "enum": ["prive", "public"]},
+                  "num_club": {"type": "integer", "nullable": true},
+                  "adresse": {"type": "string", "nullable": true},
+                  "age": {"type": "integer", "nullable": true},
+                  "photo_profil_url": {"type": "string", "nullable": true}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "Compte créé avec succès"},
+          "409": {"description": "Email déjà utilisé"},
+          "422": {"description": "Données de json invalides"},
+          "500": {"description": "Data base error"}
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "summary": "Se connecter",
+        "tags": ["Authentication"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["login", "password"],
+                "properties": {
+                  "login": {"type": "string", "format": "email", "example": "jean.dupont@example.com"},
+                  "password": {"type": "string", "format": "password"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connexion réussie",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "token": {"type": "string", "description": "Token JWT à utiliser pour les requêtes authentifiées"},
+                    "role": {"type": "string", "enum": ["administrateur", "directeur"], "description": "Rôle de l'utilisateur"},
+                    "club": {"type": "integer", "description": "Numéro du club associé à l'utilisateur"}
+                  }
+                }
+              }
+            }
+          },
+          "422": {"description": "Données de json invalides"},
+          "401": {"description": "Identifiants invalides"}
+        }
+      }
+    },
+    "/api/club": {
+      "get": {
+        "summary": "Lister tous les clubs",
+        "tags": ["Club"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "limit", "in": "query", "schema": {"type": "integer", "default": 100}, "description": "Toujours limit + 1 si possible pour savoir si la liste pouvais continuer"},
+          {"name": "index", "in": "query", "schema": {"type": "integer", "default": 0}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des clubs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "clubs": {
+                      "type": "array",
+                      "items": {"$ref": "#/components/schemas/Club"}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"}
+        }
+      }
+    },
+    "/api/club/{clubId}": {
+      "get": {
+        "summary": "Obtenir un club par son ID",
+        "tags": ["Club"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "clubId", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Détails du club",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "club": {"$ref": "#/components/schemas/Club"}
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"},
+          "404": {"description": "Club non trouvé"}
+        }
+      }
+    },
+    "/api/club/{clubId}/users": {
+      "get": {
+        "summary": "Lister les utilisateurs d'un club",
+        "tags": ["Club"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "clubId", "in": "path", "required": true, "schema": {"type": "integer"}},
+          {"name": "limit", "in": "query", "schema": {"type": "integer", "default": 100}},
+          {"name": "index", "in": "query", "schema": {"type": "integer", "default": 0}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des utilisateurs du club",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "users": {
+                      "type": "array",
+                      "items": {"$ref": "#/components/schemas/Utilisateur"}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"},
+          "404": {"description": "Club non trouvé"}
+        }
+      }
+    },
+    "/api/concours": {
+      "get": {
+        "summary": "Lister tous les concours",
+        "tags": ["Concours"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "year", "in": "query", "description": "Filtrer par année", "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des concours",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "concours": {
+                      "type": "array",
+                      "items": {"$ref": "#/components/schemas/Concours"}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"}
+        }
+      }
+    },
+    "/api/concours/best": {
+      "get": {
+        "summary": "Obligation 6 - Meilleurs concours par nombre de dessins évalués",
+        "description": "Retourne les concours avec le plus de dessins évalués, groupés par club",
+        "tags": ["Concours"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "limit", "in": "query", "schema": {"type": "integer", "default": 100}},
+          {"name": "index", "in": "query", "schema": {"type": "integer", "default": 0}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des meilleurs concours",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "concours": {"type": "array", "items": {"type": "object"}}
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"}
+        }
+      }
+    },
+    "/api/concours/{concoursId}": {
+      "get": {
+        "summary": "Obtenir un concours par son ID",
+        "tags": ["Concours"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "concoursId", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Détails du concours",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "concours": {"$ref": "#/components/schemas/Concours"}
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"},
+          "404": {"description": "Concours non trouvé"}
+        }
+      }
+    },
+    "/api/concours/{concoursId}/users": {
+      "get": {
+        "summary": "Lister les utilisateurs d'un concours avec leur rôle",
+        "description": "Retourne tous les utilisateurs participant à un concours (président, compétiteurs, évaluateurs) avec leur rôle respectif",
+        "tags": ["Concours"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "concoursId", "in": "path", "required": true, "schema": {"type": "integer"}},
+          {"name": "limit", "in": "query", "schema": {"type": "integer", "default": 100}},
+          {"name": "index", "in": "query", "schema": {"type": "integer", "default": 0}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des utilisateurs avec leur rôle",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "users": {
+                      "type": "array",
+                      "items": {"$ref": "#/components/schemas/Utilisateur"}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"},
+          "404": {"description": "Concours non trouvé"}
+        }
+      }
+    },
+    "/api/concours/{concoursId}/user/{userId}": {
+      "get": {
+        "summary": "Obtenir un utilisateur spécifique d'un concours",
+        "tags": ["Concours"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "concoursId", "in": "path", "required": true, "schema": {"type": "integer"}},
+          {"name": "userId", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Détails de l'utilisateur avec son rôle dans le concours",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "users": {
+                      "type": "array",
+                      "items": {"$ref": "#/components/schemas/Utilisateur"}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"},
+          "404": {"description": "Concours ou utilisateur non trouvé"}
+        }
+      }
+    },
+    "/api/concours/{concoursId}/dessins": {
+      "get": {
+        "summary": "Lister les dessins d'un concours",
+        "tags": ["Concours"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "concoursId", "in": "path", "required": true, "schema": {"type": "integer"}},
+          {"name": "limit", "in": "query", "schema": {"type": "integer", "default": 100}},
+          {"name": "index", "in": "query", "schema": {"type": "integer", "default": 0}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des dessins du concours",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "dessins": {
+                      "type": "array",
+                      "items": {"$ref": "#/components/schemas/Dessin"}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"},
+          "404": {"description": "Concours non trouvé"}
+        }
+      }
+    },
+    "/api/competiteur": {
+      "get": {
+        "summary": "Lister tous les compétiteurs",
+        "tags": ["Compétiteur"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "limit", "in": "query", "schema": {"type": "integer", "default": 100}},
+          {"name": "index", "in": "query", "schema": {"type": "integer", "default": 0}},
+          {"name": "annee", "in": "query", "description": "Obligation 1 - Filtrer par année de concours", "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des compétiteurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "competiteurs": {
+                      "type": "array",
+                      "items": {"$ref": "#/components/schemas/Competiteur"}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"}
+        }
+      }
+    },
+    "/api/competiteur/warriors": {
+      "get": {
+        "summary": "Obligation 4 - Compétiteurs ayant participé à tous les concours",
+        "description": "Retourne les compétiteurs qui ont participé à absolument tous les concours existants, triés par âge",
+        "tags": ["Compétiteur"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "limit", "in": "query", "schema": {"type": "integer", "default": 100}},
+          {"name": "index", "in": "query", "schema": {"type": "integer", "default": 0}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des warriors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "competiteurs": {"type": "array", "items": {"type": "object"}}
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"}
+        }
+      }
+    },
+    "/api/evaluation": {
+      "get": {
+        "summary": "Obligation 2 & 3 - Lister les évaluations",
+        "description": "Sans paramètre year: Obligation 3 - Toutes les évaluations. Avec paramètre year: Obligation 2 - Évaluations filtrées par année",
+        "tags": ["Evaluation"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "limit", "in": "query", "schema": {"type": "integer", "default": 100}},
+          {"name": "index", "in": "query", "schema": {"type": "integer", "default": 0}},
+          {"name": "year", "in": "query", "description": "Obligation 2 - Filtrer par année d'évaluation", "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des évaluations avec détails",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "evaluations": {"type": "array", "items": {"type": "object"}}
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"}
+        }
+      }
+    },
+    "/api/evaluation/best/region": {
+      "get": {
+        "summary": "Obligation 5 - Meilleure région par moyenne d'évaluation",
+        "description": "Retourne la ou les régions ayant la meilleure moyenne de notes d'évaluation",
+        "tags": ["Evaluation"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "limit", "in": "query", "schema": {"type": "integer", "default": 100}},
+          {"name": "index", "in": "query", "schema": {"type": "integer", "default": 0}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Meilleure(s) région(s)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "evaluations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "region": {"type": "string"},
+                          "moyenne": {"type": "number"}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"}
+        }
+      }
+    },
+    "/api/evaluation/best/competiteur": {
+      "get": {
+        "summary": "Obligation 5.1 - Meilleur compétiteur par moyenne d'évaluation",
+        "description": "Retourne le ou les compétiteurs ayant la meilleure moyenne de notes d'évaluation",
+        "tags": ["Evaluation"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "limit", "in": "query", "schema": {"type": "integer", "default": 100}},
+          {"name": "index", "in": "query", "schema": {"type": "integer", "default": 0}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Meilleur(s) compétiteur(s)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "evaluations": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "num_utilisateur": {"type": "integer"},
+                          "nom": {"type": "string"},
+                          "prenom": {"type": "string"},
+                          "moyenne": {"type": "number"}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"}
+        }
+      }
+    }
+  }
+}
