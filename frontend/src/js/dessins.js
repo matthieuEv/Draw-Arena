@@ -21,7 +21,7 @@ function distplayConcours(){
                         </div>
                     </div>
 
-                    <div id="users-list-${concoursID}" class="users-grid">
+                    <div id="dessins-list-${concoursID}" class="users-grid">
                         
                     </div>
                     <div class="load-more-container">
