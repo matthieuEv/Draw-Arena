@@ -10,7 +10,6 @@ const routes = [
   { path: "/administration", file: "/pages/administration.html", data:"administration" },
   { path: "/clubs", file: "/pages/clubs.html", data:"clubs" },
   { path: "/club/:id", file: "/pages/club.html", data:"clubs" },
-  { path: "/competitor", file: "/pages/competitor.html", data:"competitor" },
   { path: "/login", file: "/pages/login.html" },
   { path: "/profil", file: "/pages/profil.html" },
 ];

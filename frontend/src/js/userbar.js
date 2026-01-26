@@ -14,4 +14,8 @@ function init(){
     }
 }
 
-init();
+function onRouteChange(event) {
+    init();
+}
+
+document.addEventListener("route-change", onRouteChange);
