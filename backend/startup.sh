@@ -1,6 +1,6 @@
 #!/bin/bash
 # Azure App Service startup script for Draw-Arena backend
-# This script copies the custom nginx configuration and restarts nginx
+# This script copies the custom nginx configuration and starts services
 
 echo "🚀 Starting Draw-Arena backend initialization..."
 
@@ -10,15 +10,19 @@ if [ -f /home/site/wwwroot/default ]; then
     cp /home/site/wwwroot/default /etc/nginx/sites-available/default
     cp /home/site/wwwroot/default /etc/nginx/sites-enabled/default
     echo "✅ Nginx configuration copied"
+
+    # Test nginx configuration
+    if nginx -t; then
+        echo "✅ Nginx configuration is valid"
+        nginx -s reload || echo "⚠️  Unable to reload Nginx"
+    else
+        echo "❌ Nginx configuration is invalid, using default"
+    fi
 else
     echo "⚠️  Custom nginx config not found at /home/site/wwwroot/default"
 fi
 
-# Reload nginx to apply configuration
-if command -v nginx >/dev/null 2>&1; then
-    echo "🔄 Reloading nginx..."
-    nginx -t && nginx -s reload || echo "⚠️  Nginx reload failed"
-    echo "✅ Nginx reloaded"
-fi
-
 echo "✅ Draw-Arena backend initialization complete"
+
+# Start PHP-FPM (Azure expects this as the main process)
+exec php-fpm

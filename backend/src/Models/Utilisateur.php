@@ -17,8 +17,18 @@ class Utilisateur
     private UtilisateurType $typeCompte;
     private ?int $numClub;
     private ?string $photoProfilUrl;
+    private int $age;
+    private ?string $role;
 
     private function __construct() {}
+
+    public static function count(): int
+    {
+        $stmt = Database::prepare('SELECT COUNT(*) as total FROM Utilisateur');
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)($result['total'] ?? 0);
+    }
 
     public static function create(
         string $nom,
@@ -28,19 +38,20 @@ class Utilisateur
         UtilisateurType $typeCompte,
         ?string $adresse = null,
         ?int $numClub = null,
-        ?string $photoProfilUrl = null
+        ?string $photoProfilUrl = null,
+        ?int $age = 0
     ): bool {
         $hashedPassword = password_hash($motDePasse, PASSWORD_BCRYPT);
 
         $stmt = Database::prepare(
-            'INSERT INTO Utilisateur (nom, prenom, adresse, login, mot_de_passe, type_compte, num_club, photo_profil_url)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+            'INSERT INTO Utilisateur (nom, prenom, age, adresse, login, mot_de_passe, type_compte, num_club, photo_profil_url)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
         );
 
-        return $stmt->execute([$nom, $prenom, $adresse, $login, $hashedPassword, $typeCompte->value, $numClub, $photoProfilUrl]);
+        return $stmt->execute([$nom, $prenom, $age, $adresse, $login, $hashedPassword, $typeCompte->value, $numClub, $photoProfilUrl]);
     }
 
-    public static function findByLogin(string $login): ?Utilisateur
+    public static function getByLogin(string $login): ?Utilisateur
     {
         $stmt = Database::prepare('SELECT * FROM Utilisateur WHERE login = ? LIMIT 1');
         $stmt->execute([$login]);
@@ -49,7 +60,7 @@ class Utilisateur
         return $result ? self::hydrateFromArray($result) : null;
     }
 
-    public static function findById(int $numUtilisateur): ?Utilisateur
+    public static function getById(int $numUtilisateur): ?Utilisateur
     {
         $stmt = Database::prepare('SELECT * FROM Utilisateur WHERE num_utilisateur = ? LIMIT 1');
         $stmt->execute([$numUtilisateur]);
@@ -88,7 +99,59 @@ class Utilisateur
         return array_map(fn($row) => self::hydrateFromArray($row), $results);
     }
 
-    private static function hydrateFromArray(array $data): Utilisateur
+    /**
+     * Récupère tous les dessins d'un utilisateur (en tant que compétiteur)
+     */
+    public static function getDessinsByUtilisateurId(int $numUtilisateur, int $limit = 100, int $offset = 0): array
+    {
+        $stmt = Database::prepare(
+            'SELECT * FROM Dessin WHERE num_competiteur = ?
+             ORDER BY date_remise DESC
+             LIMIT ? OFFSET ?'
+        );
+        $stmt->bindValue(1, $numUtilisateur, PDO::PARAM_INT);
+        $stmt->bindValue(2, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(3, $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Récupère les statistiques d'un utilisateur
+     * - Nombre de dessins soumis
+     * - Nombre de concours différents auxquels il a participé
+     * - Moyenne générale de ses évaluations
+     */
+    public static function getStatsByUtilisateurId(int $numUtilisateur): array
+    {
+        $stmt = Database::prepare(
+            'SELECT
+                COUNT(DISTINCT d.num_dessin) as nb_dessins,
+                COUNT(DISTINCT cc.num_concours) as nb_participations,
+                AVG(e.note) as moyenne_generale
+             FROM Utilisateur u
+             LEFT JOIN Competiteur comp ON comp.num_competiteur = u.num_utilisateur
+             LEFT JOIN Concours_Competiteur cc ON cc.num_competiteur = comp.num_competiteur
+             LEFT JOIN Dessin d ON d.num_competiteur = u.num_utilisateur
+             LEFT JOIN Evaluation e ON e.num_dessin = d.num_dessin
+             WHERE u.num_utilisateur = ?'
+        );
+        $stmt->bindValue(1, $numUtilisateur, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return [
+            'nb_dessins' => (int)($result['nb_dessins'] ?? 0),
+            'nb_participations' => (int)($result['nb_participations'] ?? 0),
+            'moyenne_generale' => $result['moyenne_generale'] ? (float)round($result['moyenne_generale'], 2) : null
+        ];
+    }
+
+    /**
+     * @return Utilisateur
+     */
+    public static function hydrateFromArray(array $data): Utilisateur
     {
         $user = new self();
         $user->numUtilisateur = (int)$data['num_utilisateur'];
@@ -100,19 +163,33 @@ class Utilisateur
         $user->typeCompte = UtilisateurType::from($data['type_compte']);
         $user->numClub = $data['num_club'] ? (int)$data['num_club'] : null;
         $user->photoProfilUrl = $data['photo_profil_url'] ?? null;
+        $user->age = (int)$data['age'];
+        return $user;
+    }
+
+    public static function extendedHydrateFromArray(array $data): Utilisateur
+    {
+        $user = self::hydrateFromArray($data);
+        $user->role = $data['role'] ?? null;
         return $user;
     }
 
     public function getRole(): ?string
     {
-        if (Administrateur::existsForUser($this->numUtilisateur)) {
-            return 'administrateur';
-        }
-        if (Directeur::existsForUser($this->numUtilisateur)) {
-            return 'directeur';
-        }
-
-        return null;
+        $stmt = Database::prepare(
+            "SELECT CASE
+                WHEN EXISTS (
+                    SELECT 1 FROM Administrateur WHERE num_administrateur = ?)
+                    THEN 'administrateur'
+                WHEN EXISTS (
+                    SELECT 1 FROM Directeur WHERE num_directeur = ?)
+                    THEN 'directeur'
+                ELSE NULL
+            END AS role;"
+        );
+        $stmt->execute([$this->numUtilisateur, $this->numUtilisateur]);
+        $role = $stmt->fetchColumn();
+        return $role !== false ? $role : null;
     }
 
     public function toArray(): array
@@ -126,7 +203,15 @@ class Utilisateur
             'typeCompte' => $this->typeCompte->value,
             'numClub' => $this->numClub,
             'photoProfilUrl' => $this->photoProfilUrl,
+            'age' => $this->age,
         ];
+    }
+
+    public function extendedToArray(): array
+    {
+        $data = $this->toArray();
+        $data['role'] = $this->role;
+        return $data;
     }
 
     public function getNumUtilisateur(): int
@@ -172,5 +257,10 @@ class Utilisateur
     public function getPhotoProfilUrl(): ?string
     {
         return $this->photoProfilUrl;
+    }
+
+    public function getAge(): int
+    {
+        return $this->age;
     }
 }

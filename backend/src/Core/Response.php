@@ -35,10 +35,25 @@ class Response
         ]);
     }
 
-    public function send(): void
+    public function send(?string $content = null, ?int $code = null, array $headers = []): void
     {
-        http_response_code($this->statusCode);
-        echo json_encode($this->payload, JSON_UNESCAPED_SLASHES);
+        http_response_code($code ?? $this->statusCode);
+
+        foreach ($headers as $name => $value) {
+            header("$name: $value");
+        }
+
+        if ($content !== null) {
+            // Mode contenu brut (HTML, JSON string, etc.)
+            if (empty($headers)) {
+                header('Content-Type: application/json');
+            }
+            echo $content;
+        } else {
+            // Mode JSON API classique
+            header('Content-Type: application/json');
+            echo json_encode($this->payload, JSON_UNESCAPED_SLASHES);
+        }
         exit;
     }
 }

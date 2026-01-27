@@ -22,19 +22,28 @@ class Database
 
     private static function createConnection(): PDO
     {
-        $host = getenv('DB_HOST') ?: 'localhost';
-        $name = getenv('DB_NAME') ?: 'drawarena';
-        $user = getenv('DB_USER') ?: 'root';
-        $pass = getenv('DB_PASS') ?: '';
+        $host = getenv('DB_HOST');
+        $name = getenv('DB_NAME');
+        $user = getenv('DB_USER');
+        $pass = getenv('DB_PASS');
         $port = getenv('DB_PORT') ?: 3306;
 
         try {
-            $dsn = "mysql:host={$host};port={$port};dbname={$name};charset=utf8mb4";
-            $pdo = new PDO($dsn, $user, $pass, [
+            $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4', $host, $port, $name);
+
+            // Azure MySQL Flexible Server requires SSL
+            $options = [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false,
-            ]);
+            ];
+
+            // Enable SSL for Azure MySQL (when DB_HOST contains azure)
+            if (strpos($host, '.mysql.database.azure.com') !== false) {
+                $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+                $options[PDO::MYSQL_ATTR_SSL_CA] = true;
+            }
+
+            $pdo = new PDO($dsn, $user, $pass, $options);
             return $pdo;
         } catch (PDOException $e) {
             throw new PDOException('Database connection failed: ' . $e->getMessage());

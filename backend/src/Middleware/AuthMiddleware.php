@@ -15,6 +15,7 @@ class AuthMiddleware
 
         if (!$token) {
             $response->error('Missing authorization token', 401)->send();
+            exit;
         }
 
         $jwtManager = new JwtManager();
@@ -22,6 +23,7 @@ class AuthMiddleware
 
         if (!$decoded) {
             $response->error('Invalid or expired token', 401)->send();
+            exit;
         }
 
         // Store user data in request for later use

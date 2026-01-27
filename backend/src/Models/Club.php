@@ -12,16 +12,22 @@ class Club
     private string $nomClub;
     private ?string $adresse;
     private ?string $numTelephone;
-    private int $nombreAdherents;
     private string $ville;
     private string $departement;
     private string $region;
 
     private function __construct() {}
 
+    public static function count(): int
+    {
+        $stmt = Database::prepare('SELECT COUNT(*) as total FROM Club');
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)($result['total'] ?? 0);
+    }
+
     public static function create(
         string $nomClub,
-        int $nombreAdherents,
         string $ville,
         string $departement,
         string $region,
@@ -29,19 +35,25 @@ class Club
         ?string $numTelephone = null
     ): bool {
         $stmt = Database::prepare(
-            'INSERT INTO Club (nom_club, adresse, num_telephone, nombre_adherents, ville, departement, region)
-             VALUES (?, ?, ?, ?, ?, ?, ?)'
+            'INSERT INTO Club (nom_club, adresse, num_telephone, ville, departement, region)
+             VALUES (?, ?, ?, ?, ?, ?)'
         );
 
-        return $stmt->execute([$nomClub, $adresse, $numTelephone, $nombreAdherents, $ville, $departement, $region]);
+        return $stmt->execute([$nomClub, $adresse, $numTelephone, $ville, $departement, $region]);
     }
 
     /**
      * @return Club[]
      */
-    public static function getAll(): array
+    public static function getAll(int $limit, int $index): array
     {
-        $stmt = Database::prepare('SELECT * FROM Club ORDER BY nom_club ASC');
+        // Limit + 1 to check if there are more results
+        $limit++;
+        $stmt = Database::prepare('SELECT * FROM Club
+                                   ORDER BY nom_club ASC
+                                   LIMIT ? OFFSET ?');
+        $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(2, $index, PDO::PARAM_INT);
         $stmt->execute();
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -49,13 +61,93 @@ class Club
         return array_map(fn($row) => self::hydrateFromArray($row), $results);
     }
 
-    public static function findById(int $numClub): ?Club
+    public static function getById(int $numClub): ?Club
     {
         $stmt = Database::prepare('SELECT * FROM Club WHERE num_club = ? LIMIT 1');
         $stmt->execute([$numClub]);
 
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result ? self::hydrateFromArray($result) : null;
+    }
+
+    public static function getUsersByClubId(int $clubId, int $limit, int $index): array
+    {
+        // Limit + 1 to check if there are more results
+        $limit++;
+        $stmt = Database::prepare(
+            'SELECT u.*, \'directeur\' as role
+             FROM Utilisateur u
+             JOIN Directeur d ON u.num_utilisateur = d.num_directeur
+             WHERE u.num_club = ?
+             UNION
+             SELECT u.*, \'membre\' as role
+             FROM Utilisateur u
+             WHERE u.num_club = ?
+               AND u.num_utilisateur NOT IN (
+                   SELECT d.num_directeur FROM Directeur d
+               )
+             ORDER BY role, nom, prenom
+             LIMIT ? OFFSET ?'
+        );
+        $stmt->bindValue(1, $clubId, PDO::PARAM_INT);
+        $stmt->bindValue(2, $clubId, PDO::PARAM_INT);
+        $stmt->bindValue(3, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(4, $index, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(fn($row) => Utilisateur::ExtendedHydrateFromArray($row), $results);
+    }
+
+    public static function getUserByClubIdAndUserId(int $clubId, int $userId): array
+    {
+        $stmt = Database::prepare(
+            'SELECT u.*, \'directeur\' as role
+             FROM Utilisateur u
+             JOIN Directeur d ON u.num_utilisateur = d.num_directeur
+             WHERE u.num_club = ? AND u.num_utilisateur = ?
+             UNION
+             SELECT u.*, \'membre\' as role
+             FROM Utilisateur u
+             WHERE u.num_club = ? AND u.num_utilisateur = ?
+               AND u.num_utilisateur NOT IN (
+                   SELECT d.num_directeur FROM Directeur d
+               )
+             ORDER BY role, nom, prenom'
+        );
+        $stmt->bindValue(1, $clubId, PDO::PARAM_INT);
+        $stmt->bindValue(2, $userId, PDO::PARAM_INT);
+        $stmt->bindValue(3, $clubId, PDO::PARAM_INT);
+        $stmt->bindValue(4, $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(fn($row) => Utilisateur::ExtendedHydrateFromArray($row), $results);
+    }
+
+    public static function getConcourssByClubId(int $clubId, int $limit, int $index): array
+    {
+        // Limit + 1 to check if there are more results
+        $limit++;
+        $stmt = Database::prepare(
+            'SELECT DISTINCT c.* FROM Concours c
+             JOIN Concours_Competiteur cc ON c.num_concours = cc.num_concours
+             JOIN Competiteur comp ON cc.num_competiteur = comp.num_competiteur
+             JOIN Utilisateur u ON comp.num_competiteur = u.num_utilisateur
+             WHERE u.num_club = ?
+             ORDER BY c.date_debut DESC
+             LIMIT ? OFFSET ?'
+        );
+        $stmt->bindValue(1, $clubId, PDO::PARAM_INT);
+        $stmt->bindValue(2, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(3, $index, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(fn($row) => Concours::hydrateFromArray($row), $results);
     }
 
     private static function hydrateFromArray(array $data): Club
@@ -65,7 +157,6 @@ class Club
         $club->nomClub = $data['nom_club'];
         $club->adresse = $data['adresse'] ?? null;
         $club->numTelephone = $data['num_telephone'] ?? null;
-        $club->nombreAdherents = (int)$data['nombre_adherents'];
         $club->ville = $data['ville'];
         $club->departement = $data['departement'];
         $club->region = $data['region'];
@@ -79,7 +170,6 @@ class Club
             'nomClub' => $this->nomClub,
             'adresse' => $this->adresse,
             'numTelephone' => $this->numTelephone,
-            'nombreAdherents' => $this->nombreAdherents,
             'ville' => $this->ville,
             'departement' => $this->departement,
             'region' => $this->region,
@@ -104,11 +194,6 @@ class Club
     public function getNumTelephone(): ?string
     {
         return $this->numTelephone;
-    }
-
-    public function getNombreAdherents(): int
-    {
-        return $this->nombreAdherents;
     }
 
     public function getVille(): string

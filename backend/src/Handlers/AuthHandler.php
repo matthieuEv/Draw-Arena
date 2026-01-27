@@ -27,6 +27,7 @@ class AuthHandler
             'typeCompte' => 'string|typeCompte',
             'adresse' => 'string|min:2|max:255',
             'photo_profil_url' => 'string|min:2|max:255',
+            'age' => 'int',
         ])) {
             $response->error('Validation failed', 422, ['errors' => $validator->getErrors()])->send();
         }
@@ -46,7 +47,8 @@ class AuthHandler
             $typeCompte,
             $data['adresse'] ?? null,
             $data['num_club'] ?? null,
-            $data['photo_profil_url'] ?? null
+            $data['photo_profil_url'] ?? null,
+            $data['age'] ?? 0
         )) {
             $response->error('Failed to create user', 500)->send();
         }
@@ -68,7 +70,7 @@ class AuthHandler
         }
 
         // Find user by login
-        $user = Utilisateur::findByLogin($data['login']);
+        $user = Utilisateur::getByLogin($data['login']);
         if (!$user) {
             $response->error('Invalid credentials', 401)->send();
         }
@@ -85,6 +87,7 @@ class AuthHandler
             'nom' => $user->getNom(),
             'prenom' => $user->getPrenom(),
             'login' => $user->getLogin(),
+            'photoProfilUrl' => $user->getPhotoProfilUrl(),
             'typeCompte' => $user->getTypeCompte()->value,
         ]);
 

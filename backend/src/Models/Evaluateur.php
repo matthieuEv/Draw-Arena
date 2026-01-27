@@ -23,7 +23,7 @@ class Evaluateur
         return $stmt->execute([$numEvaluateur, $specialite, $xp]);
     }
 
-    public static function findById(int $numEvaluateur): ?Evaluateur
+    public static function getById(int $numEvaluateur): ?Evaluateur
     {
         $stmt = Database::prepare('SELECT * FROM Evaluateur WHERE num_evaluateur = ? LIMIT 1');
         $stmt->execute([$numEvaluateur]);

@@ -16,22 +16,15 @@ class Evaluation
 
     private function __construct() {}
 
-    public static function create(
-        int $numDessin,
-        int $numEvaluateur,
-        ?float $note = null,
-        ?string $dateEvaluation = null,
-        ?string $commentaire = null
-    ): bool {
-        $stmt = Database::prepare(
-            'INSERT INTO Evaluation (num_dessin, num_evaluateur, date_evaluation, note, commentaire)
-             VALUES (?, ?, ?, ?, ?)'
-        );
-
-        return $stmt->execute([$numDessin, $numEvaluateur, $dateEvaluation, $note, $commentaire]);
+    public static function count(): int
+    {
+        $stmt = Database::prepare('SELECT COUNT(*) as total FROM Evaluation');
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)($result['total'] ?? 0);
     }
 
-    public static function findById(int $numDessin, int $numEvaluateur): ?Evaluation
+    public static function getById(int $numDessin, int $numEvaluateur): ?Evaluation
     {
         $stmt = Database::prepare(
             'SELECT * FROM Evaluation WHERE num_dessin = ? AND num_evaluateur = ? LIMIT 1'
@@ -76,15 +69,90 @@ class Evaluation
     public static function getAll(int $limit = 20, int $offset = 0): array
     {
         $stmt = Database::prepare(
-            'SELECT * FROM Evaluation ORDER BY date_evaluation DESC LIMIT ? OFFSET ?'
+            'SELECT d.num_dessin, e.date_evaluation, c.theme, c.description, uc.nom AS nom_competiteur, uc.prenom AS prenom_competiteur, d.commentaire AS commentaire_dessin, e.note, e.commentaire AS commentaire_evaluation, ue.nom AS nom_evaluateur, ue.prenom AS prenom_evaluateur
+            FROM Dessin d
+            JOIN Evaluation e ON e.num_dessin = d.num_dessin
+            JOIN Concours c ON c.num_concours = d.num_concours
+            JOIN Utilisateur uc ON uc.num_utilisateur = d.num_competiteur
+            JOIN Utilisateur ue ON ue.num_utilisateur = e.num_evaluateur
+            ORDER BY c.num_concours, d.num_dessin, e.date_evaluation, e.num_evaluateur
+            LIMIT ? OFFSET ?'
         );
         $stmt->bindValue(1, $limit, PDO::PARAM_INT);
         $stmt->bindValue(2, $offset, PDO::PARAM_INT);
         $stmt->execute();
 
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return array_map(fn($row) => self::hydrateFromArray($row), $results);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public static function getAllByYear(int $year, int $limit = 20, int $offset = 0): array
+    {
+        $stmt = Database::prepare(
+            'SELECT d.num_dessin, e.note, u.nom, u.prenom, c.theme, c.description, e.date_evaluation
+            FROM Dessin d
+            JOIN Evaluation e ON e.num_dessin = d.num_dessin
+            JOIN Utilisateur u ON u.num_utilisateur = d.num_competiteur
+            JOIN Concours c ON c.num_concours = d.num_concours
+            WHERE YEAR(e.date_evaluation) = ?
+            ORDER BY e.note ASC
+            LIMIT ? OFFSET ?');
+
+        $stmt->bindValue(1, $year, PDO::PARAM_INT);
+        $stmt->bindValue(2, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(3, $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getBestRegions(int $limit = 20, int $offset = 0): array
+    {
+        $sql = 'SELECT cl.region, ROUND(AVG(e.note), 2) AS moyenne
+                FROM Evaluation e
+                JOIN Dessin d ON d.num_dessin = e.num_dessin
+                JOIN Utilisateur u ON u.num_utilisateur = d.num_competiteur
+                JOIN Club cl ON cl.num_club = u.num_club
+                GROUP BY cl.region
+                HAVING AVG(e.note) >= ALL (
+                    SELECT ROUND(AVG(e2.note), 2)
+                    FROM Evaluation e2
+                    JOIN Dessin d2 ON d2.num_dessin = e2.num_dessin
+                    JOIN Utilisateur u2 ON u2.num_utilisateur = d2.num_competiteur
+                    JOIN Club cl2 ON cl2.num_club = u2.num_club
+                    GROUP BY cl2.region
+                )
+                LIMIT ? OFFSET ?';
+
+        $stmt = Database::prepare($sql);
+        $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(2, $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function getBestCompetiteurs(int $limit = 20, int $offset = 0): array
+    {
+        $sql = 'SELECT u.num_utilisateur, u.nom, u.prenom, ROUND(AVG(e.note), 2) AS moyenne
+                FROM Evaluation e
+                JOIN Dessin d ON d.num_dessin = e.num_dessin
+                JOIN Utilisateur u ON u.num_utilisateur = d.num_competiteur
+                GROUP BY u.num_utilisateur, u.nom, u.prenom
+                HAVING AVG(e.note) >= ALL (
+                    SELECT ROUND(AVG(e2.note), 2)
+                    FROM Evaluation e2
+                    JOIN Dessin d2 ON d2.num_dessin = e2.num_dessin
+                    JOIN Utilisateur u2 ON u2.num_utilisateur = d2.num_competiteur
+                    GROUP BY u2.num_utilisateur, u2.nom, u2.prenom
+                )
+                LIMIT ? OFFSET ?';
+
+        $stmt = Database::prepare($sql);
+        $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(2, $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);}
 
     private static function hydrateFromArray(array $data): Evaluation
     {

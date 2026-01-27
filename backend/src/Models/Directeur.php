@@ -22,7 +22,7 @@ class Directeur
         return $stmt->execute([$numDirecteur, $dateDebut]);
     }
 
-    public static function findById(int $numDirecteur): ?Directeur
+    public static function getById(int $numDirecteur): ?Directeur
     {
         $stmt = Database::prepare('SELECT * FROM Directeur WHERE num_directeur = ? LIMIT 1');
         $stmt->execute([$numDirecteur]);

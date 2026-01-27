@@ -34,7 +34,7 @@ class Dessin
         return $stmt->execute([$commentaire, $classement, $dateRemise, $le_dessin, $numConcours, $numCompetiteur]);
     }
 
-    public static function findById(int $numDessin): ?Dessin
+    public static function getById(int $numDessin): ?Dessin
     {
         $stmt = Database::prepare('SELECT * FROM Dessin WHERE num_dessin = ? LIMIT 1');
         $stmt->execute([$numDessin]);
@@ -87,7 +87,7 @@ class Dessin
         return array_map(fn($row) => self::hydrateFromArray($row), $results);
     }
 
-    private static function hydrateFromArray(array $data): Dessin
+    public static function hydrateFromArray(array $data): Dessin
     {
         $dessin = new self();
         $dessin->numDessin = (int)$data['num_dessin'];
