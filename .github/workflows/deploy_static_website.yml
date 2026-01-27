@@ -37,7 +37,7 @@ jobs:
       - name: Get Account Name
         run: |
           if [[ "${{ env.DEPLOY_TYPE }}" == "prod" ]]; then
-            echo "ACCOUNT_NAME=drawarenastaticprod" >> $GITHUB_ENV
+            echo "ACCOUNT_NAME=drawarenastatic2026" >> $GITHUB_ENV
             echo "BACKEND_URL=https://draw-arena-backend-app.azurewebsites.net/api" >> $GITHUB_ENV
           else
             echo "ACCOUNT_NAME=drawarenastaticpreprod" >> $GITHUB_ENV
