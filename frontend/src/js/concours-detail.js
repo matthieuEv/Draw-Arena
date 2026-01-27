@@ -139,13 +139,23 @@ function displayParticipants(users, append = false) {
     
     users.forEach(u => {
         const profileImg = u.photoProfilUrl || "/img/default_profile.png";
+
+        let icon = '';
+        if(u.role === 'president'){
+            icon = `<span class="material-symbols-rounded president-icon role-icon" title="Président">taunt</span>`;
+        }else if(u.role === 'evaluateur'){
+            icon = `<span class="material-symbols-rounded evaluateur-icon role-icon" title="Évaluateur">assignment</span>`;
+        }
+        
         grid.insertAdjacentHTML('beforeend', `
-            <div class="user-card">
+            <div class="user-card ${u.role}">
                 <img src="${profileImg}" alt="Profile" class="user-avatar">
                 <div class="user-details">
                     <h3 class="user-name">${u.prenom || ''} ${u.nom || ''}</h3>
                     <p class="user-login">${u.login || ''}</p>
+                    <p class="user-address">${u.adresse}</p>
                 </div>
+                ${icon}
             </div>
         `);
     });
