@@ -1,7 +1,7 @@
 # Draw-Arena
 
 ****> A E4A project by [Maxime](https://github.com/Bixou85), [Maxence](https://github.com/Manjy85), [Julien](https://github.com/JulienGuitter) and [Matthieu](https://github.com/matthieuEv)
-> 
+>
 > 2026
 
 # Instructions
@@ -13,6 +13,7 @@ You can access the website with this url: [https://drawarenastatic2026.z28.web.c
 > [!NOTE]
 > This url may not existe anymore as it was made only for a class project, you may need to [setup the project locally](#setup-locally).
 
+Also, we have created a documentation of all [API endpoints](https://drawarenastatic2026.z28.web.core.windows.net/api/docs)
 ## Connection
 
 You can use all theses users to log in with different roles:
@@ -29,7 +30,7 @@ You can also create your own account with the "Sign Up" button.
 
 ## Dashboard
 
-When you log in, you will be redirected to your dashboard. 
+When you log in, you will be redirected to your dashboard.
 
 Here, you can see an overview of your activities on the platform: Your club, participations, score, etc...
 
