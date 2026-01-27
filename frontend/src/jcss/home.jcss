@@ -1,0 +1,590 @@
+/* Home Dashboard Styles */
+
+/* Common styles */
+#home-user-body,
+#admin-home-body {
+    display: none;
+}
+
+#home-user-body.active,
+#admin-home-body.active {
+    display: grid;
+    gap: var(--gap-size);
+}
+
+/* Dashboard Header */
+.dashboard-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap-size);
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(90, 175, 232, 0.12), rgba(247, 166, 89, 0.08));
+    border-radius: 16px;
+    border: 1px solid var(--color-light-gray);
+}
+
+.dashboard-welcome {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dashboard-welcome h1 {
+    font-size: 1.75rem;
+    margin: 0;
+}
+
+.dashboard-welcome p {
+    color: var(--color-text-muted);
+    margin: 0;
+}
+
+.dashboard-role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: capitalize;
+}
+
+.dashboard-role-badge.competiteur {
+    background: linear-gradient(135deg, #a8e6cf, #88d4ab);
+    color: #1e5631;
+}
+
+.dashboard-role-badge.evaluateur {
+    background: linear-gradient(135deg, #78e4fd, #5bc0de);
+    color: #0c5460;
+}
+
+.dashboard-role-badge.president {
+    background: linear-gradient(135deg, #ffe246, #ffc107);
+    color: #664d03;
+}
+
+.dashboard-role-badge.directeur {
+    background: linear-gradient(135deg, #f7a659, #ff9800);
+    color: #663c00;
+}
+
+.dashboard-role-badge.administrateur {
+    background: linear-gradient(135deg, #f95671, #dc3545);
+    color: #fff;
+}
+
+/* Club Info Card */
+.club-info-card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    border: 1px solid var(--color-light-gray);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.club-info-content h2 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.5rem;
+    color: var(--color-text);
+}
+
+.club-info-content .club-meta {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    line-height: 1.8;
+}
+
+.club-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--gap-size);
+}
+
+/* Dashboard Cards */
+.dashboard-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    border: 1px solid var(--color-light-gray);
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.dashboard-card-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--color-text);
+}
+
+.dashboard-card-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.dashboard-card-icon.primary {
+    background: rgba(90, 175, 232, 0.15);
+    color: var(--color-primary-500);
+}
+
+.dashboard-card-icon.success {
+    background: rgba(40, 167, 69, 0.15);
+    color: #28a745;
+}
+
+.dashboard-card-icon.warning {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+
+.dashboard-card-icon.danger {
+    background: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+}
+
+.dashboard-card-icon.info {
+    background: rgba(23, 162, 184, 0.15);
+    color: #17a2b8;
+}
+
+.dashboard-card-content {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.dashboard-card-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.25rem;
+}
+
+.dashboard-card-label {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Quick Stats */
+.quick-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.quick-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
+    border: 1px solid var(--color-light-gray);
+}
+
+.quick-stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary-500);
+}
+
+.quick-stat-label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+}
+
+/* Concours List in Dashboard */
+.dashboard-concours-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.dashboard-concours-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 10px;
+    border: 1px solid var(--color-light-gray);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.dashboard-concours-item:hover {
+    background: rgba(90, 175, 232, 0.1);
+}
+
+.concours-status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.concours-status-dot.en_cours {
+    background: #28a745;
+}
+
+.concours-status-dot.pas_commence {
+    background: #6c757d;
+}
+
+.concours-status-dot.attente {
+    background: #ffc107;
+}
+
+.concours-status-dot.resultat {
+    background: #17a2b8;
+}
+
+.concours-status-dot.evalue {
+    background: #6f42c1;
+}
+
+.concours-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.concours-item-theme {
+    font-weight: 600;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.concours-item-dates {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.concours-item-status {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+    background: var(--color-light-gray);
+    color: var(--color-text-muted);
+    text-transform: capitalize;
+}
+
+/* Dessins Grid */
+.dashboard-dessins-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.75rem;
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.dashboard-dessin-item {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.dashboard-dessin-item:hover {
+    transform: scale(1.05);
+}
+
+.dashboard-dessin-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Evaluations Section */
+.dashboard-evaluations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.dashboard-evaluation-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 10px;
+    border: 1px solid var(--color-light-gray);
+}
+
+.evaluation-thumb {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.evaluation-info {
+    flex: 1;
+}
+
+.evaluation-theme {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.evaluation-author {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.evaluation-note {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-primary-500);
+}
+
+/* Admin Dashboard Specific */
+.admin-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gap-size);
+}
+
+.admin-stat-card {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    border: 1px solid var(--color-light-gray);
+    text-align: center;
+}
+
+.admin-stat-card .stat-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.admin-stat-card .stat-icon.clubs {
+    background: rgba(90, 175, 232, 0.15);
+    color: var(--color-primary-500);
+}
+
+.admin-stat-card .stat-icon.users {
+    background: rgba(40, 167, 69, 0.15);
+    color: #28a745;
+}
+
+.admin-stat-card .stat-icon.concours {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+
+.admin-stat-card .stat-icon.evaluations {
+    background: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+}
+
+.admin-stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.admin-stat-label {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Admin Quick Actions */
+.admin-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.admin-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--color-light-gray);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: var(--color-text);
+}
+
+.admin-action-btn:hover {
+    background: var(--color-primary-100);
+    border-color: var(--color-primary-300);
+    transform: translateY(-2px);
+}
+
+.admin-action-btn .material-symbols-rounded {
+    font-size: 1.5rem;
+    color: var(--color-primary-500);
+}
+
+.admin-action-btn span:not(.material-symbols-rounded) {
+    font-weight: 600;
+}
+
+/* Recent Activity */
+.recent-activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 10px;
+    border: 1px solid var(--color-light-gray);
+}
+
+.activity-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.activity-icon.new-user {
+    background: rgba(40, 167, 69, 0.15);
+    color: #28a745;
+}
+
+.activity-icon.new-concours {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+
+.activity-icon.new-dessin {
+    background: rgba(90, 175, 232, 0.15);
+    color: var(--color-primary-500);
+}
+
+.activity-icon.new-evaluation {
+    background: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+}
+
+.activity-content {
+    flex: 1;
+}
+
+.activity-text {
+    font-size: 0.9rem;
+    color: var(--color-text);
+}
+
+.activity-time {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+/* Empty States */
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: var(--color-text-muted);
+}
+
+.empty-state .material-symbols-rounded {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .admin-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .club-info-card {
+        grid-template-columns: 1fr;
+    }
+    
+    .club-actions {
+        flex-direction: row;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .admin-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .quick-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
