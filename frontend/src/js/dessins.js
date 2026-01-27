@@ -77,6 +77,7 @@ function getDessins(concoursID){
         }else{
             dessins.dessins.pop();
         }
+
         concoursDessins[concoursID] = (concoursDessins[concoursID] || []).concat(dessins.dessins);
         displayDessins(concoursID, dessins.dessins);
     });

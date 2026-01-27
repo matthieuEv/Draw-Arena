@@ -383,17 +383,40 @@ function loadCompetiteurData(userId) {
     showElement("stat-ma-moyenne");
     showElement("card-mes-dessins");
     
-    // Note: Les endpoints /user/{userId}/dessins et /user/{userId}/stats n'existent pas encore
-    // Afficher des données vides en attendant
-    displayDessinsGrid("mes-dessins-grid", []);
+    // Charger les dessins récents de l'utilisateur
+    apiFetch(`/utilisateur/${userId}/dessins`).then(data => {
+        const dessins = data.dessins || [];
+        // Afficher les 8 derniers dessins
+        displayDessinsGrid("mes-dessins-grid", dessins.slice(0, 8));
+    }).catch(err => {
+        console.error("Erreur chargement dessins utilisateur:", err);
+        displayDessinsGrid("mes-dessins-grid", []);
+    });
     
-    const countEl = document.getElementById("mes-dessins-count");
-    if (countEl) countEl.textContent = "-";
-    
-    const partEl = document.getElementById("mes-participations-count");
-    const moyEl = document.getElementById("ma-moyenne-value");
-    if (partEl) partEl.textContent = "-";
-    if (moyEl) moyEl.textContent = "-";
+    // Charger les stats de l'utilisateur
+    apiFetch(`/utilisateur/${userId}/stats`).then(data => {
+        const stats = data.stats || {};
+        
+        const countEl = document.getElementById("mes-dessins-count");
+        if (countEl) countEl.textContent = stats.nb_dessins ?? "-";
+        
+        const partEl = document.getElementById("mes-participations-count");
+        if (partEl) partEl.textContent = stats.nb_participations ?? "-";
+        
+        const moyEl = document.getElementById("ma-moyenne-value");
+        if (moyEl) {
+            const moy = stats.moyenne_generale;
+            moyEl.textContent = (moy !== null && moy !== undefined) ? moy.toFixed(1) : "-";
+        }
+    }).catch(err => {
+        console.error("Erreur chargement stats utilisateur:", err);
+        const countEl = document.getElementById("mes-dessins-count");
+        const partEl = document.getElementById("mes-participations-count");
+        const moyEl = document.getElementById("ma-moyenne-value");
+        if (countEl) countEl.textContent = "-";
+        if (partEl) partEl.textContent = "-";
+        if (moyEl) moyEl.textContent = "-";
+    });
 }
 
 /**

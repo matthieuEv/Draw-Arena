@@ -298,19 +298,31 @@ function loadConcoursData(concoursId) {
 }
 
 /**
- * Charge les évaluations en utilisant les dessins et leurs notes
+ * Charge les stats et évaluations en utilisant les endpoints users et dessins
  */
 function loadEvaluationsFromDessins() {
-    apiFetch(`/concours/${currentConcoursId}/dessins?limit=1000`).then(data => {
+    // Charger les users pour compter participants et évaluateurs
+    const usersPromise = apiFetch(`/concours/${currentConcoursId}/users?limit=1000&index=0`).then(data => {
+        const users = data.users || [];
+        const evaluateurs = users.filter(u => u.role === 'evaluateur' || u.role === 'president');
+        const competiteurs = users.filter(u => u.role === 'competiteur');
+        return {
+            totalUsers: users.length,
+            nbEvaluateurs: evaluateurs.length,
+            nbCompetiteurs: competiteurs.length,
+            evaluateurs: evaluateurs
+        };
+    }).catch(err => {
+        console.error("Erreur chargement users:", err);
+        return { totalUsers: 0, nbEvaluateurs: 0, nbCompetiteurs: 0, evaluateurs: [] };
+    });
+    
+    // Charger les dessins pour compter dessins et évaluations
+    const dessinsPromise = apiFetch(`/concours/${currentConcoursId}/dessins?limit=1000`).then(data => {
         const dessins = data.dessins || [];
-        
-        // Calculer les stats
-        const nbDessins = dessins.length;
-        const participants = new Set(dessins.map(d => d.numUtilisateur || d.numCompetiteur)).size;
         
         // Collecter toutes les évaluations des dessins
         let allEvaluations = [];
-        let evaluateurSet = new Set();
         
         dessins.forEach(d => {
             if (d.evaluations && Array.isArray(d.evaluations)) {
@@ -319,7 +331,6 @@ function loadEvaluationsFromDessins() {
                         ...e,
                         dessinId: d.numDessin
                     });
-                    if (e.numEvaluateur) evaluateurSet.add(e.numEvaluateur);
                 });
             }
             // Si le dessin a une note directe
@@ -333,21 +344,27 @@ function loadEvaluationsFromDessins() {
             }
         });
         
-        // Mettre à jour les stats
+        return {
+            nbDessins: dessins.length,
+            evaluations: allEvaluations
+        };
+    }).catch(err => {
+        console.error("Erreur chargement dessins:", err);
+        return { nbDessins: 0, evaluations: [] };
+    });
+    
+    // Combiner les résultats
+    Promise.all([usersPromise, dessinsPromise]).then(([usersData, dessinsData]) => {
+        // Mettre à jour les stats avec les vraies données
         displayStats({
-            participants: participants,
-            dessins: nbDessins,
-            evaluateurs: evaluateurSet.size,
-            evaluations: allEvaluations.length
+            participants: usersData.nbCompetiteurs || usersData.totalUsers,
+            dessins: dessinsData.nbDessins,
+            evaluateurs: usersData.nbEvaluateurs,
+            evaluations: dessinsData.evaluations.length
         });
         
         // Afficher les évaluations
-        displayEvaluations(allEvaluations);
-        
-    }).catch(err => {
-        console.error("Erreur chargement évaluations:", err);
-        displayStats({ participants: 0, dessins: 0, evaluateurs: 0, evaluations: 0 });
-        displayEvaluations([]);
+        displayEvaluations(dessinsData.evaluations);
     });
 }
 
