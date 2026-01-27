@@ -203,7 +203,7 @@ class Concours
                 u.age,
                 u.adresse,
                 u.login,
-                AVG(e.note) as note,
+                ROUND(AVG(e.note), 2) as note,
                 MAX(e.date_evaluation) as date_evaluation,
                 GROUP_CONCAT(e.commentaire SEPARATOR \' | \') as evaluation_commentaires,
                 COUNT(e.num_dessin) as nb_evaluations
@@ -236,7 +236,7 @@ class Concours
                 u.prenom,
                 u.login,
                 COUNT(DISTINCT d.num_dessin) as nb_dessins,
-                AVG(e.note) as moyenne_note,
+                ROUND(AVG(e.note), 2) as moyenne_note,
                 COUNT(DISTINCT e.num_dessin) as nb_dessins_evalues
              FROM Concours_Competiteur cc
              JOIN Competiteur comp ON comp.num_competiteur = cc.num_competiteur
@@ -245,7 +245,7 @@ class Concours
              LEFT JOIN Evaluation e ON e.num_dessin = d.num_dessin
              WHERE cc.num_concours = ?
              GROUP BY u.num_utilisateur, u.nom, u.prenom, u.login
-             HAVING AVG(e.note) IS NOT NULL
+             HAVING ROUND(AVG(e.note), 2) IS NOT NULL
              ORDER BY moyenne_note DESC, nb_dessins DESC
              LIMIT ? OFFSET ?'
         );

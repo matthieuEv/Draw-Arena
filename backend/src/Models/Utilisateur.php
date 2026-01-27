@@ -144,7 +144,7 @@ class Utilisateur
         return [
             'nb_dessins' => (int)($result['nb_dessins'] ?? 0),
             'nb_participations' => (int)($result['nb_participations'] ?? 0),
-            'moyenne_generale' => $result['moyenne_generale'] ? (float)$result['moyenne_generale'] : null
+            'moyenne_generale' => $result['moyenne_generale'] ? (float)round($result['moyenne_generale'], 2) : null
         ];
     }
 
