@@ -88,6 +88,26 @@
           "note": {"type": "number"},
           "commentaire": {"type": "string", "nullable": true}
         }
+      },
+      "DessinWithUserAndEvaluation": {
+        "type": "object",
+        "description": "Dessin enrichi avec données utilisateur et évaluation",
+        "properties": {
+          "num_dessin": {"type": "integer"},
+          "dessin_commentaire": {"type": "string", "nullable": true},
+          "classement": {"type": "integer", "nullable": true},
+          "date_remise": {"type": "string", "format": "date-time"},
+          "le_dessin": {"type": "string"},
+          "nom": {"type": "string"},
+          "prenom": {"type": "string"},
+          "age": {"type": "integer"},
+          "adresse": {"type": "string", "nullable": true},
+          "login": {"type": "string", "format": "email"},
+          "num_utilisateur": {"type": "integer"},
+          "note": {"type": "number", "nullable": true, "description": "Note d'évaluation (null si pas encore évalué)"},
+          "date_evaluation": {"type": "string", "format": "date-time", "nullable": true},
+          "evaluation_commentaire": {"type": "string", "nullable": true}
+        }
       }
     }
   },
@@ -541,7 +561,8 @@
     },
     "/api/concours/{concoursId}/dessins": {
       "get": {
-        "summary": "Lister les dessins d'un concours",
+        "summary": "Lister les dessins d'un concours avec données utilisateur et évaluation",
+        "description": "Retourne les dessins d'un concours avec les informations complètes du participant (nom, prénom, âge, adresse, login) et les données d'évaluation si disponibles. Les dessins sont triés par date de remise décroissante.",
         "tags": ["Concours"],
         "security": [{"bearerAuth": []}],
         "parameters": [
@@ -551,7 +572,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Liste des dessins du concours",
+            "description": "Liste des dessins du concours avec données enrichies",
             "content": {
               "application/json": {
                 "schema": {
@@ -559,7 +580,8 @@
                   "properties": {
                     "dessins": {
                       "type": "array",
-                      "items": {"$ref": "#/components/schemas/Dessin"}
+                      "items": {"$ref": "#/components/schemas/DessinWithUserAndEvaluation"},
+                      "description": "Tableau des dessins enrichis. Les champs 'note', 'date_evaluation' et 'evaluation_commentaire' peuvent être null si le dessin n'a pas encore été évalué."
                     }
                   }
                 }

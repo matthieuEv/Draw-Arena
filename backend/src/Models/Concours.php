@@ -192,10 +192,27 @@ class Concours
         // Limit + 1 to check if there are more results
         $limit++;
         $stmt = Database::prepare(
-            'SELECT d.* FROM Dessin d
+            'SELECT
+                d.num_dessin,
+                d.commentaire as dessin_commentaire,
+                d.classement,
+                d.date_remise,
+                d.le_dessin,
+                u.nom,
+                u.prenom,
+                u.age,
+                u.adresse,
+                u.login,
+                e.note,
+                e.date_evaluation,
+                e.commentaire as evaluation_commentaire
+             FROM Dessin d
              JOIN Concours_Competiteur cc ON cc.num_competiteur = d.num_competiteur
+             JOIN Competiteur comp ON comp.num_competiteur = cc.num_competiteur
+             JOIN Utilisateur u ON u.num_utilisateur = comp.num_competiteur
+             LEFT JOIN Evaluation e ON e.num_dessin = d.num_dessin
              WHERE cc.num_concours = ?
-             ORDER BY d.commentaire
+             ORDER BY d.date_remise DESC
              LIMIT ? OFFSET ?'
         );
         $stmt->bindValue(1, $concoursId, PDO::PARAM_INT);
@@ -203,9 +220,7 @@ class Concours
         $stmt->bindValue(3, $index, PDO::PARAM_INT);
         $stmt->execute();
 
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        return array_map(fn($row) => Dessin::hydrateFromArray($row), $results);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public static function hydrateFromArray(array $data): Concours

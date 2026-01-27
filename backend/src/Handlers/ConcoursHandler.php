@@ -92,7 +92,7 @@ class ConcoursHandler
         $dessins = Concours::getDessinsByConcoursId($concoursId, $limit, $index);
 
         $response->success([
-            'dessins' => array_map(fn($dessin) => $dessin->toArray(), $dessins)
+            'dessins' => $dessins
         ])->send();
     }
 
