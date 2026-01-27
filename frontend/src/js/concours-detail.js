@@ -53,11 +53,15 @@ function displayConcoursInfo(concours) {
         if (depotLink) depotLink.href = `/depot?concours=${currentConcoursId}`;
     }
     
-    // Show results tab if resultat or evalue
-    const tabResultats = document.getElementById("tab-resultats");
-    if ((concours.etat === 'resultat' || concours.etat === 'evalue') && tabResultats) {
-        tabResultats.style.display = "";
+    // Update top tab label based on concours state
+    const tabTopLabel = document.getElementById("tab-top-label");
+    const isFinished = concours.etat === 'resultat' || concours.etat === 'evalue';
+    if (tabTopLabel) {
+        tabTopLabel.textContent = isFinished ? 'Résultats' : 'Leaderboard';
     }
+    
+    // Load leaderboard/results data
+    loadLeaderboard(isFinished);
     
     // Info cards
     const dateDebutEl = document.getElementById("concours-date-debut");
@@ -205,74 +209,91 @@ function displayEvaluations(evaluations) {
     });
 }
 
-function displayResults(competiteurs) {
+/**
+ * Affiche le leaderboard (classement actuel) ou les résultats finaux avec podium
+ */
+function displayLeaderboard(competiteurs, showPodium = false) {
     const podium = document.getElementById("podium-container");
-    const list = document.getElementById("results-list");
+    const list = document.getElementById("leaderboard-list");
     
     if (!competiteurs || competiteurs.length === 0) {
-        if (podium) podium.innerHTML = "";
+        if (podium) {
+            podium.style.display = "none";
+            podium.innerHTML = "";
+        }
         if (list) {
             list.innerHTML = `
                 <div class="empty-state">
-                    <span class="material-symbols-rounded">emoji_events</span>
-                    <p>Résultats non disponibles</p>
+                    <span class="material-symbols-rounded">leaderboard</span>
+                    <p>Aucun classement disponible</p>
                 </div>
             `;
         }
         return;
     }
     
-    // Podium (top 3)
+    // Podium (top 3) - only shown when concours is finished
     if (podium) {
-        podium.innerHTML = "";
-        const top3 = competiteurs.slice(0, 3);
-        const podiumOrder = [1, 0, 2]; // 2nd, 1st, 3rd
-        
-        podiumOrder.forEach(idx => {
-            if (top3[idx]) {
-                const c = top3[idx];
-                const height = idx === 0 ? '180px' : idx === 1 ? '140px' : '100px';
-                const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉';
-                const moyenne = c.moyenne_note !== null && c.moyenne_note !== undefined 
-                    ? parseFloat(c.moyenne_note).toFixed(1) 
-                    : '-';
-                
-                podium.insertAdjacentHTML('beforeend', `
-                    <div class="podium-item podium-${idx + 1}" style="--podium-height: ${height}">
-                        <div class="podium-avatar">
-                            <span class="material-symbols-rounded">person</span>
+        if (showPodium && competiteurs.length > 0) {
+            podium.style.display = "";
+            podium.innerHTML = "";
+            const top3 = competiteurs.slice(0, 3);
+            const podiumOrder = [1, 0, 2]; // 2nd, 1st, 3rd
+            
+            podiumOrder.forEach(idx => {
+                if (top3[idx]) {
+                    const c = top3[idx];
+                    const height = idx === 0 ? '180px' : idx === 1 ? '140px' : '100px';
+                    const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉';
+                    const moyenne = c.moyenne_note !== null && c.moyenne_note !== undefined 
+                        ? parseFloat(c.moyenne_note).toFixed(1) 
+                        : '-';
+                    
+                    podium.insertAdjacentHTML('beforeend', `
+                        <div class="podium-item podium-${idx + 1}" style="--podium-height: ${height}">
+                            <div class="podium-avatar">
+                                <span class="material-symbols-rounded">person</span>
+                            </div>
+                            <div class="podium-info">
+                                <span class="podium-medal">${medal}</span>
+                                <span class="podium-name">${c.prenom || ''} ${c.nom || ''}</span>
+                                <span class="podium-note">${moyenne}/20</span>
+                                <span class="podium-stats">${c.nb_dessins || 0} dessin(s)</span>
+                            </div>
+                            <div class="podium-stand"></div>
                         </div>
-                        <div class="podium-info">
-                            <span class="podium-medal">${medal}</span>
-                            <span class="podium-name">${c.prenom || ''} ${c.nom || ''}</span>
-                            <span class="podium-note">${moyenne}/20</span>
-                            <span class="podium-stats">${c.nb_dessins || 0} dessin(s)</span>
-                        </div>
-                        <div class="podium-stand"></div>
-                    </div>
-                `);
-            }
-        });
+                    `);
+                }
+            });
+        } else {
+            podium.style.display = "none";
+            podium.innerHTML = "";
+        }
     }
     
-    // Full results list
+    // Full leaderboard list
     if (list) {
         list.innerHTML = "";
         competiteurs.forEach((c, idx) => {
             const moyenne = c.moyenne_note !== null && c.moyenne_note !== undefined 
                 ? parseFloat(c.moyenne_note).toFixed(1) 
                 : '-';
+            const rankClass = idx < 3 ? `rank-${idx + 1}` : '';
+            const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : '';
             
             list.insertAdjacentHTML('beforeend', `
-                <div class="result-item">
-                    <span class="result-rank">${idx + 1}</span>
-                    <div class="result-avatar">
+                <div class="leaderboard-item ${rankClass}">
+                    <span class="leaderboard-rank">${medal || (idx + 1)}</span>
+                    <div class="leaderboard-avatar">
                         <span class="material-symbols-rounded">person</span>
                     </div>
-                    <div class="result-info">
-                        <span class="result-name">${c.prenom || ''} ${c.nom || ''}</span>
-                        <span class="result-note">${moyenne}/20</span>
-                        <span class="result-stats">${c.nb_dessins || 0} dessin(s) - ${c.nb_dessins_evalues || 0} évalué(s)</span>
+                    <div class="leaderboard-info">
+                        <span class="leaderboard-name">${c.prenom || ''} ${c.nom || ''}</span>
+                        <span class="leaderboard-stats">${c.nb_dessins || 0} dessin(s) - ${c.nb_dessins_evalues || 0} évalué(s)</span>
+                    </div>
+                    <div class="leaderboard-score">
+                        <span class="leaderboard-note">${moyenne}</span>
+                        <span class="leaderboard-note-label">/20</span>
                     </div>
                 </div>
             `);
@@ -411,13 +432,18 @@ function loadMoreParticipants() {
     });
 }
 
-function loadResults() {
+/**
+ * Charge le leaderboard/résultats
+ * @param {boolean} showPodium - Si true, affiche le podium (concours terminé)
+ */
+function loadLeaderboard(showPodium = false) {
     // GET /api/concours/{concoursId}/top
     // Retourne: { competiteurs: [{ num_utilisateur, nom, prenom, login, nb_dessins, nb_dessins_evalues, moyenne_note }] }
     apiFetch(`/concours/${currentConcoursId}/top`).then(data => {
-        displayResults(data.competiteurs || []);
+        displayLeaderboard(data.competiteurs || [], showPodium);
     }).catch(err => {
-        console.error("Erreur chargement résultats:", err);
+        console.error("Erreur chargement leaderboard:", err);
+        displayLeaderboard([], showPodium);
     });
 }
 
@@ -442,9 +468,6 @@ function initTabs() {
             // Load data if needed
             if (tabId === 'participants' && participantsLoaded.length === 0) {
                 loadMoreParticipants();
-            }
-            if (tabId === 'resultats') {
-                loadResults();
             }
         });
     });
