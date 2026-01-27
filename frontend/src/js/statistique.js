@@ -1243,15 +1243,19 @@ export function initStatistique(options = {}) {
       });
 
       const evalDateKeys = Object.keys(evalByDate).sort();
-      lineDepoLabels.push(...evalDateKeys);
-      lineDepoData.push(...evalDateKeys.map(dateKey => evalByDate[dateKey]));
+      lineEvalLabels.push(...evalDateKeys);
+      lineEvalData.push(...evalDateKeys.map(dateKey => evalByDate[dateKey]));
 
       const themeKeys = Object.keys(themeMap);
-      lineEvalLabels.push(...themeKeys);
-      lineEvalData.push(...themeKeys.map(theme => {
+      lineDepoLabels.push(...themeKeys);
+      lineDepoData.push(...themeKeys.map(theme => {
         const avg = themeMap[theme].total / themeMap[theme].count;
         return avg;
       }));
+      barConcours.push(...themeKeys.map(theme => ({
+        label: theme,
+        value: themeMap[theme].count,
+      })));
     });
 
     const clubPromise = apiFetch('/club').then(async data => {
