@@ -423,6 +423,64 @@
     color: var(--color-primary-500);
 }
 
+/* Evaluations list */
+.evaluations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.evaluation-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    border: 1px solid var(--color-light-gray);
+    transition: all 0.2s ease;
+}
+
+.evaluation-item:hover {
+    background: rgba(90, 175, 232, 0.05);
+    border-color: var(--color-primary-300);
+}
+
+.evaluation-user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.evaluation-user .material-symbols-rounded {
+    font-size: 1.5rem;
+    color: var(--color-primary-500);
+}
+
+.evaluation-name {
+    font-weight: 500;
+    color: var(--color-text);
+}
+
+.evaluation-stats {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.evaluation-count {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+}
+
+.evaluation-moyenne {
+    font-weight: 600;
+    color: var(--color-primary-500);
+    background: var(--color-primary-100);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+}
+
 /* Empty state */
 .empty-state {
     grid-column: 1 / -1;

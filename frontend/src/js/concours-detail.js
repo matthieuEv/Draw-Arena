@@ -60,12 +60,10 @@ function displayConcoursInfo(concours) {
     }
     
     // Info cards
-    document.getElementById("concours-date-debut").textContent = concours.dateDebut || "-";
-    document.getElementById("concours-date-fin").textContent = concours.dateFin || "-";
-    document.getElementById("concours-club").textContent = concours.nomClub || "-";
-    document.getElementById("concours-president").textContent = 
-        concours.presidentPrenom && concours.presidentNom ? 
-        `${concours.presidentPrenom} ${concours.presidentNom}` : "-";
+    const dateDebutEl = document.getElementById("concours-date-debut");
+    const dateFinEl = document.getElementById("concours-date-fin");
+    if (dateDebutEl) dateDebutEl.textContent = concours.dateDebut || "-";
+    if (dateFinEl) dateFinEl.textContent = concours.dateFin || "-";
     
     // Description
     if (concours.description) {
@@ -149,33 +147,59 @@ function displayParticipants(users, append = false) {
     });
 }
 
-function displayEvaluateurs(evaluateurs) {
-    const grid = document.getElementById("evaluateurs-grid");
-    if (!grid) return;
+/**
+ * Affiche les évaluations (avec nom user et moyenne)
+ */
+function displayEvaluations(evaluations) {
+    const list = document.getElementById("evaluations-list");
+    if (!list) return;
     
-    grid.innerHTML = "";
+    list.innerHTML = "";
     
-    if (!evaluateurs || evaluateurs.length === 0) {
-        grid.innerHTML = `
+    if (!evaluations || evaluations.length === 0) {
+        list.innerHTML = `
             <div class="empty-state">
-                <span class="material-symbols-rounded">assignment</span>
-                <p>Aucun évaluateur assigné</p>
+                <span class="material-symbols-rounded">rate_review</span>
+                <p>Aucune évaluation</p>
             </div>
         `;
         return;
     }
     
-    evaluateurs.forEach(e => {
-        const profileImg = e.photoProfilUrl || "/img/default_profile.png";
-        grid.insertAdjacentHTML('beforeend', `
-            <div class="user-card evaluateur">
-                <img src="${profileImg}" alt="Profile" class="user-avatar">
-                <div class="user-details">
-                    <h3 class="user-name">${e.prenom || ''} ${e.nom || ''}</h3>
-                    <p class="user-login">${e.specialite || ''}</p>
-                    <p class="user-address">XP: ${e.xp || 0}</p>
+    // Grouper les évaluations par utilisateur pour calculer la moyenne
+    const userEvaluations = {};
+    evaluations.forEach(e => {
+        const key = `${e.prenom || ''} ${e.nom || ''}`.trim() || 'Inconnu';
+        if (!userEvaluations[key]) {
+            userEvaluations[key] = {
+                nom: e.nom || '',
+                prenom: e.prenom || '',
+                notes: []
+            };
+        }
+        if (e.note !== undefined && e.note !== null) {
+            userEvaluations[key].notes.push(parseFloat(e.note));
+        }
+    });
+    
+    // Afficher chaque utilisateur avec sa moyenne
+    Object.keys(userEvaluations).forEach(userName => {
+        const userData = userEvaluations[userName];
+        const notes = userData.notes;
+        const moyenne = notes.length > 0 
+            ? (notes.reduce((a, b) => a + b, 0) / notes.length).toFixed(1) 
+            : '-';
+        
+        list.insertAdjacentHTML('beforeend', `
+            <div class="evaluation-item">
+                <div class="evaluation-user">
+                    <span class="material-symbols-rounded">person</span>
+                    <span class="evaluation-name">${userData.prenom} ${userData.nom}</span>
                 </div>
-                <span class="material-symbols-rounded evaluateur-icon role-icon" title="Évaluateur">assignment</span>
+                <div class="evaluation-stats">
+                    <span class="evaluation-count">${notes.length} note(s)</span>
+                    <span class="evaluation-moyenne">Moyenne: ${moyenne}/20</span>
+                </div>
             </div>
         `);
     });
@@ -256,9 +280,7 @@ function displayResults(results) {
 function loadConcoursData(concoursId) {
     currentConcoursId = concoursId;
     
-    // TODO: GET /api/concours/{concoursId}
-    // Retourne: { concours: { numConcours, theme, dateDebut, dateFin, description, etat,
-    //            nomClub, presidentPrenom, presidentNom } }
+    // GET /api/concours/{concoursId}
     apiFetch(`/concours/${concoursId}`).then(data => {
         if (data.concours) {
             displayConcoursInfo(data.concours);
@@ -267,13 +289,66 @@ function loadConcoursData(concoursId) {
         console.error("Erreur chargement concours:", err);
     });
     
-    // Note: Les endpoints /concours/{id}/stats et /concours/{id}/evaluateurs n'existent pas encore
-    // Afficher des valeurs par défaut
-    displayStats({ participants: 0, dessins: 0, evaluateurs: 0, evaluations: 0 });
-    displayEvaluateurs([]);
-    
-    // Load initial dessins
+    // Load initial dessins et calculer les stats
     loadMoreDessins();
+    
+    // Charger les évaluations depuis l'endpoint /concours/{id}/dessins
+    // Les évaluations sont calculées à partir des dessins
+    loadEvaluationsFromDessins();
+}
+
+/**
+ * Charge les évaluations en utilisant les dessins et leurs notes
+ */
+function loadEvaluationsFromDessins() {
+    apiFetch(`/concours/${currentConcoursId}/dessins?limit=1000`).then(data => {
+        const dessins = data.dessins || [];
+        
+        // Calculer les stats
+        const nbDessins = dessins.length;
+        const participants = new Set(dessins.map(d => d.numUtilisateur || d.numCompetiteur)).size;
+        
+        // Collecter toutes les évaluations des dessins
+        let allEvaluations = [];
+        let evaluateurSet = new Set();
+        
+        dessins.forEach(d => {
+            if (d.evaluations && Array.isArray(d.evaluations)) {
+                d.evaluations.forEach(e => {
+                    allEvaluations.push({
+                        ...e,
+                        dessinId: d.numDessin
+                    });
+                    if (e.numEvaluateur) evaluateurSet.add(e.numEvaluateur);
+                });
+            }
+            // Si le dessin a une note directe
+            if (d.note !== undefined && d.note !== null) {
+                allEvaluations.push({
+                    note: d.note,
+                    prenom: d.prenom,
+                    nom: d.nom,
+                    dessinId: d.numDessin
+                });
+            }
+        });
+        
+        // Mettre à jour les stats
+        displayStats({
+            participants: participants,
+            dessins: nbDessins,
+            evaluateurs: evaluateurSet.size,
+            evaluations: allEvaluations.length
+        });
+        
+        // Afficher les évaluations
+        displayEvaluations(allEvaluations);
+        
+    }).catch(err => {
+        console.error("Erreur chargement évaluations:", err);
+        displayStats({ participants: 0, dessins: 0, evaluateurs: 0, evaluations: 0 });
+        displayEvaluations([]);
+    });
 }
 
 function loadMoreDessins() {

@@ -111,8 +111,11 @@ function displayBasicInfo(userInfo) {
     
     if (fullnameEl) fullnameEl.textContent = fullname || 'Utilisateur';
     if (emailEl) emailEl.textContent = userInfo.login || '';
-    if (avatarEl && userInfo.photoProfilUrl) {
-        avatarEl.src = userInfo.photoProfilUrl;
+    
+    // Charger l'avatar depuis state.userInfo.photoProfilUrl
+    if (avatarEl) {
+        const avatarUrl = userInfo.photoProfilUrl || '/img/default_profile.png';
+        avatarEl.src = avatarUrl;
     }
 }
 
@@ -130,8 +133,11 @@ function displayProfilData(data) {
     const fullname = `${data.prenom || ''} ${data.nom || ''}`.trim();
     if (fullnameEl) fullnameEl.textContent = fullname || 'Utilisateur';
     if (emailEl) emailEl.textContent = data.login || '';
-    if (avatarEl && data.photoProfilUrl) {
-        avatarEl.src = data.photoProfilUrl;
+    
+    // Charger l'avatar - priorité aux données API, sinon state.userInfo
+    if (avatarEl) {
+        const avatarUrl = data.photoProfilUrl || state.userInfo?.photoProfilUrl || '/img/default_profile.png';
+        avatarEl.src = avatarUrl;
     }
     
     // Remplir le formulaire
