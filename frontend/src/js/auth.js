@@ -75,7 +75,6 @@ async function login(event) {
   const form = event.target;
   const email = form.email.value;
   const password = form.password.value;
-  const remember = form["login-remember"].checked;
 
   if (!email || !password) {
     errorMessage.textContent = "Veuillez remplir tous les champs.";
