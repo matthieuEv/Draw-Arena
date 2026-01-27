@@ -1111,7 +1111,9 @@ function animateLoad(instance) {
 }
 
 function drawAll(instance) {
+  console.log("Drawing all charts");
   if (!instance) return;
+  console.log("Drawing bars");
 
   instance.charts.bars.forEach((chart) => {
     drawBars(chart.canvas, chart.data, { progress: animationState.bars });
@@ -1156,9 +1158,11 @@ export function initStatistique(options = {}) {
   const instance = buildInstance(options);
   if (!instance) return null;
   activeInstance = instance;
+  console.log("before loading")
 
   loadData();
 
+  animateLoad(instance);
   bindTooltips(instance);
 
   if (!resizeBound) {
@@ -1168,6 +1172,8 @@ export function initStatistique(options = {}) {
     });
     resizeBound = true;
   }
+
+  console.log("after drawing")
 
   function applyCounts() {
     instance.clubCount = nbClub;
