@@ -46,6 +46,8 @@ $router->get('/api/club/count', function ($request, $response) {
 }, [new AuthMiddleware()]);
 $router->get('/api/club/{clubId}', [ClubHandler::class, 'getClubById'], [new AuthMiddleware()]);
 $router->get('/api/club/{clubId}/users', [ClubHandler::class, 'getClubUsers'], [new AuthMiddleware()]);
+$router->get('/api/club/{clubId}/user/{userId}', [ClubHandler::class, 'getClubUserById'], [new AuthMiddleware()]);
+$router->get('/api/club/{clubId}/concours', [ClubHandler::class, 'getClubConcours'], [new AuthMiddleware()]);
 
 // concours routes
 $router->get('/api/concours', [ConcoursHandler::class, 'getAllConcours'], [new AuthMiddleware()]);

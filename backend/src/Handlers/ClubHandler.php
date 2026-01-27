@@ -6,6 +6,7 @@ namespace DrawArena\Handlers;
 use DrawArena\Core\Request;
 use DrawArena\Core\Response;
 use DrawArena\Models\Club;
+use DrawArena\Models\Concours;
 
 class ClubHandler
 {
@@ -38,18 +39,50 @@ class ClubHandler
         $limit = (int)($request->getQuery('limit', 100));
         $index = (int)($request->getQuery('index', 0));
 
-        // Print debug
-        error_log("Fetching users for clubId: $clubId, limit: $limit, index: $index");
         $club = Club::getById($clubId);
         if (!$club) {
             $response->error('Club not found', 404)->send();
         }
 
-        // Example: fetch users with pagination
         $users = Club::getUsersByClubId($clubId, $limit, $index);
 
         $response->success([
             'users' => array_map(fn($user) => $user->extendedToArray(), $users)
+        ])->send();
+    }
+
+    public function getClubUserById(Request $request, Response $response): void
+    {
+        $clubId = (int)$request->getParam('clubId');
+        $userId = (int)$request->getParam('userId');
+
+        $club = Club::getById($clubId);
+        if (!$club) {
+            $response->error('Club not found', 404)->send();
+        }
+
+        $users = Club::getUserByClubIdAndUserId($clubId, $userId);
+
+        $response->success([
+            'users' => array_map(fn($user) => $user->extendedToArray(), $users)
+        ])->send();
+    }
+
+    public function getClubConcours(Request $request, Response $response): void
+    {
+        $clubId = (int)$request->getParam('clubId');
+        $limit = (int)($request->getQuery('limit', 100));
+        $index = (int)($request->getQuery('index', 0));
+
+        $club = Club::getById($clubId);
+        if (!$club) {
+            $response->error('Club not found', 404)->send();
+        }
+
+        $concours = Club::getConcourssByClubId($clubId, $limit, $index);
+
+        $response->success([
+            'concours' => array_map(fn($c) => $c->toArray(), $concours)
         ])->send();
     }
 }

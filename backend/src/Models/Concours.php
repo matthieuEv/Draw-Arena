@@ -208,7 +208,7 @@ class Concours
         return array_map(fn($row) => Dessin::hydrateFromArray($row), $results);
     }
 
-    private static function hydrateFromArray(array $data): Concours
+    public static function hydrateFromArray(array $data): Concours
     {
         $concours = new self();
         $concours->numConcours = (int)$data['num_concours'];

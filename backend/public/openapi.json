@@ -307,6 +307,34 @@
         }
       }
     },
+    "/api/club/{clubId}/user/{userId}": {
+      "get": {
+        "summary": "Obtenir un utilisateur spécifique d'un club",
+        "tags": ["Club"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "clubId", "in": "path", "required": true, "schema": {"type": "integer"}},
+          {"name": "userId", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Détails de l'utilisateur",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {"$ref": "#/components/schemas/Utilisateur"}
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"},
+          "404": {"description": "Club ou utilisateur non trouvé"}
+        }
+      }
+    },
     "/api/club/count": {
       "get": {
         "summary": "Nombre total de clubs",
@@ -327,6 +355,39 @@
             }
           },
           "401": {"description": "Token non valide ou absent"}
+        }
+      }
+    },
+    "/api/club/{clubId}/concours": {
+      "get": {
+        "summary": "Lister les concours où les utilisateurs du club ont participé",
+        "description": "Retourne tous les concours auxquels les compétiteurs du club ont participé, via les relations Concours_Competiteur",
+        "tags": ["Club"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "clubId", "in": "path", "required": true, "schema": {"type": "integer"}},
+          {"name": "limit", "in": "query", "schema": {"type": "integer", "default": 100}, "description": "Nombre de concours à retourner (limit+1 pour savoir s'il y en a plus)"},
+          {"name": "index", "in": "query", "schema": {"type": "integer", "default": 0}, "description": "Offset de pagination"}
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des concours du club",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "concours": {
+                      "type": "array",
+                      "items": {"$ref": "#/components/schemas/Concours"}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"},
+          "404": {"description": "Club non trouvé"}
         }
       }
     },
