@@ -382,30 +382,17 @@ function loadCompetiteurData(userId) {
     showElement("stat-ma-moyenne");
     showElement("card-mes-dessins");
     
-    // TODO: GET /api/user/{userId}/dessins?limit=6
-    // Retourne: { dessins: [{ numDessin, leDessin, commentaire, dateRemise, theme }], count: number }
-    apiFetch(`/user/${userInfo.id}/dessins?limit=6`).then(data => {
-        displayDessinsGrid("mes-dessins-grid", data.dessins || []);
-        
-        // Mettre à jour les stats
-        const countEl = document.getElementById("mes-dessins-count");
-        if (countEl) countEl.textContent = data.count || (data.dessins || []).length;
-    }).catch(err => {
-        console.error("Erreur chargement dessins compétiteur:", err);
-        displayDessinsGrid("mes-dessins-grid", []);
-    });
+    // Note: Les endpoints /user/{userId}/dessins et /user/{userId}/stats n'existent pas encore
+    // Afficher des données vides en attendant
+    displayDessinsGrid("mes-dessins-grid", []);
     
-    // TODO: GET /api/user/{userId}/participations
-    // Retourne: { participations: number, moyenneNote: number }
-    apiFetch(`/user/${userInfo.id}/stats`).then(data => {
-        const partEl = document.getElementById("mes-participations-count");
-        const moyEl = document.getElementById("ma-moyenne-value");
-        
-        if (partEl) partEl.textContent = data.participations || 0;
-        if (moyEl) moyEl.textContent = data.moyenneNote ? data.moyenneNote.toFixed(1) : "-";
-    }).catch(err => {
-        console.error("Erreur chargement stats compétiteur:", err);
-    });
+    const countEl = document.getElementById("mes-dessins-count");
+    if (countEl) countEl.textContent = "-";
+    
+    const partEl = document.getElementById("mes-participations-count");
+    const moyEl = document.getElementById("ma-moyenne-value");
+    if (partEl) partEl.textContent = "-";
+    if (moyEl) moyEl.textContent = "-";
 }
 
 /**
@@ -418,30 +405,16 @@ function loadEvaluateurData(userId) {
     showElement("card-a-evaluer");
     showElement("card-mes-evaluations");
     
-    // TODO: GET /api/evaluateur/{userId}/pending
-    // Retourne: { dessins: [{ numDessin, leDessin, theme, prenom, nom }], count: number }
-    // Dessins assignés à évaluer mais pas encore évalués
-    apiFetch(`/evaluateur/${userInfo.id}/pending`).then(data => {
-        displayEvaluationsList("dessins-a-evaluer-list", data.dessins || [], false);
-        
-        const countEl = document.getElementById("a-evaluer-count");
-        if (countEl) countEl.textContent = data.count || (data.dessins || []).length;
-    }).catch(err => {
-        console.error("Erreur chargement dessins à évaluer:", err);
-        displayEvaluationsList("dessins-a-evaluer-list", [], false);
-    });
+    // Note: Les endpoints /evaluateur/{userId}/pending et /evaluateur/{userId}/evaluations n'existent pas encore
+    // Afficher des données vides en attendant
+    displayEvaluationsList("dessins-a-evaluer-list", [], false);
+    displayEvaluationsList("mes-evaluations-list", []);
     
-    // TODO: GET /api/evaluateur/{userId}/evaluations?limit=5
-    // Retourne: { evaluations: [{ numDessin, leDessin, theme, note, dateEvaluation, prenom, nom }], count: number }
-    apiFetch(`/evaluateur/${userInfo.id}/evaluations?limit=5`).then(data => {
-        displayEvaluationsList("mes-evaluations-list", data.evaluations || []);
-        
-        const countEl = document.getElementById("mes-evaluations-count");
-        if (countEl) countEl.textContent = data.count || (data.evaluations || []).length;
-    }).catch(err => {
-        console.error("Erreur chargement évaluations:", err);
-        displayEvaluationsList("mes-evaluations-list", []);
-    });
+    const aEvaluerCountEl = document.getElementById("a-evaluer-count");
+    if (aEvaluerCountEl) aEvaluerCountEl.textContent = "-";
+    
+    const mesEvalsCountEl = document.getElementById("mes-evaluations-count");
+    if (mesEvalsCountEl) mesEvalsCountEl.textContent = "-";
 }
 
 /**
@@ -452,18 +425,12 @@ function loadPresidentData(userId) {
     showElement("stat-concours-geres");
     showElement("card-concours-president");
     
-    // TODO: GET /api/president/{userId}/concours
-    // Retourne: { concours: [{ numConcours, theme, dateDebut, dateFin, etat }], count: number }
-    // Concours dont cet utilisateur est président
-    apiFetch(`/president/${userInfo.id}/concours`).then(data => {
-        displayConcoursList("president-concours-list", data.concours || []);
-        
-        const countEl = document.getElementById("concours-geres-count");
-        if (countEl) countEl.textContent = data.count || (data.concours || []).length;
-    }).catch(err => {
-        console.error("Erreur chargement concours président:", err);
-        displayConcoursList("president-concours-list", []);
-    });
+    // Note: L'endpoint /president/{userId}/concours n'existe pas encore
+    // Afficher des données vides en attendant
+    displayConcoursList("president-concours-list", []);
+    
+    const countEl = document.getElementById("concours-geres-count");
+    if (countEl) countEl.textContent = "-";
 }
 
 /**
@@ -476,18 +443,12 @@ function loadDirecteurData(userId, clubId) {
     
     if (!clubId) return;
     
-    // TODO: GET /api/club/{clubId}/users?limit=6&orderBy=recent
-    // Retourne: { users: [{ numUtilisateur, nom, prenom, login, photoProfilUrl }], count: number }
-    // Derniers membres inscrits dans le club
-    apiFetch(`/club/${clubId}/users?limit=6`).then(data => {
-        displayMembersList("derniers-membres-list", data.users || []);
-        
-        const countEl = document.getElementById("membres-club-count");
-        if (countEl) countEl.textContent = data.count || (data.users || []).length;
-    }).catch(err => {
-        console.error("Erreur chargement membres directeur:", err);
-        displayMembersList("derniers-membres-list", []);
-    });
+    // Note: L'endpoint /club/{clubId}/users n'existe pas encore
+    // Afficher des données vides en attendant
+    displayMembersList("derniers-membres-list", []);
+    
+    const countEl = document.getElementById("membres-club-count");
+    if (countEl) countEl.textContent = "-";
 }
 
 // ============================================

@@ -1,5 +1,28 @@
 concoursDataUser = [];
 concoursUsers = {};
+currentUserRole = null;
+
+/**
+ * Récupère le rôle de l'utilisateur depuis le club
+ */
+function fetchCurrentUserRole() {
+    const userInfo = state.userInfo;
+    if (!userInfo || !userInfo.club || !userInfo.id) {
+        currentUserRole = userInfo?.role || 'competiteur';
+        return Promise.resolve();
+    }
+    
+    return apiFetch(`/club/${userInfo.club}/user/${userInfo.id}`).then(data => {
+        if (data && data.user && data.user.typeCompte) {
+            currentUserRole = data.user.typeCompte.toLowerCase();
+        } else {
+            currentUserRole = userInfo.role || 'competiteur';
+        }
+    }).catch(err => {
+        console.error("Erreur récupération rôle:", err);
+        currentUserRole = userInfo?.role || 'competiteur';
+    });
+}
 
 function distplayConcoursUser(){
     var dataToLoad = concoursDataUser;
@@ -11,12 +34,24 @@ function distplayConcoursUser(){
             concoursID = concours.numConcours;
             concoursUsers[concoursID] = [];
             
-            // Afficher le bouton "Déposer un dessin" uniquement pour les concours en cours
             const isEnCours = concours.etat === 'en_cours';
-            const depotButton = isEnCours ? `
+            const isAttente = concours.etat === 'attente';
+            
+            // Bouton "Déposer un dessin" uniquement pour les compétiteurs et concours en cours
+            const isCompetiteur = currentUserRole === 'competiteur';
+            const depotButton = (isEnCours && isCompetiteur) ? `
                 <a href="/depot?concours=${concoursID}" class="load-more-button depot-btn">
                     <span class="material-symbols-rounded">image_arrow_up</span>
                     Déposer un dessin
+                </a>
+            ` : '';
+            
+            // Bouton "Évaluer un dessin" uniquement pour les évaluateurs et concours en attente d'évaluation
+            const isEvaluateur = currentUserRole === 'evaluateur' || currentUserRole === 'president';
+            const evalButton = ((isAttente || isEnCours) && isEvaluateur) ? `
+                <a href="/concours-detail?id=${concoursID}" class="load-more-button eval-btn">
+                    <span class="material-symbols-rounded">rate_review</span>
+                    Évaluer les dessins
                 </a>
             ` : '';
             
@@ -29,7 +64,10 @@ function distplayConcoursUser(){
                             <p class="concours-status">Status: ${concours.etat}</p>
                             <p class="concours-dates">De ${concours.dateDebut} à ${concours.dateFin}</p>
                         </div>
-                        ${depotButton}
+                        <div class="concours-actions">
+                            ${depotButton}
+                            ${evalButton}
+                        </div>
                     </div>
 
                     <div id="users-list-${concoursID}" class="users-grid">
@@ -102,8 +140,10 @@ function getUsers(concoursID){
 }
 
 function onRouteChange(event) {
-    getConcoursUser("all");
-
+    // Récupérer le rôle de l'utilisateur avant d'afficher les concours
+    fetchCurrentUserRole().then(() => {
+        getConcoursUser("all");
+    });
 
     document.getElementById("year-select").addEventListener("change", function() {
         const selectedYear = this.value;

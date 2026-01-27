@@ -1,18 +1,357 @@
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil</title>
+    <title>Mon Profil</title>
+    <link rel="stylesheet" href="/css/club.css">
+    <link rel="stylesheet" href="/css/single.css">
+    <style>
+        .profil-page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .profil-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: var(--card-bg, #fff);
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .profil-avatar-container {
+            position: relative;
+        }
+        
+        .profil-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--primary, #5AAFE8);
+        }
+        
+        .profil-avatar-edit {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary, #5AAFE8);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .profil-avatar-edit:hover {
+            background: var(--primary-dark, #4a9fd8);
+        }
+        
+        .profil-info h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.75rem;
+        }
+        
+        .profil-info p {
+            margin: 0;
+            color: var(--text-muted, #8A9198);
+        }
+        
+        .profil-role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--primary-soft, rgba(90, 175, 232, 0.2));
+            color: var(--primary, #5AAFE8);
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+        
+        .profil-form-card {
+            background: var(--card-bg, #fff);
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .profil-form-card h2 {
+            margin: 0 0 1.5rem 0;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .profil-form-card h2 .material-symbols-rounded {
+            color: var(--primary, #5AAFE8);
+        }
+        
+        .profil-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        
+        .profil-field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .profil-field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .profil-field label {
+            font-weight: 500;
+            color: var(--text, #4B4E52);
+            font-size: 0.875rem;
+        }
+        
+        .profil-field input {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border, #e0e0e0);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        .profil-field input:focus {
+            outline: none;
+            border-color: var(--primary, #5AAFE8);
+            box-shadow: 0 0 0 3px var(--primary-soft, rgba(90, 175, 232, 0.2));
+        }
+        
+        .profil-field input:disabled {
+            background: var(--bg-muted, #f5f5f5);
+            cursor: not-allowed;
+        }
+        
+        .profil-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+        
+        .profil-btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+        
+        .profil-btn-primary {
+            background: var(--primary, #5AAFE8);
+            color: white;
+            border: none;
+        }
+        
+        .profil-btn-primary:hover {
+            background: var(--primary-dark, #4a9fd8);
+        }
+        
+        .profil-btn-secondary {
+            background: transparent;
+            color: var(--text, #4B4E52);
+            border: 1px solid var(--border, #e0e0e0);
+        }
+        
+        .profil-btn-secondary:hover {
+            background: var(--bg-muted, #f5f5f5);
+        }
+        
+        .profil-btn-danger {
+            background: var(--danger, #F95671);
+            color: white;
+            border: none;
+        }
+        
+        .profil-btn-danger:hover {
+            background: #e84560;
+        }
+        
+        .profil-message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .profil-message.success {
+            background: rgba(180, 209, 162, 0.2);
+            color: #5a8a3a;
+            display: block;
+        }
+        
+        .profil-message.error {
+            background: rgba(249, 86, 113, 0.2);
+            color: #d64560;
+            display: block;
+        }
+        
+        @media (max-width: 600px) {
+            .profil-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profil-field-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .profil-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
-    <body>
-        <div class="app-shell">
-            <include src="modules/navigation.html"></include>
-            <div class="page-content">
-                <include src="modules/userbar.html"></include>
-                <div class="page-body">
-                    <p>This is the profil page content.</p>
+<body>
+    <div class="app-shell">
+        <include src="modules/navigation.html"></include>
+        <div class="page-content">
+            <include src="modules/userbar.html"></include>
+            <div class="page-body">
+                <div class="profil-page">
+                    
+                    <!-- Header avec avatar et infos -->
+                    <div class="profil-header">
+                        <div class="profil-avatar-container">
+                            <img id="profil-avatar" src="/img/default_profile.png" alt="Photo de profil" class="profil-avatar">
+                            <button type="button" class="profil-avatar-edit" onclick="document.getElementById('avatar-input').click()" title="Changer la photo">
+                                <span class="material-symbols-rounded">photo_camera</span>
+                            </button>
+                            <input type="file" id="avatar-input" accept="image/*" style="display: none;" onchange="previewAvatar(event)">
+                        </div>
+                        <div class="profil-info">
+                            <h1 id="profil-fullname">Chargement...</h1>
+                            <p id="profil-email">...</p>
+                            <div class="profil-role-badge" id="profil-role-badge">
+                                <span class="material-symbols-rounded" id="profil-role-icon">person</span>
+                                <span id="profil-role-text">Membre</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Message de feedback -->
+                    <div id="profil-message" class="profil-message"></div>
+
+                    <!-- Formulaire informations personnelles -->
+                    <div class="profil-form-card">
+                        <h2>
+                            <span class="material-symbols-rounded">person</span>
+                            Informations personnelles
+                        </h2>
+                        <form id="profil-form" class="profil-form" onsubmit="updateProfil(event)">
+                            <div class="profil-field-row">
+                                <div class="profil-field">
+                                    <label for="profil-prenom">Prénom</label>
+                                    <input type="text" id="profil-prenom" name="prenom" required>
+                                </div>
+                                <div class="profil-field">
+                                    <label for="profil-nom">Nom</label>
+                                    <input type="text" id="profil-nom" name="nom" required>
+                                </div>
+                            </div>
+                            <div class="profil-field">
+                                <label for="profil-login">Email</label>
+                                <input type="email" id="profil-login" name="login" required>
+                            </div>
+                            <div class="profil-field">
+                                <label for="profil-adresse">Adresse</label>
+                                <input type="text" id="profil-adresse" name="adresse">
+                            </div>
+                            <div class="profil-field-row">
+                                <div class="profil-field">
+                                    <label for="profil-age">Âge</label>
+                                    <input type="number" id="profil-age" name="age" min="1" max="150">
+                                </div>
+                                <div class="profil-field">
+                                    <label for="profil-club">Club</label>
+                                    <input type="text" id="profil-club" name="club" disabled>
+                                </div>
+                            </div>
+                            <div class="profil-actions">
+                                <button type="button" class="profil-btn profil-btn-secondary" onclick="resetForm()">
+                                    <span class="material-symbols-rounded">restart_alt</span>
+                                    Annuler
+                                </button>
+                                <button type="submit" class="profil-btn profil-btn-primary">
+                                    <span class="material-symbols-rounded">save</span>
+                                    Enregistrer
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Formulaire changement de mot de passe -->
+                    <div class="profil-form-card">
+                        <h2>
+                            <span class="material-symbols-rounded">lock</span>
+                            Changer le mot de passe
+                        </h2>
+                        <form id="password-form" class="profil-form" onsubmit="updatePassword(event)">
+                            <div class="profil-field">
+                                <label for="profil-current-password">Mot de passe actuel</label>
+                                <input type="password" id="profil-current-password" name="currentPassword" required>
+                            </div>
+                            <div class="profil-field-row">
+                                <div class="profil-field">
+                                    <label for="profil-new-password">Nouveau mot de passe</label>
+                                    <input type="password" id="profil-new-password" name="newPassword" required>
+                                </div>
+                                <div class="profil-field">
+                                    <label for="profil-confirm-password">Confirmer le mot de passe</label>
+                                    <input type="password" id="profil-confirm-password" name="confirmPassword" required>
+                                </div>
+                            </div>
+                            <div class="profil-actions">
+                                <button type="submit" class="profil-btn profil-btn-primary">
+                                    <span class="material-symbols-rounded">key</span>
+                                    Changer le mot de passe
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Actions du compte -->
+                    <div class="profil-form-card">
+                        <h2>
+                            <span class="material-symbols-rounded">settings</span>
+                            Actions du compte
+                        </h2>
+                        <div class="profil-actions" style="justify-content: flex-start;">
+                            <button type="button" class="profil-btn profil-btn-secondary" onclick="logout()">
+                                <span class="material-symbols-rounded">logout</span>
+                                Se déconnecter
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
-    </body>
+    </div>
+
+    <script src="/js/profil.js"></script>
+</body>
 </html>
