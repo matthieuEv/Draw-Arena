@@ -107,4 +107,14 @@ class ConcoursHandler
             'concours' => $bestConcours
         ])->send();
     }
+
+    public function getConcoursTop(Request $request, Response $response): void
+    {
+        $concoursId = (int)$request->getParam('concoursId');
+        $limit = (int)($request->getQuery('limit', 100));
+        $index = (int)($request->getQuery('index', 0));
+
+        $competiteurs = Concours::getTopCompetiteursByConcoursId($concoursId, $limit, $index);
+        $response->success(['competiteurs' => $competiteurs])->send();
+    }
 }

@@ -224,6 +224,39 @@ class Concours
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    /**
+     * Récupère le classement des compétiteurs d'un concours par moyenne de notes
+     */
+    public static function getTopCompetiteursByConcoursId(int $concoursId, int $limit = 100, int $offset = 0): array
+    {
+        $stmt = Database::prepare(
+            'SELECT
+                u.num_utilisateur,
+                u.nom,
+                u.prenom,
+                u.login,
+                COUNT(DISTINCT d.num_dessin) as nb_dessins,
+                AVG(e.note) as moyenne_note,
+                COUNT(DISTINCT e.num_dessin) as nb_dessins_evalues
+             FROM Concours_Competiteur cc
+             JOIN Competiteur comp ON comp.num_competiteur = cc.num_competiteur
+             JOIN Utilisateur u ON u.num_utilisateur = comp.num_competiteur
+             LEFT JOIN Dessin d ON d.num_competiteur = u.num_utilisateur AND d.num_concours = cc.num_concours
+             LEFT JOIN Evaluation e ON e.num_dessin = d.num_dessin
+             WHERE cc.num_concours = ?
+             GROUP BY u.num_utilisateur, u.nom, u.prenom, u.login
+             HAVING AVG(e.note) IS NOT NULL
+             ORDER BY moyenne_note DESC, nb_dessins DESC
+             LIMIT ? OFFSET ?'
+        );
+        $stmt->bindValue(1, $concoursId, PDO::PARAM_INT);
+        $stmt->bindValue(2, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(3, $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public static function hydrateFromArray(array $data): Concours
     {
         $concours = new self();

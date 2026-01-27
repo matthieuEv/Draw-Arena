@@ -121,6 +121,19 @@
           "num_competiteur": {"type": "integer"},
           "num_concours": {"type": "integer"}
         }
+      },
+      "CompetiteurRanking": {
+        "type": "object",
+        "description": "Compétiteur avec son classement dans un concours",
+        "properties": {
+          "num_utilisateur": {"type": "integer"},
+          "nom": {"type": "string"},
+          "prenom": {"type": "string"},
+          "login": {"type": "string", "format": "email"},
+          "nb_dessins": {"type": "integer", "description": "Nombre total de dessins soumis"},
+          "nb_dessins_evalues": {"type": "integer", "description": "Nombre de dessins ayant reçu une évaluation"},
+          "moyenne_note": {"type": "number", "description": "Moyenne des notes reçues"}
+        }
       }
     }
   },
@@ -566,6 +579,40 @@
                   "type": "object",
                   "properties": {
                     "concours": {"$ref": "#/components/schemas/Concours"}
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"},
+          "404": {"description": "Concours non trouvé"}
+        }
+      }
+    },
+    "/api/concours/{concoursId}/top": {
+      "get": {
+        "summary": "Classement des compétiteurs d'un concours par moyenne de notes",
+        "description": "Retourne le classement des compétiteurs d'un concours ayant reçu au moins une évaluation, triés par moyenne de notes décroissante. Seuls les compétiteurs avec une moyenne non nulle sont affichés.",
+        "tags": ["Concours"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "concoursId", "in": "path", "required": true, "schema": {"type": "integer"}},
+          {"name": "limit", "in": "query", "schema": {"type": "integer", "default": 100}},
+          {"name": "index", "in": "query", "schema": {"type": "integer", "default": 0}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Classement des compétiteurs avec leurs statistiques",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "competiteurs": {
+                      "type": "array",
+                      "items": {"$ref": "#/components/schemas/CompetiteurRanking"},
+                      "description": "Tableau des compétiteurs classés par moyenne de notes décroissante. Seuls les compétiteurs ayant reçu au moins une évaluation sont inclus."
+                    }
                   }
                 }
               }
