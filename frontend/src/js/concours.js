@@ -55,6 +55,14 @@ function distplayConcoursUser(){
                 </a>
             ` : '';
             
+            // Bouton pour voir les détails du concours (toujours visible)
+            const viewButton = `
+                <a href="/concours-detail?id=${concoursID}" class="load-more-button view-btn">
+                    <span class="material-symbols-rounded">visibility</span>
+                    Voir le concours
+                </a>
+            `;
+            
             concoursDiv.insertAdjacentHTML('beforeend', `
                 <div class="main-card" id="concour-card-${concoursID}">
                     <div class="user-card" id="main-card-${concoursID}">
@@ -65,6 +73,7 @@ function distplayConcoursUser(){
                             <p class="concours-dates">De ${concours.dateDebut} à ${concours.dateFin}</p>
                         </div>
                         <div class="concours-actions">
+                            ${viewButton}
                             ${depotButton}
                             ${evalButton}
                         </div>

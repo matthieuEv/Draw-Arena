@@ -117,9 +117,10 @@ function displayConcoursList(containerId, concours) {
     concours.forEach(c => {
         const statusClass = c.etat || "pas_commence";
         const statusLabel = formatConcoursStatus(c.etat);
+        const concoursId = c.numConcours;
         
         container.insertAdjacentHTML('beforeend', `
-            <div class="dashboard-concours-item" onclick="location.href='/concours'">
+            <div class="dashboard-concours-item" onclick="location.href='/concours-detail?id=${concoursId}'">
                 <div class="concours-status-dot ${statusClass}"></div>
                 <div class="concours-item-info">
                     <div class="concours-item-theme">${c.theme || "Concours"}</div>
@@ -683,10 +684,13 @@ function fetchUserRoleFromClub(clubId, userId) {
  * Détermine le rôle de l'utilisateur à partir des données retournées par l'API
  */
 function determineUserRole(userData) {
+    console.log("determineUserRole - userInfo.role:", userInfo.role);
+    console.log("determineUserRole - userData:", userData);
+    
     // Le rôle est stocké dans userInfo.role lors de la connexion
-    // car typeCompte contient "prive"/"public" pas le rôle
     if (userInfo.role) {
         const role = userInfo.role.toLowerCase();
+        console.log("determineUserRole - role from userInfo:", role);
         if (role === 'directeur') return ROLES.DIRECTEUR;
         if (role === 'president') return ROLES.PRESIDENT;
         if (role === 'evaluateur') return ROLES.EVALUATEUR;
@@ -697,12 +701,14 @@ function determineUserRole(userData) {
     // Fallback: vérifier typeCompte au cas où il contiendrait le rôle
     if (userData && userData.typeCompte) {
         const type = userData.typeCompte.toLowerCase();
+        console.log("determineUserRole - typeCompte:", type);
         if (type === 'directeur') return ROLES.DIRECTEUR;
         if (type === 'president') return ROLES.PRESIDENT;
         if (type === 'evaluateur') return ROLES.EVALUATEUR;
         if (type === 'competiteur') return ROLES.COMPETITEUR;
     }
     
+    console.log("determineUserRole - fallback to COMPETITEUR");
     // Par défaut, compétiteur
     return ROLES.COMPETITEUR;
 }

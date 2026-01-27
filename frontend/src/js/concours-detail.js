@@ -267,25 +267,13 @@ function loadConcoursData(concoursId) {
         console.error("Erreur chargement concours:", err);
     });
     
-    // TODO: GET /api/concours/{concoursId}/stats
-    // Retourne: { participants: number, dessins: number, evaluateurs: number, evaluations: number }
-    apiFetch(`/concours/${concoursId}/stats`).then(data => {
-        displayStats(data);
-    }).catch(err => {
-        console.error("Erreur chargement stats:", err);
-    });
+    // Note: Les endpoints /concours/{id}/stats et /concours/{id}/evaluateurs n'existent pas encore
+    // Afficher des valeurs par défaut
+    displayStats({ participants: 0, dessins: 0, evaluateurs: 0, evaluations: 0 });
+    displayEvaluateurs([]);
     
     // Load initial dessins
     loadMoreDessins();
-    
-    // Load evaluateurs
-    // TODO: GET /api/concours/{concoursId}/evaluateurs
-    // Retourne: { evaluateurs: [{ numEvaluateur, prenom, nom, specialite, xp, photoProfilUrl }] }
-    apiFetch(`/concours/${concoursId}/evaluateurs`).then(data => {
-        displayEvaluateurs(data.evaluateurs || []);
-    }).catch(err => {
-        console.error("Erreur chargement évaluateurs:", err);
-    });
 }
 
 function loadMoreDessins() {
