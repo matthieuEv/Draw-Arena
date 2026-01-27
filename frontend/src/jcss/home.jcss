@@ -1,14 +1,19 @@
 /* Home Dashboard Styles */
 
-/* Common styles */
+/* Common styles - Par défaut les dashboards sont cachés */
 #home-user-body,
 #admin-home-body {
-    display: none;
+    display: none !important;
 }
 
-#home-user-body.active,
+/* Afficher le dashboard actif */
+#home-user-body.active {
+    display: grid !important;
+    gap: var(--gap-size);
+}
+
 #admin-home-body.active {
-    display: grid;
+    display: grid !important;
     gap: var(--gap-size);
 }
 

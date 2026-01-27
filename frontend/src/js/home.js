@@ -592,11 +592,23 @@ function switchDashboard(isAdmin) {
     const adminBody = document.getElementById("admin-home-body");
     
     if (userBody) {
-        userBody.classList.toggle("active", !isAdmin);
+        if (isAdmin) {
+            userBody.classList.remove("active");
+        } else {
+            userBody.classList.add("active");
+        }
     }
     if (adminBody) {
-        adminBody.classList.toggle("active", isAdmin);
+        if (isAdmin) {
+            adminBody.classList.add("active");
+        } else {
+            adminBody.classList.remove("active");
+        }
     }
+    
+    console.log("Dashboard switch - isAdmin:", isAdmin, 
+        "userBody.active:", userBody?.classList.contains("active"),
+        "adminBody.active:", adminBody?.classList.contains("active"));
 }
 
 // ============================================
@@ -671,19 +683,24 @@ function fetchUserRoleFromClub(clubId, userId) {
  * Détermine le rôle de l'utilisateur à partir des données retournées par l'API
  */
 function determineUserRole(userData) {
-    // Le typeCompte peut indiquer un rôle particulier
-    // Sinon on peut vérifier d'autres propriétés
-    if (userData.typeCompte) {
+    // Le rôle est stocké dans userInfo.role lors de la connexion
+    // car typeCompte contient "prive"/"public" pas le rôle
+    if (userInfo.role) {
+        const role = userInfo.role.toLowerCase();
+        if (role === 'directeur') return ROLES.DIRECTEUR;
+        if (role === 'president') return ROLES.PRESIDENT;
+        if (role === 'evaluateur') return ROLES.EVALUATEUR;
+        if (role === 'competiteur') return ROLES.COMPETITEUR;
+        if (role === 'administrateur') return ROLES.ADMINISTRATEUR;
+    }
+    
+    // Fallback: vérifier typeCompte au cas où il contiendrait le rôle
+    if (userData && userData.typeCompte) {
         const type = userData.typeCompte.toLowerCase();
         if (type === 'directeur') return ROLES.DIRECTEUR;
         if (type === 'president') return ROLES.PRESIDENT;
         if (type === 'evaluateur') return ROLES.EVALUATEUR;
         if (type === 'competiteur') return ROLES.COMPETITEUR;
-    }
-    
-    // Fallback basé sur le rôle stocké dans userInfo
-    if (userInfo.role) {
-        return userInfo.role;
     }
     
     // Par défaut, compétiteur

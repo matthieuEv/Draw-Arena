@@ -48,6 +48,7 @@ function displayDessins(concoursID, users = null){
                         <h3 class="user-name">${user.prenom} ${user.nom} - ${user.age}</h3>
                         <p class="user-login">${user.login}</p>
                         <p class="user-address">${user.adresse}</p>
+                        <p class="user-address">${user.note}/20 - ${user.date_evaluation}</p>
                     </div>
                 </div>
             `);
