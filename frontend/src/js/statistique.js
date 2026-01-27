@@ -18,61 +18,57 @@ var nbDepot = 0;
 var nbEval = 0;
 
 var barRegions = [
-  { label: "Portrait", value: 42 },
-  { label: "Nature", value: 58 },
-  { label: "Urban", value: 36 },
-  { label: "Sport", value: 29 },
-  { label: "Fantasy", value: 51 },
-  { label: "Retro", value: 24 },
+  // { label: "Portrait", value: 42 },
+  // { label: "Nature", value: 58 },
+  // { label: "Urban", value: 36 },
+  // { label: "Sport", value: 29 },
+  // { label: "Fantasy", value: 51 },
+  // { label: "Retro", value: 24 },
 ];
 
 var barCompetiteurs = [
-  { label: "Portrait", value: 42 },
-  { label: "Nature", value: 58 },
-  { label: "Urban", value: 36 },
-  { label: "Sport", value: 29 },
-  { label: "Fantasy", value: 51 },
-  { label: "Retro", value: 24 },
+  // { label: "Portrait", value: 42 },
+  // { label: "Nature", value: 58 },
+  // { label: "Urban", value: 36 },
+  // { label: "Sport", value: 29 },
+  // { label: "Fantasy", value: 51 },
+  // { label: "Retro", value: 24 },
 ];
 
 var barConcours = [
-  { label: "Portrait", value: 42 },
-  { label: "Nature", value: 58 },
-  { label: "Urban", value: 36 },
-  { label: "Sport", value: 29 },
-  { label: "Fantasy", value: 51 },
-  { label: "Retro", value: 24 },
+  // { label: "Portrait", value: 42 },
+  // { label: "Nature", value: 58 },
+  // { label: "Urban", value: 36 },
+  // { label: "Sport", value: 29 },
+  // { label: "Fantasy", value: 51 },
+  // { label: "Retro", value: 24 },
 ];
 
-var lineDepoLabels = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
-var lineDepoData = [18, 22, 20, 34, 38, 33, 46];
+var lineDepoLabels = [] // = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+var lineDepoData = [] // = [18, 22, 20, 34, 38, 33, 46];
 
-var lineEvalLabels = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
-var lineEvalData = [18, 22, 20, 34, 38, 33, 46];
+var lineEvalLabels = [] // = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+var lineEvalData = [] // = [18, 22, 20, 34, 38, 33, 46];
 
-const defaultBars = [
-  { id: "chartRegions", data: barRegions, valueLabel: "Participations" },
-  {
-    id: "chartCompetiteurs",
-    data: barCompetiteurs,
-    valueLabel: "Participations",
-  },
-  { id: "chartConcours", data: barConcours, valueLabel: "Participations" },
+let defaultBars = [
+  // { id: "chartRegions", data: barRegions, valueLabel: "Participations" },
+  // { id: "chartCompetiteurs", data: barCompetiteurs, valueLabel: "Participations", },
+  // { id: "chartConcours", data: barConcours, valueLabel: "Participations" },
 ];
 
-const defaultLines = [
-  {
-    id: "chartDepo",
-    labels: lineDepoLabels,
-    data: lineDepoData,
-    valueLabel: "Valeur",
-  },
-  {
-    id: "chartEvaluation",
-    labels: lineEvalLabels,
-    data: lineEvalData,
-    valueLabel: "Valeur",
-  },
+let defaultLines = [
+  // {
+  //   id: "chartDepo",
+  //   labels: lineDepoLabels,
+  //   data: lineDepoData,
+  //   valueLabel: "Valeur",
+  // },
+  // {
+  //   id: "chartEvaluation",
+  //   labels: lineEvalLabels,
+  //   data: lineEvalData,
+  //   valueLabel: "Valeur",
+  // },
 ];
 
 const defaultPies = [];
@@ -1144,6 +1140,16 @@ function drawAll(instance) {
     });
   });
 
+  console.log("NB Eval :" + nbEval);
+  console.log("NB Club :" + nbClub);
+  console.log("NB User :" + nbUser);
+
+  console.log("Bar concours :" + barConcours);
+  console.log("Line Depo Labels :" + lineDepoLabels);
+  console.log("Line Depo Data :" + lineDepoData);
+  console.log("Line Eval Labels :" + lineEvalLabels);
+  console.log("Line Eval Data :" + lineEvalData);
+
   document.getElementById("clubCount").textContent = formatNumber(instance.clubCount);
   document.getElementById("userCount").textContent = formatNumber(instance.userCount);
   document.getElementById("evaluationCount").textContent = formatNumber(instance.evaluationCount);
@@ -1218,10 +1224,18 @@ export function initStatistique(options = {}) {
       });
     });
 
-    apiFetch('/evaluation/best/competiteurs').then(data => {
-      if (!Array.isArray(data)) return;
-      barCompetiteurs = data.map(item => ({ label: item.competiteur, value: item.moyenne }));
-    });
+    defaultBars = [
+      { id: "chartConcours", data: barConcours, valueLabel: "Participations" },
+    ];
+
+    defaultLines = [
+      {
+        id: "chartEvaluation",
+        labels: lineEvalLabels,
+        data: lineEvalData,
+        valueLabel: "Valeur",
+      },
+    ];
   }
 
   return {

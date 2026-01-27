@@ -1,7 +1,7 @@
 concoursDataUser = [];
 concoursUsers = {};
 
-function distplayConcours(){
+function distplayConcoursUser(){
     var dataToLoad = concoursDataUser;
     if (dataToLoad) {
         const concoursDiv = document.getElementById('concours-list');
@@ -64,7 +64,7 @@ function displayUsers(concoursID, users = null){
     }
 }
 
-function getConcours(year){
+function getConcoursUser(year){
     concoursDataUser = [];
     concoursUsers = {};
 
@@ -72,7 +72,7 @@ function getConcours(year){
     
     apiFetch(`/concours?year=${year}`).then(info => {
         concoursDataUser = info.concours;
-        distplayConcours();
+        distplayConcoursUser();
     });
 }
 
@@ -91,13 +91,13 @@ function getUsers(concoursID){
 }
 
 function onRouteChange(event) {
-    getConcours("all");
+    getConcoursUser("all");
 
 
     document.getElementById("year-select").addEventListener("change", function() {
         const selectedYear = this.value;
 
-        getConcours(selectedYear);
+        getConcoursUser(selectedYear);
     });
 }
 

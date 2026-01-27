@@ -1,7 +1,7 @@
 concoursDataDessins = [];
 concoursDessins = {};
 
-function distplayConcours(){
+function distplayConcoursDessins(){
     var dataToLoad = concoursDataDessins;
     if (dataToLoad) {
         const concoursDiv = document.getElementById('concours-list');
@@ -55,7 +55,7 @@ function displayDessins(concoursID, users = null){
     }
 }
 
-function getConcours(year){
+function getConcoursDessins(year){
     concoursDataDessins = [];
     concoursDessins = {};
 
@@ -63,7 +63,7 @@ function getConcours(year){
     
     apiFetch(`/concours?year=${year}`).then(info => {
         concoursDataDessins = info.concours;
-        distplayConcours();
+        distplayConcoursDessins();
     });
 }
 
@@ -82,13 +82,13 @@ function getDessins(concoursID){
 }
 
 function onRouteChange(event) {
-    getConcours("all");
+    getConcoursDessins("all");
 
 
     document.getElementById("year-select").addEventListener("change", function() {
         const selectedYear = this.value;
 
-        getConcours(selectedYear);
+        getConcoursDessins(selectedYear);
     });
 }
 
