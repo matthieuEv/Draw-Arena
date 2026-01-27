@@ -683,9 +683,9 @@ function initDashboard() {
  */
 function fetchUserRoleFromClub(clubId, userId) {
     apiFetch(`/club/${clubId}/user/${userId}`).then(data => {
-        if (data && data.user) {
+        if (data && data.users) {
             // Déterminer le rôle en fonction du type de compte ou des propriétés
-            const userRole = determineUserRole(data.user);
+            const userRole = determineUserRole(data.users);
             setupRoleBadge(userRole);
             loadRoleSpecificData(userRole);
         } else {

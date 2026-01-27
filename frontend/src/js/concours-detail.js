@@ -205,11 +205,11 @@ function displayEvaluations(evaluations) {
     });
 }
 
-function displayResults(results) {
+function displayResults(competiteurs) {
     const podium = document.getElementById("podium-container");
     const list = document.getElementById("results-list");
     
-    if (!results || results.length === 0) {
+    if (!competiteurs || competiteurs.length === 0) {
         if (podium) podium.innerHTML = "";
         if (list) {
             list.innerHTML = `
@@ -225,25 +225,28 @@ function displayResults(results) {
     // Podium (top 3)
     if (podium) {
         podium.innerHTML = "";
-        const top3 = results.slice(0, 3);
+        const top3 = competiteurs.slice(0, 3);
         const podiumOrder = [1, 0, 2]; // 2nd, 1st, 3rd
         
         podiumOrder.forEach(idx => {
             if (top3[idx]) {
-                const r = top3[idx];
-                const imgUrl = r.le_dessin || "/img/empty_image.jpg";
+                const c = top3[idx];
                 const height = idx === 0 ? '180px' : idx === 1 ? '140px' : '100px';
                 const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉';
+                const moyenne = c.moyenne_note !== null && c.moyenne_note !== undefined 
+                    ? parseFloat(c.moyenne_note).toFixed(1) 
+                    : '-';
                 
                 podium.insertAdjacentHTML('beforeend', `
                     <div class="podium-item podium-${idx + 1}" style="--podium-height: ${height}">
-                        <a href="/dessin/${r.numDessin}" data-link class="podium-dessin">
-                            <img src="${imgUrl}" alt="Dessin">
-                        </a>
+                        <div class="podium-avatar">
+                            <span class="material-symbols-rounded">person</span>
+                        </div>
                         <div class="podium-info">
                             <span class="podium-medal">${medal}</span>
-                            <span class="podium-name">${r.prenom || ''} ${r.nom || ''}</span>
-                            <span class="podium-note">${r.moyenneNote ? r.moyenneNote.toFixed(1) : '-'}/20</span>
+                            <span class="podium-name">${c.prenom || ''} ${c.nom || ''}</span>
+                            <span class="podium-note">${moyenne}/20</span>
+                            <span class="podium-stats">${c.nb_dessins || 0} dessin(s)</span>
                         </div>
                         <div class="podium-stand"></div>
                     </div>
@@ -255,17 +258,21 @@ function displayResults(results) {
     // Full results list
     if (list) {
         list.innerHTML = "";
-        results.forEach((r, idx) => {
-            const imgUrl = r.le_dessin || "/img/empty_image.jpg";
+        competiteurs.forEach((c, idx) => {
+            const moyenne = c.moyenne_note !== null && c.moyenne_note !== undefined 
+                ? parseFloat(c.moyenne_note).toFixed(1) 
+                : '-';
+            
             list.insertAdjacentHTML('beforeend', `
                 <div class="result-item">
                     <span class="result-rank">${idx + 1}</span>
-                    <a href="/dessin/${r.numDessin}" data-link class="result-dessin">
-                        <img src="${imgUrl}" alt="Dessin">
-                    </a>
+                    <div class="result-avatar">
+                        <span class="material-symbols-rounded">person</span>
+                    </div>
                     <div class="result-info">
-                        <span class="result-name">${r.prenom || ''} ${r.nom || ''}</span>
-                        <span class="result-note">${r.moyenneNote ? r.moyenneNote.toFixed(1) : '-'}/20</span>
+                        <span class="result-name">${c.prenom || ''} ${c.nom || ''}</span>
+                        <span class="result-note">${moyenne}/20</span>
+                        <span class="result-stats">${c.nb_dessins || 0} dessin(s) - ${c.nb_dessins_evalues || 0} évalué(s)</span>
                     </div>
                 </div>
             `);
@@ -405,10 +412,10 @@ function loadMoreParticipants() {
 }
 
 function loadResults() {
-    // TODO: GET /api/concours/{concoursId}/results
-    // Retourne: { results: [{ numDessin, le_dessin, prenom, nom, moyenneNote, classement }] }
-    apiFetch(`/concours/${currentConcoursId}/results`).then(data => {
-        displayResults(data.results || []);
+    // GET /api/concours/{concoursId}/top
+    // Retourne: { competiteurs: [{ num_utilisateur, nom, prenom, login, nb_dessins, nb_dessins_evalues, moyenne_note }] }
+    apiFetch(`/concours/${currentConcoursId}/top`).then(data => {
+        displayResults(data.competiteurs || []);
     }).catch(err => {
         console.error("Erreur chargement résultats:", err);
     });
