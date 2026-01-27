@@ -1195,28 +1195,6 @@ export function initStatistique(options = {}) {
     lineEvalLabels.length = 0;
     lineEvalData.length = 0;
 
-    // const evaluationPromise = apiFetch('/evaluation').then(data => {
-    //   if (!data || !Array.isArray(data.evaluations)) return;
-    //   let dataSimple = data.evaluations;
-
-    //   nbEval = dataSimple.length;
-      
-    //   const evalByDate = {};
-    //   dataSimple.forEach(item => {
-    //     const date = new Date(item.date_evaluation);
-    //     const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-    //     if (!evalByDate[dateKey]) {
-    //       evalByDate[dateKey] = 0;
-    //     }
-    //     evalByDate[dateKey] += 1;
-    //   });
-    //   const evalDateKeys = Object.keys(evalByDate).sort();
-    //   lineDepoLabels.push(...evalDateKeys);
-    //   lineDepoData.push(...evalDateKeys.map(dateKey => evalByDate[dateKey]));
-    //   lineEvalLabels.push(...evalDateKeys);
-    //   lineEvalData.push(...evalDateKeys.map(dateKey => evalByDate[dateKey]));
-    // });
-
 
     const evaluationPromise = apiFetch('/evaluation').then(data => {
       if (!data || !Array.isArray(data.evaluations)) return;
@@ -1275,6 +1253,7 @@ export function initStatistique(options = {}) {
     Promise.all([evaluationPromise, clubPromise]).then(() => {
       applyCounts();
       animateLoad(instance);
+      bindTooltips(instance);
     });
   }
 
