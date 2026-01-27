@@ -1,6 +1,6 @@
 # Draw-Arena
 
-****> A E4A project by [Maxime](https://github.com/Bixou85), [Maxence](https://github.com/Manjy85), [Julien](https://github.com/JulienGuitter) and [Matthieu](https://github.com/matthieuEv)
+> A E4A project by [Maxime](https://github.com/Bixou85), [Maxence](https://github.com/Manjy85), [Julien](https://github.com/JulienGuitter) and [Matthieu](https://github.com/matthieuEv)
 >
 > 2026
 
@@ -68,4 +68,5 @@ You can also see some intresting graphs with more detailed statistics.
 
 ## Setup Locally
 
-> [!CAUTION] The project cannot be run locally for now. Sorry about that :)
+> [!CAUTION] 
+> The project cannot be run locally for now. Sorry about that :)
