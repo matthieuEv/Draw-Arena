@@ -13,8 +13,7 @@ const palette = {
 };
 
 var nbClub = 0;
-var nbParticipant = 0;
-var nbDepot = 0;
+var nbUser = 0;
 var nbEval = 0;
 
 var barRegions = [
@@ -51,24 +50,16 @@ var lineEvalLabels = [] // = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 var lineEvalData = [] // = [18, 22, 20, 34, 38, 33, 46];
 
 let defaultBars = [
-  // { id: "chartRegions", data: barRegions, valueLabel: "Participations" },
-  // { id: "chartCompetiteurs", data: barCompetiteurs, valueLabel: "Participations", },
-  // { id: "chartConcours", data: barConcours, valueLabel: "Participations" },
+  { id: "chartConcours", data: barConcours, valueLabel: "Participations" },
 ];
 
 let defaultLines = [
-  // {
-  //   id: "chartDepo",
-  //   labels: lineDepoLabels,
-  //   data: lineDepoData,
-  //   valueLabel: "Valeur",
-  // },
-  // {
-  //   id: "chartEvaluation",
-  //   labels: lineEvalLabels,
-  //   data: lineEvalData,
-  //   valueLabel: "Valeur",
-  // },
+  {
+    id: "chartEvaluation",
+    labels: lineEvalLabels,
+    data: lineEvalData,
+    valueLabel: "Valeur",
+  },
 ];
 
 const defaultPies = [];
@@ -1121,6 +1112,7 @@ function animateLoad(instance) {
 
 function drawAll(instance) {
   if (!instance) return;
+
   instance.charts.bars.forEach((chart) => {
     drawBars(chart.canvas, chart.data, { progress: animationState.bars });
   });
@@ -1150,9 +1142,14 @@ function drawAll(instance) {
   console.log("Line Eval Labels :" + lineEvalLabels);
   console.log("Line Eval Data :" + lineEvalData);
 
-  document.getElementById("clubCount").textContent = formatNumber(instance.clubCount);
-  document.getElementById("userCount").textContent = formatNumber(instance.userCount);
-  document.getElementById("evaluationCount").textContent = formatNumber(instance.evaluationCount);
+  const clubCount = Number.isFinite(instance.clubCount) ? instance.clubCount : nbClub;
+  const userCount = Number.isFinite(instance.userCount) ? instance.userCount : nbUser;
+  const evaluationCount = Number.isFinite(instance.evaluationCount)
+    ? instance.evaluationCount
+    : nbEval;
+  document.getElementById("clubCount").textContent = formatNumber(clubCount);
+  document.getElementById("userCount").textContent = formatNumber(userCount);
+  document.getElementById("evaluationCount").textContent = formatNumber(evaluationCount);
 }
 
 export function initStatistique(options = {}) {
@@ -1160,9 +1157,6 @@ export function initStatistique(options = {}) {
   if (!instance) return null;
   activeInstance = instance;
 
-  loadData();
-
-  animateLoad(instance);
   bindTooltips(instance);
 
   if (!resizeBound) {
@@ -1173,27 +1167,35 @@ export function initStatistique(options = {}) {
     resizeBound = true;
   }
 
+  loadData();
+
+  function applyCounts() {
+    instance.clubCount = nbClub;
+    instance.userCount = nbUser;
+    instance.evaluationCount = nbEval;
+  }
+
   function loadData(){
     // barRegions, barCompetiteurs, barConcours
     // lineDepoLabels, lineDepoData
     // lineEvalLabels, lineEvalData
 
+    nbEval = 0;
+    nbClub = 0;
+    nbUser = 0;
+    barConcours.length = 0;
+    lineDepoLabels.length = 0;
+    lineDepoData.length = 0;
+    lineEvalLabels.length = 0;
+    lineEvalData.length = 0;
 
-    apiFetch('/evaluation').then(data => {
+    const evaluationPromise = apiFetch('/evaluation').then(data => {
       if (!data || !Array.isArray(data.evaluations)) return;
       let dataSimple = data.evaluations;
 
       nbEval = dataSimple.length;
       
-      const themeMap = {};
       const evalByDate = {};
-      dataSimple.forEach(item => {
-        if (!themeMap[item.theme]) {
-          themeMap[item.theme] = { total: 0, count: 0 };
-        }
-        themeMap[item.theme].total += item.note;
-        themeMap[item.theme].count += 1;
-      });
       dataSimple.forEach(item => {
         const date = new Date(item.date_evaluation);
         const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
@@ -1202,44 +1204,35 @@ export function initStatistique(options = {}) {
         }
         evalByDate[dateKey] += 1;
       });
-      lineDepoLabels = Object.keys(evalByDate).sort();
-      lineDepoData = lineDepoLabels.map(dateKey => evalByDate[dateKey]);
-      lineEvalLabels = Object.keys(themeMap);
-      lineEvalData = lineEvalLabels.map(theme => {
-        const avg = themeMap[theme].total / themeMap[theme].count;
-        return avg;
-      });
+      const evalDateKeys = Object.keys(evalByDate).sort();
+      lineDepoLabels.push(...evalDateKeys);
+      lineDepoData.push(...evalDateKeys.map(dateKey => evalByDate[dateKey]));
+      lineEvalLabels.push(...evalDateKeys);
+      lineEvalData.push(...evalDateKeys.map(dateKey => evalByDate[dateKey]));
     });
 
-    let nbClub = 0;
-    let nbUser = 0;
-    apiFetch('/club').then(data => {
+    const clubPromise = apiFetch('/club').then(async data => {
       if (!Array.isArray(data.clubs)) return;
       nbClub = data.clubs.length;
-      data.clubs.forEach(club => {
-        apiFetch(`/club/${club.numClub}`).then(clubData => {
-          if (!clubData || !Array.isArray(clubData.membres)) return;
-          nbUser += clubData.membres.length;
-        });
-      });
+      const memberCounts = await Promise.all(
+        data.clubs.map((club) =>
+          apiFetch(`/club/${club.numClub}`).then((clubData) => {
+            if (!clubData || !Array.isArray(clubData.membres)) return 0;
+            return clubData.membres.length;
+          })
+        )
+      );
+      nbUser = memberCounts.reduce((total, count) => total + count, 0);
     });
 
-    defaultBars = [
-      { id: "chartConcours", data: barConcours, valueLabel: "Participations" },
-    ];
-
-    defaultLines = [
-      {
-        id: "chartEvaluation",
-        labels: lineEvalLabels,
-        data: lineEvalData,
-        valueLabel: "Valeur",
-      },
-    ];
+    Promise.all([evaluationPromise, clubPromise]).then(() => {
+      applyCounts();
+      animateLoad(instance);
+    });
   }
 
   return {
-    redraw() {é
+    redraw() {
       drawAll(instance);
     },
   };

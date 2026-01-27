@@ -4,7 +4,7 @@ concoursUsers = {};
 function distplayConcoursUser(){
     var dataToLoad = concoursDataUser;
     if (dataToLoad) {
-        const concoursDiv = document.getElementById('concours-list');
+        const concoursDiv = document.getElementById('concours-users-list');
         concoursDiv.innerHTML = "";
         if (!concoursDiv) return;
         dataToLoad.forEach(concours => {
