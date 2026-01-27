@@ -4,6 +4,8 @@
 >
 > 2026
 
+You can find the presentation [here](https://github.com/matthieuEv/Draw-Arena/blob/main/Pr%C3%A9sentation%20Draw%20Arena.pdf), and the "Livrable" [here](https://github.com/matthieuEv/Draw-Arena/blob/main/Livrable%20Draw%20Arena.pdf).
+
 # Instructions
 
 Here, you'll find all the instruction to navigate on the website.
