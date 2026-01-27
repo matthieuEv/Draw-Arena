@@ -721,10 +721,10 @@ function determineUserRole(userData) {
         if (role === 'administrateur') return ROLES.ADMINISTRATEUR;
     }
     
-    // Fallback: vérifier typeCompte au cas où il contiendrait le rôle
-    if (userData && userData.typeCompte) {
-        const type = userData.typeCompte.toLowerCase();
-        console.log("determineUserRole - typeCompte:", type);
+    // Fallback: vérifier role au cas où il contiendrait le rôle
+    if (userData && userData.role) {
+        const type = userData.role.toLowerCase();
+        console.log("determineUserRole - role:", type);
         if (type === 'directeur') return ROLES.DIRECTEUR;
         if (type === 'president') return ROLES.PRESIDENT;
         if (type === 'evaluateur') return ROLES.EVALUATEUR;
