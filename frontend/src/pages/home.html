@@ -11,21 +11,35 @@
             <div class="page-content">
                 <include src="modules/userbar.html"></include>
                 <div class="page-body">
-                    <div class="header-card">
-                        <h1 id="club-name"></h1>
-                        <div class="club-meta">
-                            <span id="club-address"></span>
-                            <span id="club-city"></span>
-                            <span id="club-dept"></span>
-                            <span id="club-region"></span>
-                            <br>
-                            <span id="club-phone"></span>
+                    <div id="home-user-body">
+
+                        <div class="header-with-action header-card">
+                            <h1 id="club-name"></h1>
+                            <div class="club-meta">
+                                <span id="club-address"></span>
+                                <span id="club-city"></span>
+                                <span id="club-dept"></span>
+                                <span id="club-region"></span>
+                                <br>
+                                <span id="club-phone"></span>
+                            </div>
+                            <button onclick="location.href='/clubs'" id="my-club-button" class="load-more-button right">Mon Club</button>
                         </div>
+
+
+
+
                     </div>
 
 
 
-                    
+                    <div id="admin-home-body">
+
+                        <div class="header-with-action header-card admin" id="club-header-home">
+                            <h2>Admin</h2>
+                        </div>
+                        
+                    </div>                    
                 </div>
             </div>
         </div>

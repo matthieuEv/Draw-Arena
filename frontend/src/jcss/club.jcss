@@ -65,6 +65,14 @@
     transform: translateY(-4px);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     background: #fff;
+
+    &.president{
+        box-shadow: 0 20px 25px -5px #ffe246, 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    &.evaluateur{
+        box-shadow: 0 20px 25px -5px #78e4fd, 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
 }
 
 .role-icon{
