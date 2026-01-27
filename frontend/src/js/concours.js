@@ -10,6 +10,16 @@ function distplayConcoursUser(){
         dataToLoad.forEach(concours => {
             concoursID = concours.numConcours;
             concoursUsers[concoursID] = [];
+            
+            // Afficher le bouton "Déposer un dessin" uniquement pour les concours en cours
+            const isEnCours = concours.etat === 'en_cours';
+            const depotButton = isEnCours ? `
+                <a href="/depot?concours=${concoursID}" class="load-more-button depot-btn">
+                    <span class="material-symbols-rounded">image_arrow_up</span>
+                    Déposer un dessin
+                </a>
+            ` : '';
+            
             concoursDiv.insertAdjacentHTML('beforeend', `
                 <div class="main-card" id="concour-card-${concoursID}">
                     <div class="user-card" id="main-card-${concoursID}">
@@ -19,6 +29,7 @@ function distplayConcoursUser(){
                             <p class="concours-status">Status: ${concours.etat}</p>
                             <p class="concours-dates">De ${concours.dateDebut} à ${concours.dateFin}</p>
                         </div>
+                        ${depotButton}
                     </div>
 
                     <div id="users-list-${concoursID}" class="users-grid">

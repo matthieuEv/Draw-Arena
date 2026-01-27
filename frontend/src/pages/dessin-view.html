@@ -1,0 +1,63 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voir le dessin</title>
+    <link rel="stylesheet" href="/css/dessin-view.css">
+</head>
+    <body>
+        <div class="dessin-view-overlay" id="dessin-view-overlay">
+            <div class="dessin-view-header">
+                <button class="back-button" onclick="history.back()">
+                    <span class="material-symbols-rounded">arrow_back</span>
+                    Retour
+                </button>
+                <div class="dessin-info">
+                    <h2 id="dessin-theme">Chargement...</h2>
+                    <p id="dessin-author"></p>
+                </div>
+                <div class="dessin-actions">
+                    <button class="action-btn" id="download-btn" title="Télécharger">
+                        <span class="material-symbols-rounded">download</span>
+                    </button>
+                    <button class="action-btn" id="fullscreen-btn" title="Plein écran">
+                        <span class="material-symbols-rounded">fullscreen</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="dessin-view-content">
+                <div class="dessin-container">
+                    <img id="dessin-image" src="/img/empty_image.jpg" alt="Dessin">
+                </div>
+            </div>
+            
+            <div class="dessin-view-footer">
+                <div class="dessin-details">
+                    <div class="detail-item">
+                        <span class="material-symbols-rounded">calendar_today</span>
+                        <span id="dessin-date">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="material-symbols-rounded">trophy</span>
+                        <span id="dessin-concours">-</span>
+                    </div>
+                    <div class="detail-item" id="dessin-classement-container" style="display: none;">
+                        <span class="material-symbols-rounded">emoji_events</span>
+                        <span id="dessin-classement">-</span>
+                    </div>
+                    <div class="detail-item" id="dessin-note-container" style="display: none;">
+                        <span class="material-symbols-rounded">star</span>
+                        <span id="dessin-note">-</span>
+                    </div>
+                </div>
+                <div class="dessin-comment" id="dessin-comment-container" style="display: none;">
+                    <h4>Commentaire</h4>
+                    <p id="dessin-comment"></p>
+                </div>
+            </div>
+        </div>
+
+        <script src="/js/dessin-view.js"></script>
+    </body>
+</html>

@@ -26,14 +26,23 @@ function displayClubUsers(users = null) {
         if (!clubUsersDiv) return;
         dataToLoad.forEach(user => {
             const profileImg = user.photoProfilUrl ? user.photoProfilUrl : "/img/default_profile.png";
+
+            let icon = '';
+            if(user.role === 'president'){
+                icon = `<span class="material-symbols-rounded president-icon role-icon" title="Président">taunt</span>`;
+            }else if(user.role === 'evaluateur'){
+                icon = `<span class="material-symbols-rounded evaluateur-icon role-icon" title="Évaluateur">assignment</span>`;
+            }
+
             clubUsersDiv.insertAdjacentHTML('beforeend', `
-                <div class="user-card">
+                <div class="user-card ${user.role}">
                     <img src="${profileImg}" alt="Profile" class="user-avatar">
                     <div class="user-details">
                         <h3 class="user-name">${user.prenom} ${user.nom} - ${user.age}</h3>
                         <p class="user-login">${user.login}</p>
                         <p class="user-address">${user.adresse}</p>
                     </div>
+                    ${icon}
                 </div>
             `);
         });

@@ -50,7 +50,7 @@ var lineEvalLabels = [] // = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
 var lineEvalData = [] // = [18, 22, 20, 34, 38, 33, 46];
 
 let defaultBars = [
-  { id: "chartConcours", data: barConcours, valueLabel: "Participations" },
+  { id: "chartConcours", data: barConcours, valueLabel: "Moyenne" },
 ];
 
 let defaultLines = [
@@ -1212,8 +1212,6 @@ export function initStatistique(options = {}) {
     const evaluationPromise = apiFetch('/evaluation').then(data => {
       if (!data || !Array.isArray(data.evaluations)) return;
       let dataSimple = data.evaluations;
-
-      nbEval = dataSimple.length;
       
       const themeMap = {};
       const evalByDate = {};
@@ -1243,27 +1241,40 @@ export function initStatistique(options = {}) {
         const avg = themeMap[theme].total / themeMap[theme].count;
         return avg;
       }));
-      barConcours.push(...themeKeys.map(theme => ({
-        label: theme,
-        value: themeMap[theme].count,
-      })));
+      barConcours.push(...themeKeys.map(theme => {
+        const avg = themeMap[theme].total / themeMap[theme].count;
+        return {
+          label: theme,
+          value: Math.round(avg * 100) / 100,
+        };
+      }));
     });
 
-    const clubPromise = apiFetch('/club').then(async data => {
-      if (!Array.isArray(data.clubs)) return;
-      nbClub = data.clubs.length;
-      const memberCounts = await Promise.all(
-        data.clubs.map((club) =>
-          apiFetch(`/club/${club.numClub}`).then((clubData) => {
-            if (!clubData || !Array.isArray(clubData.membres)) return 0;
-            return clubData.membres.length;
-          })
-        )
-      );
-      nbUser = memberCounts.reduce((total, count) => total + count, 0);
+    const clubCountPromise = apiFetch('/club/count').then(data => {
+      if (data && typeof data.count === 'number') {
+        nbClub = data.count;
+      }
+    }).catch(err => {
+      console.error("Erreur chargement count clubs:", err);
     });
 
-    Promise.all([evaluationPromise, clubPromise]).then(() => {
+    const userCountPromise = apiFetch('/utilisateur/count').then(data => {
+      if (data && typeof data.count === 'number') {
+        nbUser = data.count;
+      }
+    }).catch(err => {
+      console.error("Erreur chargement count utilisateurs:", err);
+    });
+
+    const evalCountPromise = apiFetch('/evaluation/count').then(data => {
+      if (data && typeof data.count === 'number') {
+        nbEval = data.count;
+      }
+    }).catch(err => {
+      console.error("Erreur chargement count evaluations:", err);
+    });
+
+    Promise.all([evaluationPromise, clubCountPromise, userCountPromise, evalCountPromise]).then(() => {
       applyCounts();
       refreshCharts(instance, options);
       animateLoad(instance);

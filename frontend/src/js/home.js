@@ -510,20 +510,36 @@ function loadAdminDashboard() {
  * Charge les statistiques globales pour l'admin
  */
 function loadAdminStats() {
-    // TODO: GET /api/admin/stats
-    // Retourne: { clubs: number, users: number, concours: number, evaluations: number }
-    apiFetch(`/stats/global`).then(data => {
+    // Charger le nombre de clubs
+    apiFetch(`/club/count`).then(data => {
         const clubsEl = document.getElementById("admin-clubs-count");
-        const usersEl = document.getElementById("admin-users-count");
-        const concoursEl = document.getElementById("admin-concours-count");
-        const evalsEl = document.getElementById("admin-evaluations-count");
-        
-        if (clubsEl) clubsEl.textContent = data.clubs || 0;
-        if (usersEl) usersEl.textContent = data.users || 0;
-        if (concoursEl) concoursEl.textContent = data.concours || 0;
-        if (evalsEl) evalsEl.textContent = data.evaluations || 0;
+        if (clubsEl) clubsEl.textContent = data.count || 0;
     }).catch(err => {
-        console.error("Erreur chargement stats admin:", err);
+        console.error("Erreur chargement count clubs:", err);
+    });
+    
+    // Charger le nombre d'utilisateurs
+    apiFetch(`/utilisateur/count`).then(data => {
+        const usersEl = document.getElementById("admin-users-count");
+        if (usersEl) usersEl.textContent = data.count || 0;
+    }).catch(err => {
+        console.error("Erreur chargement count users:", err);
+    });
+    
+    // Charger le nombre de concours
+    apiFetch(`/concours?limit=1000`).then(data => {
+        const concoursEl = document.getElementById("admin-concours-count");
+        if (concoursEl) concoursEl.textContent = (data.concours || []).length;
+    }).catch(err => {
+        console.error("Erreur chargement count concours:", err);
+    });
+    
+    // Charger le nombre d'évaluations
+    apiFetch(`/evaluation/count`).then(data => {
+        const evalsEl = document.getElementById("admin-evaluations-count");
+        if (evalsEl) evalsEl.textContent = data.count || 0;
+    }).catch(err => {
+        console.error("Erreur chargement count evaluations:", err);
     });
 }
 
@@ -649,38 +665,97 @@ function initDashboard() {
     } else {
         // Dashboard utilisateur classique
         displayUserName();
-        setupRoleBadge(role);
         
         // Charger les données du club si disponible
         if (userInfo.club) {
             loadClubData(userInfo.club);
             loadClubConcours(userInfo.club);
+            
+            // Récupérer les informations de l'utilisateur dans le club pour déterminer son rôle
+            fetchUserRoleFromClub(userInfo.club, userInfo.id);
+        } else {
+            // Pas de club, afficher un rôle par défaut
+            setupRoleBadge(role || ROLES.COMPETITEUR);
+            loadRoleSpecificData(role || ROLES.COMPETITEUR);
         }
-        
-        // Charger les données spécifiques au rôle
-        switch (role) {
-            case ROLES.COMPETITEUR:
-                loadCompetiteurData(userInfo.id);
-                break;
-            case ROLES.EVALUATEUR:
-                loadEvaluateurData(userInfo.id);
-                // Les évaluateurs peuvent aussi être compétiteurs
-                loadCompetiteurData(userInfo.id);
-                break;
-            case ROLES.PRESIDENT:
-                loadPresidentData(userInfo.id);
-                // Les présidents peuvent aussi être évaluateurs/compétiteurs
-                loadEvaluateurData(userInfo.id);
-                break;
-            case ROLES.DIRECTEUR:
-                loadDirecteurData(userInfo.id, userInfo.club);
-                // Les directeurs peuvent aussi avoir d'autres rôles
-                loadPresidentData(userInfo.id);
-                break;
-            default:
-                // Rôle non reconnu, charger les données de base
-                console.warn("Rôle non reconnu:", role);
+    }
+}
+
+/**
+ * Récupère les informations de l'utilisateur dans le club pour déterminer son rôle
+ */
+function fetchUserRoleFromClub(clubId, userId) {
+    apiFetch(`/club/${clubId}/user/${userId}`).then(data => {
+        if (data && data.user) {
+            // Déterminer le rôle en fonction du type de compte ou des propriétés
+            const userRole = determineUserRole(data.user);
+            setupRoleBadge(userRole);
+            loadRoleSpecificData(userRole);
+        } else {
+            // Fallback sur le rôle stocké ou compétiteur par défaut
+            const fallbackRole = userInfo.role || ROLES.COMPETITEUR;
+            setupRoleBadge(fallbackRole);
+            loadRoleSpecificData(fallbackRole);
         }
+    }).catch(err => {
+        console.error("Erreur récupération rôle utilisateur:", err);
+        // Fallback sur le rôle stocké ou compétiteur par défaut
+        const fallbackRole = userInfo.role || ROLES.COMPETITEUR;
+        setupRoleBadge(fallbackRole);
+        loadRoleSpecificData(fallbackRole);
+    });
+}
+
+/**
+ * Détermine le rôle de l'utilisateur à partir des données retournées par l'API
+ */
+function determineUserRole(userData) {
+    // Le typeCompte peut indiquer un rôle particulier
+    // Sinon on peut vérifier d'autres propriétés
+    if (userData.typeCompte) {
+        const type = userData.typeCompte.toLowerCase();
+        if (type === 'directeur') return ROLES.DIRECTEUR;
+        if (type === 'president') return ROLES.PRESIDENT;
+        if (type === 'evaluateur') return ROLES.EVALUATEUR;
+        if (type === 'competiteur') return ROLES.COMPETITEUR;
+    }
+    
+    // Fallback basé sur le rôle stocké dans userInfo
+    if (userInfo.role) {
+        return userInfo.role;
+    }
+    
+    // Par défaut, compétiteur
+    return ROLES.COMPETITEUR;
+}
+
+/**
+ * Charge les données spécifiques au rôle
+ */
+function loadRoleSpecificData(role) {
+    switch (role) {
+        case ROLES.COMPETITEUR:
+            loadCompetiteurData(userInfo.id);
+            break;
+        case ROLES.EVALUATEUR:
+            loadEvaluateurData(userInfo.id);
+            // Les évaluateurs peuvent aussi être compétiteurs
+            loadCompetiteurData(userInfo.id);
+            break;
+        case ROLES.PRESIDENT:
+            loadPresidentData(userInfo.id);
+            // Les présidents peuvent aussi être évaluateurs/compétiteurs
+            loadEvaluateurData(userInfo.id);
+            break;
+        case ROLES.DIRECTEUR:
+            loadDirecteurData(userInfo.id, userInfo.club);
+            // Les directeurs peuvent aussi avoir d'autres rôles
+            loadPresidentData(userInfo.id);
+            break;
+        default:
+            // Rôle non reconnu, charger les données de base en tant que compétiteur
+            console.warn("Rôle non reconnu:", role);
+            loadCompetiteurData(userInfo.id);
     }
 }
 
