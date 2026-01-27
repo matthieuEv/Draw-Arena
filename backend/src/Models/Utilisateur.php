@@ -100,6 +100,55 @@ class Utilisateur
     }
 
     /**
+     * Récupère tous les dessins d'un utilisateur (en tant que compétiteur)
+     */
+    public static function getDessinsByUtilisateurId(int $numUtilisateur, int $limit = 100, int $offset = 0): array
+    {
+        $stmt = Database::prepare(
+            'SELECT * FROM Dessin WHERE num_competiteur = ?
+             ORDER BY date_remise DESC
+             LIMIT ? OFFSET ?'
+        );
+        $stmt->bindValue(1, $numUtilisateur, PDO::PARAM_INT);
+        $stmt->bindValue(2, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(3, $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Récupère les statistiques d'un utilisateur
+     * - Nombre de dessins soumis
+     * - Nombre de concours différents auxquels il a participé
+     * - Moyenne générale de ses évaluations
+     */
+    public static function getStatsByUtilisateurId(int $numUtilisateur): array
+    {
+        $stmt = Database::prepare(
+            'SELECT
+                COUNT(DISTINCT d.num_dessin) as nb_dessins,
+                COUNT(DISTINCT cc.num_concours) as nb_participations,
+                AVG(e.note) as moyenne_generale
+             FROM Utilisateur u
+             LEFT JOIN Competiteur comp ON comp.num_competiteur = u.num_utilisateur
+             LEFT JOIN Concours_Competiteur cc ON cc.num_competiteur = comp.num_competiteur
+             LEFT JOIN Dessin d ON d.num_competiteur = u.num_utilisateur
+             LEFT JOIN Evaluation e ON e.num_dessin = d.num_dessin
+             WHERE u.num_utilisateur = ?'
+        );
+        $stmt->bindValue(1, $numUtilisateur, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return [
+            'nb_dessins' => (int)($result['nb_dessins'] ?? 0),
+            'nb_participations' => (int)($result['nb_participations'] ?? 0),
+            'moyenne_generale' => $result['moyenne_generale'] ? (float)$result['moyenne_generale'] : null
+        ];
+    }
+
+    /**
      * @return Utilisateur
      */
     public static function hydrateFromArray(array $data): Utilisateur

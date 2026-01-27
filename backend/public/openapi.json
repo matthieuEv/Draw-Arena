@@ -108,6 +108,19 @@
           "date_evaluation": {"type": "string", "format": "date-time", "nullable": true},
           "evaluation_commentaire": {"type": "string", "nullable": true}
         }
+      },
+      "DessinWithConcoursAndEvaluation": {
+        "type": "object",
+        "description": "Dessin d'un utilisateur avec infos du concours et évaluation",
+        "properties": {
+          "num_dessin": {"type": "integer"},
+          "commentaire": {"type": "string", "nullable": true},
+          "classement": {"type": "integer", "nullable": true},
+          "date_remise": {"type": "string", "format": "date-time"},
+          "le_dessin": {"type": "string"},
+          "num_competiteur": {"type": "integer"},
+          "num_concours": {"type": "integer"}
+        }
       }
     }
   },
@@ -115,6 +128,7 @@
     {"name": "Health", "description": "Vérification de l'état de l'API"},
     {"name": "Authentication", "description": "Authentification et gestion des comptes"},
     {"name": "Stats", "description": "Statistiques globales (comptes, clubs, évaluations)"},
+    {"name": "Utilisateur", "description": "Gestion des utilisateurs et leurs dessins"},
     {"name": "Club", "description": "Gestion des clubs"},
     {"name": "Concours", "description": "Gestion des concours"},
     {"name": "Compétiteur", "description": "Gestion des compétiteurs"},
@@ -229,6 +243,73 @@
                   "type": "object",
                   "properties": {
                     "count": {"type": "integer", "example": 42}
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"}
+        }
+      }
+    },
+    "/api/utilisateur/{userId}/dessins": {
+      "get": {
+        "summary": "Lister les dessins d'un utilisateur",
+        "description": "Retourne tous les dessins soumis par un utilisateur (en tant que compétiteur) avec les informations du concours correspondant et les données d'évaluation si disponibles. Les dessins sont triés par date de remise décroissante.",
+        "tags": ["Utilisateur"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "userId", "in": "path", "required": true, "schema": {"type": "integer"}},
+          {"name": "limit", "in": "query", "schema": {"type": "integer", "default": 100}},
+          {"name": "index", "in": "query", "schema": {"type": "integer", "default": 0}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Liste des dessins de l'utilisateur",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "dessins": {
+                      "type": "array",
+                      "items": {"$ref": "#/components/schemas/DessinWithConcoursAndEvaluation"},
+                      "description": "Tableau des dessins soumis par l'utilisateur, triés par date de remise décroissante."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"}
+        }
+      }
+    },
+    "/api/utilisateur/{userId}/stats": {
+      "get": {
+        "summary": "Récupérer les statistiques d'un utilisateur",
+        "description": "Retourne les statistiques d'un utilisateur : nombre de dessins soumis, nombre de participations à des concours, et moyenne générale de ses évaluations.",
+        "tags": ["Utilisateur"],
+        "security": [{"bearerAuth": []}],
+        "parameters": [
+          {"name": "userId", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Statistiques de l'utilisateur",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "stats": {
+                      "type": "object",
+                      "properties": {
+                        "nb_dessins": {"type": "integer", "description": "Nombre total de dessins soumis"},
+                        "nb_participations": {"type": "integer", "description": "Nombre de concours différents auxquels l'utilisateur a participé"},
+                        "moyenne_generale": {"type": "number", "nullable": true, "description": "Moyenne générale de toutes les évaluations reçues (null s'il n'a pas encore reçu d'évaluation)"}
+                      }
+                    }
                   }
                 }
               }

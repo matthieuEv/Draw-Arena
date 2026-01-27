@@ -11,6 +11,7 @@ use DrawArena\Handlers\ClubHandler;
 use DrawArena\Handlers\ConcoursHandler;
 use DrawArena\Handlers\CompetiteurHandler;
 use DrawArena\Handlers\EvaluationHandler;
+use DrawArena\Handlers\UtilisateurHandler;
 use DrawArena\Handlers\DocsHandler;
 use DrawArena\Handlers\OpenApiHandler;
 use DrawArena\Models\Club;
@@ -38,6 +39,8 @@ $router->post('/api/auth/login', [AuthHandler::class, 'login']);
 $router->get('/api/utilisateur/count', function ($request, $response) {
     $response->success(['count' => Utilisateur::count()])->send();
 }, [new AuthMiddleware()]);
+$router->get('/api/utilisateur/{userId}/dessins', [UtilisateurHandler::class, 'getUserDessins'], [new AuthMiddleware()]);
+$router->get('/api/utilisateur/{userId}/stats', [UtilisateurHandler::class, 'getUserStats'], [new AuthMiddleware()]);
 
 // Club routes
 $router->get('/api/club', [ClubHandler::class, 'getAllClub'], [new AuthMiddleware()]);
