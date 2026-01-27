@@ -1171,23 +1171,7 @@ export function initStatistique(options = {}) {
     // barRegions, barCompetiteurs, barConcours
     // lineDepoLabels, lineDepoData
     // lineEvalLabels, lineEvalData
-    let nbClub = 0;
-    let nbUser = 0;
-    apiFetch('/club').then(data => {
-      if (!Array.isArray(data.clubs)) return;
-      nbClub = data.clubs.length;
-      data.clubs.forEach(club => {
-        apiFetch(`/club/${club.numClub}`).then(clubData => {
-          if (!clubData || !Array.isArray(clubData.membres)) return;
-          nbUser += clubData.membres.length;
-        });
-      });
-    });
 
-    apiFetch('/evaluation/best/competiteurs').then(data => {
-      if (!Array.isArray(data)) return;
-      barCompetiteurs = data.map(item => ({ label: item.competiteur, value: item.moyenne }));
-    });
 
     apiFetch('/evaluation').then(data => {
       if (!data || !Array.isArray(data.evaluations)) return;
@@ -1219,6 +1203,24 @@ export function initStatistique(options = {}) {
         const avg = themeMap[theme].total / themeMap[theme].count;
         return avg;
       });
+    });
+
+    let nbClub = 0;
+    let nbUser = 0;
+    apiFetch('/club').then(data => {
+      if (!Array.isArray(data.clubs)) return;
+      nbClub = data.clubs.length;
+      data.clubs.forEach(club => {
+        apiFetch(`/club/${club.numClub}`).then(clubData => {
+          if (!clubData || !Array.isArray(clubData.membres)) return;
+          nbUser += clubData.membres.length;
+        });
+      });
+    });
+
+    apiFetch('/evaluation/best/competiteurs').then(data => {
+      if (!Array.isArray(data)) return;
+      barCompetiteurs = data.map(item => ({ label: item.competiteur, value: item.moyenne }));
     });
   }
 

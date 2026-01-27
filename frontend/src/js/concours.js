@@ -50,8 +50,8 @@ function displayUsers(concoursID, users = null){
             }
 
             clubUsersDiv.insertAdjacentHTML('beforeend', `
-                <div class="user-card">
-                    <img src="${profileImg}" alt="Profile" class="user-avatar ${user.role}">
+                <div class="user-card" class="${user.role}">
+                    <img src="${profileImg}" alt="Profile" class="user-avatar">
                     <div class="user-details">
                         <h3 class="user-name">${user.prenom} ${user.nom} - ${user.age}</h3>
                         <p class="user-login">${user.login}</p>
