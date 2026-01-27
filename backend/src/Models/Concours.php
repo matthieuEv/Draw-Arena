@@ -180,7 +180,9 @@ class Concours
                                    GROUP BY c.num_concours, c.theme, cl.nom_club
                                    ORDER BY c.num_concours, nb_dessins_evalues DESC LIMIT ? OFFSET ?'
         );
-        $stmt->execute([$limit, $index]);
+        $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(2, $index, PDO::PARAM_INT);
+        $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

@@ -13,8 +13,8 @@ class ClubHandler
     {
         $limit = (int)($request->getQuery('limit', 100));
         $index = (int)($request->getQuery('index', 0));
-        
-        $clubs = Club::getAll();
+
+        $clubs = Club::getAll($limit, $index);
         $clubsArray = array_map(fn($club) => $club->toArray(), $clubs);
 
         $response->success(['clubs' => $clubsArray])->send();
@@ -49,7 +49,7 @@ class ClubHandler
         $users = Club::getUsersByClubId($clubId, $limit, $index);
 
         $response->success([
-            'users' => array_map(fn($user) => $user->toArray(), $users)
+            'users' => array_map(fn($user) => $user->extendedToArray(), $users)
         ])->send();
     }
 }

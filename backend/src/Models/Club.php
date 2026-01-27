@@ -44,8 +44,8 @@ class Club
         $stmt = Database::prepare('SELECT * FROM Club
                                    ORDER BY nom_club ASC
                                    LIMIT ? OFFSET ?');
-        $stmt->bindValue(1, $limit, PDO:PARAM_INT);
-        $stmt->bindValue(2, $index, PDO:PARAM_INT);
+        $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(2, $index, PDO::PARAM_INT);
         $stmt->execute();
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -67,20 +67,31 @@ class Club
         // Limit + 1 to check if there are more results
         $limit++;
         $stmt = Database::prepare(
-            'SELECT u.* FROM Utilisateur u
+            'SELECT u.*, \'directeur\' as role
+             FROM Utilisateur u
+             JOIN Directeur d ON u.num_utilisateur = d.num_directeur
              WHERE u.num_club = ?
-             ORDER BY u.nom, u.prenom
+             UNION
+             SELECT u.*, \'membre\' as role
+             FROM Utilisateur u
+             WHERE u.num_club = ?
+               AND u.num_utilisateur NOT IN (
+                   SELECT d.num_directeur FROM Directeur d
+               )
+             ORDER BY role, nom, prenom
              LIMIT ? OFFSET ?'
         );
         $stmt->bindValue(1, $clubId, PDO::PARAM_INT);
-        $stmt->bindValue(2, $limit, PDO::PARAM_INT);
-        $stmt->bindValue(3, $index, PDO::PARAM_INT);
+        $stmt->bindValue(2, $clubId, PDO::PARAM_INT);
+        $stmt->bindValue(3, $limit, PDO::PARAM_INT);
+        $stmt->bindValue(4, $index, PDO::PARAM_INT);
         $stmt->execute();
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        return array_map(fn($row) => Utilisateur::hydrateFromArray($row), $results);
+        return array_map(fn($row) => Utilisateur::ExtendedHydrateFromArray($row), $results);
     }
+
     private static function hydrateFromArray(array $data): Club
     {
         $club = new self();
