@@ -40,7 +40,7 @@ function displayDessins(concoursID, users = null){
         const clubUsersDiv = document.getElementById('dessins-list-'+concoursID);
         if (!clubUsersDiv) return;
         dataToLoad.forEach(user => {
-            const profileImg = user.leDessin ? user.leDessin : "/img/empty_image.jpg";
+            const profileImg = user.le_dessin ? user.le_dessin : "/img/empty_image.jpg";
             clubUsersDiv.insertAdjacentHTML('beforeend', `
                 <div class="dessins-card">
                     <img src="${profileImg}" class="dessins-img">

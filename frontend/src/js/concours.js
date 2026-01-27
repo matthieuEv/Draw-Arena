@@ -34,30 +34,9 @@ function distplayConcoursUser(){
             concoursID = concours.numConcours;
             concoursUsers[concoursID] = [];
             
-            const isEnCours = concours.etat === 'en_cours';
-            const isAttente = concours.etat === 'attente';
-            
-            // Bouton "Déposer un dessin" uniquement pour les compétiteurs et concours en cours
-            const isCompetiteur = currentUserRole === 'competiteur';
-            const depotButton = (isEnCours && isCompetiteur) ? `
-                <a href="/depot?concours=${concoursID}" class="load-more-button depot-btn">
-                    <span class="material-symbols-rounded">image_arrow_up</span>
-                    Déposer un dessin
-                </a>
-            ` : '';
-            
-            // Bouton "Évaluer un dessin" uniquement pour les évaluateurs et concours en attente d'évaluation
-            const isEvaluateur = currentUserRole === 'evaluateur' || currentUserRole === 'president';
-            const evalButton = ((isAttente || isEnCours) && isEvaluateur) ? `
-                <a href="/concours-detail?id=${concoursID}" class="load-more-button eval-btn">
-                    <span class="material-symbols-rounded">rate_review</span>
-                    Évaluer les dessins
-                </a>
-            ` : '';
-            
             // Bouton pour voir les détails du concours (toujours visible)
             const viewButton = `
-                <a href="/concours-detail?id=${concoursID}" class="load-more-button view-btn">
+                <a href="/concours/${concoursID}" class="load-more-button view-btn">
                     <span class="material-symbols-rounded">visibility</span>
                     Voir le concours
                 </a>
@@ -74,8 +53,6 @@ function distplayConcoursUser(){
                         </div>
                         <div class="concours-actions">
                             ${viewButton}
-                            ${depotButton}
-                            ${evalButton}
                         </div>
                     </div>
 

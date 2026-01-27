@@ -737,7 +737,7 @@ function renderDessinsGrid() {
     grid.innerHTML = adminState.dessins.data.map(d => `
         <div class="dessin-admin-card">
             <a href="/dessin/${d.numDessin}" data-link class="dessin-image">
-                <img src="${d.leDessin || '/img/empty_image.jpg'}" alt="Dessin" loading="lazy">
+                <img src="${d.le_dessin || '/img/empty_image.jpg'}" alt="Dessin" loading="lazy">
             </a>
             <div class="dessin-info">
                 <span class="dessin-author">${d.prenom || ''} ${d.nom || ''}</span>

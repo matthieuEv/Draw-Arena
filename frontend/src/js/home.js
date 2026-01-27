@@ -120,7 +120,7 @@ function displayConcoursList(containerId, concours) {
         const concoursId = c.numConcours;
         
         container.insertAdjacentHTML('beforeend', `
-            <div class="dashboard-concours-item" onclick="location.href='/concours-detail?id=${concoursId}'">
+            <div class="dashboard-concours-item" onclick="location.href='/concours/${concoursId}'">
                 <div class="concours-status-dot ${statusClass}"></div>
                 <div class="concours-item-info">
                     <div class="concours-item-theme">${c.theme || "Concours"}</div>
@@ -166,7 +166,7 @@ function displayDessinsGrid(containerId, dessins) {
     }
     
     dessins.forEach(d => {
-        const imgUrl = d.leDessin || "/img/empty_image.jpg";
+        const imgUrl = d.le_dessin || "/img/empty_image.jpg";
         container.insertAdjacentHTML('beforeend', `
             <div class="dashboard-dessin-item">
                 <img src="${imgUrl}" alt="Dessin" loading="lazy">
@@ -195,7 +195,7 @@ function displayEvaluationsList(containerId, evaluations, showNote = true) {
     }
     
     evaluations.forEach(e => {
-        const thumb = e.leDessin || "/img/empty_image.jpg";
+        const thumb = e.le_dessin || "/img/empty_image.jpg";
         const noteHtml = showNote ? `<div class="evaluation-note">${e.note || '-'}</div>` : '';
         
         container.insertAdjacentHTML('beforeend', `
@@ -541,7 +541,7 @@ function loadAdminConcours() {
  */
 function loadAdminDessins() {
     // TODO: GET /api/dessins?limit=8&orderBy=recent
-    // Retourne: { dessins: [{ numDessin, leDessin, commentaire, dateRemise }] }
+    // Retourne: { dessins: [{ numDessin, le_dessin, commentaire, dateRemise }] }
     apiFetch(`/dessins?limit=8`).then(data => {
         displayDessinsGrid("admin-dessins-grid", data.dessins || []);
     }).catch(err => {

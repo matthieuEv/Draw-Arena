@@ -104,7 +104,7 @@ function displayDessins(dessins, append = false) {
     }
     
     dessins.forEach(d => {
-        const imgUrl = d.leDessin || "/img/empty_image.jpg";
+        const imgUrl = d.le_dessin || "/img/empty_image.jpg";
         gallery.insertAdjacentHTML('beforeend', `
             <a href="/dessin/${d.numDessin}" data-link class="dessin-gallery-item">
                 <img src="${imgUrl}" alt="Dessin" loading="lazy">
@@ -207,7 +207,7 @@ function displayResults(results) {
         podiumOrder.forEach(idx => {
             if (top3[idx]) {
                 const r = top3[idx];
-                const imgUrl = r.leDessin || "/img/empty_image.jpg";
+                const imgUrl = r.le_dessin || "/img/empty_image.jpg";
                 const height = idx === 0 ? '180px' : idx === 1 ? '140px' : '100px';
                 const medal = idx === 0 ? '🥇' : idx === 1 ? '🥈' : '🥉';
                 
@@ -232,7 +232,7 @@ function displayResults(results) {
     if (list) {
         list.innerHTML = "";
         results.forEach((r, idx) => {
-            const imgUrl = r.leDessin || "/img/empty_image.jpg";
+            const imgUrl = r.le_dessin || "/img/empty_image.jpg";
             list.insertAdjacentHTML('beforeend', `
                 <div class="result-item">
                     <span class="result-rank">${idx + 1}</span>
@@ -280,7 +280,7 @@ function loadMoreDessins() {
     const currentCount = dessinsLoaded.length;
     
     // TODO: GET /api/concours/{concoursId}/dessins?limit=12&index={currentCount}
-    // Retourne: { dessins: [{ numDessin, leDessin, prenom, nom, classement }] }
+    // Retourne: { dessins: [{ numDessin, le_dessin, prenom, nom, classement }] }
     apiFetch(`/concours/${currentConcoursId}/dessins?limit=12&index=${currentCount}`).then(data => {
         const dessins = data.dessins || [];
         if (dessins.length < 12) {
@@ -314,7 +314,7 @@ function loadMoreParticipants() {
 
 function loadResults() {
     // TODO: GET /api/concours/{concoursId}/results
-    // Retourne: { results: [{ numDessin, leDessin, prenom, nom, moyenneNote, classement }] }
+    // Retourne: { results: [{ numDessin, le_dessin, prenom, nom, moyenneNote, classement }] }
     apiFetch(`/concours/${currentConcoursId}/results`).then(data => {
         displayResults(data.results || []);
     }).catch(err => {

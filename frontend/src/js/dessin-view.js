@@ -23,7 +23,7 @@ function displayDessin(dessin) {
     const comment = document.getElementById("dessin-comment");
     const commentContainer = document.getElementById("dessin-comment-container");
     
-    if (image) image.src = dessin.leDessin || "/img/empty_image.jpg";
+    if (image) image.src = dessin.le_dessin || "/img/empty_image.jpg";
     if (theme) theme.textContent = dessin.theme || "Dessin";
     if (author) author.textContent = dessin.prenom && dessin.nom ? 
         `Par ${dessin.prenom} ${dessin.nom}` : "";
@@ -53,7 +53,7 @@ function getOrdinalSuffix(n) {
 
 function loadDessin(dessinId) {
     // TODO: GET /api/dessin/{dessinId}
-    // Retourne: { dessin: { numDessin, leDessin, commentaire, dateRemise, classement, 
+    // Retourne: { dessin: { numDessin, le_dessin, commentaire, dateRemise, classement, 
     //            theme, prenom, nom, note (moyenne des évaluations) } }
     apiFetch(`/dessin/${dessinId}`).then(data => {
         if (data.dessin) {
@@ -67,9 +67,9 @@ function loadDessin(dessinId) {
 // Download functionality
 document.addEventListener("click", function(event) {
     if (event.target.closest("#download-btn")) {
-        if (currentDessin && currentDessin.leDessin) {
+        if (currentDessin && currentDessin.le_dessin) {
             const link = document.createElement("a");
-            link.href = currentDessin.leDessin;
+            link.href = currentDessin.le_dessin;
             link.download = `dessin-${currentDessin.numDessin || 'image'}.jpg`;
             link.click();
         }
