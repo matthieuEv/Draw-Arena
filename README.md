@@ -13,7 +13,7 @@ You can access the website with this url: [https://drawarenastaticpreprod.z28.we
 > [!NOTE]
 > This url may not existe anymore as it was made only for a class project, you may need to [setup the project locally](#setup-locally).
 
-Also, we have created a documentation of all [API endpoints](https://drawarenastaticpreprod.z28.web.core.windows.net/api/docs)
+Also, we have created a documentation of all [API endpoints](https://draw-arena-backend-app-preprod.azurewebsites.net/api/docs)
 ## Connection
 
 You can use all theses users to log in with different roles:
