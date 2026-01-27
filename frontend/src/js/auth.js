@@ -75,7 +75,6 @@ async function login(event) {
   const form = event.target;
   const email = form.email.value;
   const password = form.password.value;
-  const remember = form["login-remember"].checked;
 
   if (!email || !password) {
     errorMessage.textContent = "Veuillez remplir tous les champs.";
@@ -112,7 +111,7 @@ async function login(event) {
       login: payload.login,
       role: res.role,
       club: res.club,
-      photoProfilUrl: payload.photo_profil_url || null,
+      photoProfilUrl: payload.photoProfilUrl || null,
     });
 
     saveSession(res.token, userJSON);

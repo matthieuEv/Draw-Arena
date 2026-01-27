@@ -1,18 +1,113 @@
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil</title>
+    <title>Mon Profil</title>
+    <link rel="stylesheet" href="/css/club.css">
+    <link rel="stylesheet" href="/css/profil.css">
 </head>
-    <body>
-        <div class="app-shell">
-            <include src="modules/navigation.html"></include>
-            <div class="page-content">
-                <include src="modules/userbar.html"></include>
-                <div class="page-body">
-                    <p>This is the profil page content.</p>
+<body>
+    <div class="app-shell">
+        <include src="modules/navigation.html"></include>
+        <div class="page-content">
+            <include src="modules/userbar.html"></include>
+            <div class="page-body">
+                <div class="profil-page">
+                        <h2>
+                            <span class="material-symbols-rounded">person</span>
+                            Informations personnelles
+                        </h2>
+                        <form id="profil-form" class="profil-form" onsubmit="updateProfil(event)">
+                            <div class="profil-field-row">
+                                <div class="profil-field">
+                                    <label for="profil-prenom">Prénom</label>
+                                    <input type="text" id="profil-prenom" name="prenom" required>
+                                </div>
+                                <div class="profil-field">
+                                    <label for="profil-nom">Nom</label>
+                                    <input type="text" id="profil-nom" name="nom" required>
+                                </div>
+                            </div>
+                            <div class="profil-field">
+                                <label for="profil-login">Email</label>
+                                <input type="email" id="profil-login" name="login" required>
+                            </div>
+                            <div class="profil-field">
+                                <label for="profil-adresse">Adresse</label>
+                                <input type="text" id="profil-adresse" name="adresse">
+                            </div>
+                            <div class="profil-field-row">
+                                <div class="profil-field">
+                                    <label for="profil-age">Âge</label>
+                                    <input type="number" id="profil-age" name="age" min="1" max="150">
+                                </div>
+                                <div class="profil-field">
+                                    <label for="profil-club">Club</label>
+                                    <input type="text" id="profil-club" name="club" disabled>
+                                </div>
+                            </div>
+                            <div class="profil-actions">
+                                <button type="button" class="profil-btn profil-btn-secondary" onclick="resetForm()">
+                                    <span class="material-symbols-rounded">restart_alt</span>
+                                    Annuler
+                                </button>
+                                <button type="submit" class="profil-btn profil-btn-primary">
+                                    <span class="material-symbols-rounded">save</span>
+                                    Enregistrer
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Formulaire changement de mot de passe -->
+                    <div class="profil-form-card">
+                        <h2>
+                            <span class="material-symbols-rounded">lock</span>
+                            Changer le mot de passe
+                        </h2>
+                        <form id="password-form" class="profil-form" onsubmit="updatePassword(event)">
+                            <div class="profil-field">
+                                <label for="profil-current-password">Mot de passe actuel</label>
+                                <input type="password" id="profil-current-password" name="currentPassword" required>
+                            </div>
+                            <div class="profil-field-row">
+                                <div class="profil-field">
+                                    <label for="profil-new-password">Nouveau mot de passe</label>
+                                    <input type="password" id="profil-new-password" name="newPassword" required>
+                                </div>
+                                <div class="profil-field">
+                                    <label for="profil-confirm-password">Confirmer le mot de passe</label>
+                                    <input type="password" id="profil-confirm-password" name="confirmPassword" required>
+                                </div>
+                            </div>
+                            <div class="profil-actions">
+                                <button type="submit" class="profil-btn profil-btn-primary">
+                                    <span class="material-symbols-rounded">key</span>
+                                    Changer le mot de passe
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Actions du compte -->
+                    <div class="profil-form-card">
+                        <h2>
+                            <span class="material-symbols-rounded">settings</span>
+                            Actions du compte
+                        </h2>
+                        <div class="profil-actions" style="justify-content: flex-start;">
+                            <button type="button" class="profil-btn profil-btn-secondary" onclick="logout()">
+                                <span class="material-symbols-rounded">logout</span>
+                                Se déconnecter
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
-    </body>
+    </div>
+
+    <script src="/js/profil.js"></script>
+</body>
 </html>

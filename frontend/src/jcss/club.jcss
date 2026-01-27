@@ -10,6 +10,48 @@
     display: inline-block;
 }
 
+/* Header Card */
+.header-card {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    border: 1px solid var(--color-light-gray);
+    margin-bottom: 1rem;
+}
+
+.header-card.flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.header-card h1, .header-card h2 {
+    margin: 0;
+}
+
+.header-card .right {
+    margin-left: auto;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.select-label {
+    color: var(--color-text-muted);
+    font-weight: 500;
+}
+
+/* Horizontal list */
+.hori-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
 /* Users Grid */
 .users-grid {
     display: grid;
@@ -38,12 +80,55 @@
     align-items: center;
     gap: 1rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+
+    &.president{
+        box-shadow: 0 4px 6px -1px #ffe246, 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+
+    &.evaluateur{
+        box-shadow: 0 4px 6px -1px #78e4fd, 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
 }
 
-.user-card:hover {
+.dessins-card {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.user-card:hover, .dessins-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     background: #fff;
+
+    &.president{
+        box-shadow: 0 20px 25px -5px #ffe246, 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    &.evaluateur{
+        box-shadow: 0 20px 25px -5px #78e4fd, 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+}
+
+.role-icon{
+    font-size: 2em;
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    &.president-icon{
+        color: #ffe246;
+    }
+    &.evaluateur-icon{
+        color: #78e4fd;
+    }
 }
 
 .user-avatar {
@@ -57,6 +142,15 @@
         border-radius: 8px;
         background-color: transparent;
     }
+}
+
+.dessins-img{
+    width: 100%;
+    height: 300px;
+    border-radius: 10px;
+    object-fit: cover;
+    object-position: center;
+    background-color: var(--color-gray-100, #e2e8f0);
 }
 
 .user-details {
@@ -105,4 +199,25 @@
     font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.load-more-button:hover {
+    background-color: var(--color-primary-500, #2563eb);
+    transform: translateY(-1px);
+}
+
+/* Bouton Déposer un dessin sur les concours */
+.depot-btn {
+    margin-left: auto;
+    background: linear-gradient(135deg, var(--color-accent-orange, #F7A659), #ff9800);
+    box-shadow: 0 4px 12px rgba(247, 166, 89, 0.3);
+}
+
+.depot-btn:hover {
+    background: linear-gradient(135deg, #ff9800, var(--color-accent-orange, #F7A659));
+    box-shadow: 0 6px 16px rgba(247, 166, 89, 0.4);
 }

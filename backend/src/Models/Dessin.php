@@ -12,7 +12,7 @@ class Dessin
     private ?string $commentaire;
     private ?int $classement;
     private string $dateRemise;
-    private string $leDessin;
+    private string $le_dessin;
     private int $numConcours;
     private int $numCompetiteur;
 
@@ -22,7 +22,7 @@ class Dessin
         int $numConcours,
         int $numCompetiteur,
         string $dateRemise,
-        string $leDessin,
+        string $le_dessin,
         ?string $commentaire = null,
         ?int $classement = null
     ): bool {
@@ -31,7 +31,7 @@ class Dessin
              VALUES (?, ?, ?, ?, ?, ?)'
         );
 
-        return $stmt->execute([$commentaire, $classement, $dateRemise, $leDessin, $numConcours, $numCompetiteur]);
+        return $stmt->execute([$commentaire, $classement, $dateRemise, $le_dessin, $numConcours, $numCompetiteur]);
     }
 
     public static function findById(int $numDessin): ?Dessin
@@ -94,7 +94,7 @@ class Dessin
         $dessin->commentaire = $data['commentaire'] ?? null;
         $dessin->classement = $data['classement'] ? (int)$data['classement'] : null;
         $dessin->dateRemise = $data['date_remise'] ?? '';
-        $dessin->leDessin = $data['le_dessin'] ?? '';
+        $dessin->le_dessin = $data['le_dessin'] ?? '';
         $dessin->numConcours = (int)$data['num_concours'];
         $dessin->numCompetiteur = (int)$data['num_competiteur'];
         return $dessin;
@@ -107,7 +107,7 @@ class Dessin
             'commentaire' => $this->commentaire,
             'classement' => $this->classement,
             'dateRemise' => $this->dateRemise,
-            'leDessin' => $this->leDessin,
+            'le_dessin' => $this->le_dessin,
             'numConcours' => $this->numConcours,
             'numCompetiteur' => $this->numCompetiteur,
         ];
@@ -133,9 +133,9 @@ class Dessin
         return $this->dateRemise;
     }
 
-    public function getLeDessin(): string
+    public function getle_dessin(): string
     {
-        return $this->leDessin;
+        return $this->le_dessin;
     }
 
     public function getNumConcours(): int

@@ -3,6 +3,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administration</title>
+    <link rel="stylesheet" href="/css/club.css">
+    <link rel="stylesheet" href="/css/administration.css">
 </head>
     <body>
         <div class="app-shell">
@@ -10,9 +12,566 @@
             <div class="page-content">
                 <include src="modules/userbar.html"></include>
                 <div class="page-body">
-                    <p>This is the administration page content.</p>
+                    
+                    <!-- Header -->
+                    <div class="header-card flex">
+                        <div class="admin-header-info">
+                            <h1>Panel d'administration</h1>
+                            <p class="admin-subtitle">Gestion complète de la plateforme Draw-Arena</p>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats Overview -->
+                    <div class="admin-stats-row">
+                        <div class="admin-stat-card">
+                            <div class="stat-icon users">
+                                <span class="material-symbols-rounded">groups</span>
+                            </div>
+                            <div class="stat-data">
+                                <span class="stat-number" id="total-users">0</span>
+                                <span class="stat-label">Utilisateurs</span>
+                            </div>
+                        </div>
+                        <div class="admin-stat-card">
+                            <div class="stat-icon clubs">
+                                <span class="material-symbols-rounded">home_work</span>
+                            </div>
+                            <div class="stat-data">
+                                <span class="stat-number" id="total-clubs">0</span>
+                                <span class="stat-label">Clubs</span>
+                            </div>
+                        </div>
+                        <div class="admin-stat-card">
+                            <div class="stat-icon concours">
+                                <span class="material-symbols-rounded">emoji_events</span>
+                            </div>
+                            <div class="stat-data">
+                                <span class="stat-number" id="total-concours">0</span>
+                                <span class="stat-label">Concours</span>
+                            </div>
+                        </div>
+                        <div class="admin-stat-card">
+                            <div class="stat-icon dessins">
+                                <span class="material-symbols-rounded">draw</span>
+                            </div>
+                            <div class="stat-data">
+                                <span class="stat-number" id="total-dessins">0</span>
+                                <span class="stat-label">Dessins</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Navigation -->
+                    <div class="admin-layout">
+                        <aside class="admin-sidebar">
+                            <nav class="admin-nav">
+                                <button class="admin-nav-item active" data-section="users">
+                                    <span class="material-symbols-rounded">person</span>
+                                    <span>Utilisateurs</span>
+                                </button>
+                                <button class="admin-nav-item" data-section="clubs">
+                                    <span class="material-symbols-rounded">home_work</span>
+                                    <span>Clubs</span>
+                                </button>
+                                <button class="admin-nav-item" data-section="concours">
+                                    <span class="material-symbols-rounded">emoji_events</span>
+                                    <span>Concours</span>
+                                </button>
+                                <button class="admin-nav-item" data-section="evaluateurs">
+                                    <span class="material-symbols-rounded">assignment</span>
+                                    <span>Évaluateurs</span>
+                                </button>
+                                <button class="admin-nav-item" data-section="dessins">
+                                    <span class="material-symbols-rounded">draw</span>
+                                    <span>Dessins</span>
+                                </button>
+                                <button class="admin-nav-item" data-section="activity">
+                                    <span class="material-symbols-rounded">history</span>
+                                    <span>Activité</span>
+                                </button>
+                            </nav>
+                        </aside>
+
+                        <main class="admin-main">
+                            
+                            <!-- SECTION: Utilisateurs -->
+                            <section class="admin-section active" id="section-users">
+                                <div class="section-header">
+                                    <h2>Gestion des utilisateurs</h2>
+                                    <div class="section-actions">
+                                        <div class="search-box">
+                                            <span class="material-symbols-rounded">search</span>
+                                            <input type="text" placeholder="Rechercher un utilisateur..." id="search-users">
+                                        </div>
+                                        <select id="filter-users-role" class="filter-select">
+                                            <option value="">Tous les rôles</option>
+                                            <option value="competiteur">Compétiteur</option>
+                                            <option value="evaluateur">Évaluateur</option>
+                                            <option value="president">Président</option>
+                                            <option value="directeur">Directeur</option>
+                                            <option value="administrateur">Administrateur</option>
+                                        </select>
+                                        <button class="btn-primary" id="btn-add-user">
+                                            <span class="material-symbols-rounded">person_add</span>
+                                            Ajouter
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="data-table-container">
+                                    <table class="data-table" id="table-users">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Nom</th>
+                                                <th>Login</th>
+                                                <th>Club</th>
+                                                <th>Rôles</th>
+                                                <th>Compte</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="users-tbody">
+                                            <!-- Users will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="pagination" id="pagination-users"></div>
+                            </section>
+
+                            <!-- SECTION: Clubs -->
+                            <section class="admin-section" id="section-clubs">
+                                <div class="section-header">
+                                    <h2>Gestion des clubs</h2>
+                                    <div class="section-actions">
+                                        <div class="search-box">
+                                            <span class="material-symbols-rounded">search</span>
+                                            <input type="text" placeholder="Rechercher un club..." id="search-clubs">
+                                        </div>
+                                        <select id="filter-clubs-region" class="filter-select">
+                                            <option value="">Toutes les régions</option>
+                                        </select>
+                                        <button class="btn-primary" id="btn-add-club">
+                                            <span class="material-symbols-rounded">add_home_work</span>
+                                            Créer un club
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="data-table-container">
+                                    <table class="data-table" id="table-clubs">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Nom</th>
+                                                <th>Ville</th>
+                                                <th>Département</th>
+                                                <th>Région</th>
+                                                <th>Membres</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="clubs-tbody">
+                                            <!-- Clubs will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="pagination" id="pagination-clubs"></div>
+                            </section>
+
+                            <!-- SECTION: Concours -->
+                            <section class="admin-section" id="section-concours">
+                                <div class="section-header">
+                                    <h2>Gestion des concours</h2>
+                                    <div class="section-actions">
+                                        <div class="search-box">
+                                            <span class="material-symbols-rounded">search</span>
+                                            <input type="text" placeholder="Rechercher un concours..." id="search-concours">
+                                        </div>
+                                        <select id="filter-concours-etat" class="filter-select">
+                                            <option value="">Tous les états</option>
+                                            <option value="pas_commence">À venir</option>
+                                            <option value="en_cours">En cours</option>
+                                            <option value="attente">En attente</option>
+                                            <option value="resultat">Résultats</option>
+                                            <option value="evalue">Terminé</option>
+                                        </select>
+                                        <button class="btn-primary" id="btn-add-concours">
+                                            <span class="material-symbols-rounded">add</span>
+                                            Créer un concours
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="data-table-container">
+                                    <table class="data-table" id="table-concours">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Thème</th>
+                                                <th>Dates</th>
+                                                <th>Club</th>
+                                                <th>Président</th>
+                                                <th>État</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="concours-tbody">
+                                            <!-- Concours will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="pagination" id="pagination-concours"></div>
+                            </section>
+
+                            <!-- SECTION: Évaluateurs -->
+                            <section class="admin-section" id="section-evaluateurs">
+                                <div class="section-header">
+                                    <h2>Gestion des évaluateurs</h2>
+                                    <div class="section-actions">
+                                        <div class="search-box">
+                                            <span class="material-symbols-rounded">search</span>
+                                            <input type="text" placeholder="Rechercher un évaluateur..." id="search-evaluateurs">
+                                        </div>
+                                        <select id="filter-evaluateurs-specialite" class="filter-select">
+                                            <option value="">Toutes spécialités</option>
+                                        </select>
+                                        <button class="btn-primary" id="btn-promote-evaluateur">
+                                            <span class="material-symbols-rounded">upgrade</span>
+                                            Promouvoir
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="data-table-container">
+                                    <table class="data-table" id="table-evaluateurs">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Nom</th>
+                                                <th>Spécialité</th>
+                                                <th>XP</th>
+                                                <th>Évaluations</th>
+                                                <th>Concours assignés</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="evaluateurs-tbody">
+                                            <!-- Evaluateurs will be loaded here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="pagination" id="pagination-evaluateurs"></div>
+                            </section>
+
+                            <!-- SECTION: Dessins -->
+                            <section class="admin-section" id="section-dessins">
+                                <div class="section-header">
+                                    <h2>Gestion des dessins</h2>
+                                    <div class="section-actions">
+                                        <div class="search-box">
+                                            <span class="material-symbols-rounded">search</span>
+                                            <input type="text" placeholder="Rechercher..." id="search-dessins">
+                                        </div>
+                                        <select id="filter-dessins-concours" class="filter-select">
+                                            <option value="">Tous les concours</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="dessins-admin-grid" id="dessins-admin-grid">
+                                    <!-- Dessins will be loaded here -->
+                                </div>
+                                <div class="pagination" id="pagination-dessins"></div>
+                            </section>
+
+                            <!-- SECTION: Activité -->
+                            <section class="admin-section" id="section-activity">
+                                <div class="section-header">
+                                    <h2>Journal d'activité</h2>
+                                    <div class="section-actions">
+                                        <select id="filter-activity-type" class="filter-select">
+                                            <option value="">Toutes actions</option>
+                                            <option value="create">Création</option>
+                                            <option value="update">Modification</option>
+                                            <option value="delete">Suppression</option>
+                                            <option value="login">Connexion</option>
+                                        </select>
+                                        <input type="date" id="filter-activity-date" class="filter-date">
+                                    </div>
+                                </div>
+                                <div class="activity-timeline" id="activity-timeline">
+                                    <!-- Activity logs will be loaded here -->
+                                </div>
+                                <div class="pagination" id="pagination-activity"></div>
+                            </section>
+
+                        </main>
+                    </div>
+
                 </div>
             </div>
         </div>
+
+        <!-- Modal: User Edit -->
+        <div class="modal-overlay" id="modal-user" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-user-title">Modifier l'utilisateur</h3>
+                    <button class="modal-close" data-close-modal="modal-user">
+                        <span class="material-symbols-rounded">close</span>
+                    </button>
+                </div>
+                <form id="form-user" class="modal-form">
+                    <input type="hidden" name="numUtilisateur" id="user-id">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="user-nom">Nom</label>
+                            <input type="text" name="nom" id="user-nom" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-prenom">Prénom</label>
+                            <input type="text" name="prenom" id="user-prenom" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="user-login">Login</label>
+                            <input type="text" name="login" id="user-login" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-age">Âge</label>
+                            <input type="number" name="age" id="user-age" min="1" max="150" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="user-adresse">Adresse</label>
+                        <input type="text" name="adresse" id="user-adresse">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="user-club">Club</label>
+                            <select name="numClub" id="user-club">
+                                <option value="">Aucun club</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="user-type-compte">Type de compte</label>
+                            <select name="typeCompte" id="user-type-compte">
+                                <option value="public">Public</option>
+                                <option value="prive">Privé</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Rôles</label>
+                        <div class="roles-checkboxes">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="roles" value="competiteur" id="role-competiteur">
+                                <span>Compétiteur</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="roles" value="evaluateur" id="role-evaluateur">
+                                <span>Évaluateur</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="roles" value="president" id="role-president">
+                                <span>Président</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="roles" value="directeur" id="role-directeur">
+                                <span>Directeur</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="roles" value="administrateur" id="role-administrateur">
+                                <span>Administrateur</span>
+                            </label>
+                        </div>
+                    </div>
+                    <!-- Specific fields for roles -->
+                    <div class="role-fields" id="evaluateur-fields" style="display: none;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="evaluateur-specialite">Spécialité</label>
+                                <input type="text" name="specialite" id="evaluateur-specialite">
+                            </div>
+                            <div class="form-group">
+                                <label for="evaluateur-xp">XP</label>
+                                <input type="number" name="xp" id="evaluateur-xp" min="0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="role-fields" id="president-fields" style="display: none;">
+                        <div class="form-group">
+                            <label for="president-prime">Prime</label>
+                            <input type="number" name="prime" id="president-prime" step="0.01" min="0">
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" data-close-modal="modal-user">Annuler</button>
+                        <button type="submit" class="btn-primary">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal: Club Edit -->
+        <div class="modal-overlay" id="modal-club" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-club-title">Modifier le club</h3>
+                    <button class="modal-close" data-close-modal="modal-club">
+                        <span class="material-symbols-rounded">close</span>
+                    </button>
+                </div>
+                <form id="form-club" class="modal-form">
+                    <input type="hidden" name="numClub" id="club-id">
+                    <div class="form-group">
+                        <label for="club-nom">Nom du club</label>
+                        <input type="text" name="nomClub" id="club-nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="club-adresse">Adresse</label>
+                        <input type="text" name="adresse" id="club-adresse">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="club-ville">Ville</label>
+                            <input type="text" name="ville" id="club-ville" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="club-telephone">Téléphone</label>
+                            <input type="tel" name="numTelephone" id="club-telephone">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="club-departement">Département</label>
+                            <input type="text" name="departement" id="club-departement" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="club-region">Région</label>
+                            <input type="text" name="region" id="club-region" required>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" data-close-modal="modal-club">Annuler</button>
+                        <button type="submit" class="btn-primary">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal: Concours Edit -->
+        <div class="modal-overlay" id="modal-concours" style="display: none;">
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h3 id="modal-concours-title">Modifier le concours</h3>
+                    <button class="modal-close" data-close-modal="modal-concours">
+                        <span class="material-symbols-rounded">close</span>
+                    </button>
+                </div>
+                <form id="form-concours" class="modal-form">
+                    <input type="hidden" name="numConcours" id="concours-id">
+                    <div class="form-group">
+                        <label for="concours-theme">Thème</label>
+                        <input type="text" name="theme" id="concours-theme" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="concours-description">Description</label>
+                        <textarea name="description" id="concours-description" rows="3"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="concours-date-debut">Date de début</label>
+                            <input type="date" name="dateDebut" id="concours-date-debut" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="concours-date-fin">Date de fin</label>
+                            <input type="date" name="dateFin" id="concours-date-fin" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="concours-club">Club organisateur</label>
+                            <select name="numClub" id="concours-club">
+                                <option value="">Aucun club</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="concours-president">Président du jury</label>
+                            <select name="numPresident" id="concours-president" required>
+                                <option value="">Sélectionner un président</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="concours-etat">État</label>
+                        <select name="etat" id="concours-etat" required>
+                            <option value="pas_commence">À venir</option>
+                            <option value="en_cours">En cours</option>
+                            <option value="attente">En attente d'évaluation</option>
+                            <option value="resultat">Résultats disponibles</option>
+                            <option value="evalue">Terminé</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Évaluateurs assignés</label>
+                        <div class="multi-select-container" id="concours-evaluateurs-container">
+                            <!-- Evaluateurs checkboxes will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" data-close-modal="modal-concours">Annuler</button>
+                        <button type="submit" class="btn-primary">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal: Assign Evaluateur to Concours -->
+        <div class="modal-overlay" id="modal-assign-evaluateur" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Assigner à un concours</h3>
+                    <button class="modal-close" data-close-modal="modal-assign-evaluateur">
+                        <span class="material-symbols-rounded">close</span>
+                    </button>
+                </div>
+                <form id="form-assign-evaluateur" class="modal-form">
+                    <input type="hidden" name="numEvaluateur" id="assign-evaluateur-id">
+                    <div class="form-group">
+                        <label for="assign-concours">Concours</label>
+                        <select name="numConcours" id="assign-concours" required>
+                            <option value="">Sélectionner un concours</option>
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" data-close-modal="modal-assign-evaluateur">Annuler</button>
+                        <button type="submit" class="btn-primary">Assigner</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal: Confirm Delete -->
+        <div class="modal-overlay" id="modal-confirm-delete" style="display: none;">
+            <div class="modal-content modal-small">
+                <div class="modal-header">
+                    <h3>Confirmer la suppression</h3>
+                    <button class="modal-close" data-close-modal="modal-confirm-delete">
+                        <span class="material-symbols-rounded">close</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="delete-confirm-message">Êtes-vous sûr de vouloir supprimer cet élément ?</p>
+                    <p class="warning-text">Cette action est irréversible.</p>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" data-close-modal="modal-confirm-delete">Annuler</button>
+                    <button type="button" class="btn-danger" id="btn-confirm-delete">Supprimer</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast notifications container -->
+        <div class="toast-container" id="toast-container"></div>
+
+        <script src="/js/administration.js"></script>
     </body>
 </html>

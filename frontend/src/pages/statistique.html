@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/statistique.css">
+    <link rel="stylesheet" href="/css/statistique.css">
     <title>Statistique</title>
 </head>
     <body>
@@ -12,37 +12,88 @@
                 <include src="modules/userbar.html"></include>
                 <div class="page-body">
                     <div class="stats-page">
+
+                        <!-- Utilisateurs -->
+                        <!-- Participants -->
+                        <!-- Depots -->
+                        <!-- Evaluations -->
+
+                        <!-- Meilleur regions : /evaluation/best/regions -->
+                        <!-- Meilleur competiteurs : /evaluation/best/competiteurs -->
+                        <!-- Moyenne par concours : /evaluation -->
+                        <!-- Depos de dessins par date -->
+                        <!-- Evaluations de dessins par date -->
+
+
                         <section class="stats-hero">
                             <div class="stats-hero-text">
                                 <h1>Statistiques</h1>
                                 <p>Vue rapide des performances recentes avec des donnees fictives.</p>
                             </div>
-                            <div class="stats-badge">
+                            <!-- <div class="stats-badge">
                                 <span class="badge-title">Semaine 32</span>
                                 <span class="badge-value">+18% d'activite</span>
-                            </div>
+                            </div> -->
                         </section>
 
                         <section class="stats-summary">
                             <article class="stat-card">
-                                <span class="stat-label">Participants</span>
-                                <span class="stat-value">1 284</span>
-                                <span class="stat-trend up">+12%</span>
+                                <span class="stat-label">Nombre de club</span>
+                                <span class="stat-value" id="clubCount">0</span>
+                                <!-- <span class="stat-trend up">+12%</span> -->
                             </article>
                             <article class="stat-card">
-                                <span class="stat-label">Depots</span>
-                                <span class="stat-value">342</span>
-                                <span class="stat-trend up">+6%</span>
+                                <span class="stat-label">Utilisateurs</span>
+                                <span class="stat-value" id="userCount">0</span>
+                                <!-- <span class="stat-trend up">+12%</span> -->
                             </article>
                             <article class="stat-card">
-                                <span class="stat-label">Votes</span>
-                                <span class="stat-value">9 410</span>
-                                <span class="stat-trend down">-3%</span>
+                                <span class="stat-label">Evaluations</span>
+                                <span class="stat-value" id="evaluationCount">0</span>
+                                <!-- <span class="stat-trend down">-3%</span> -->
                             </article>
                         </section>
 
                         <section class="charts-grid">
+
+
                             <article class="chart-card" data-chart="bars">
+                                <div class="chart-header">
+                                    <div>
+                                        <h3>Moyenne par concours</h3>
+                                        <p>Graphique en barres</p>
+                                    </div>
+                                    <span class="chart-tag">Bar</span>
+                                </div>
+                                <div class="chart-canvas">
+                                    <canvas id="chartConcours" role="img" aria-label="Bar chart"></canvas>
+                                    <div class="chart-tooltip" data-tooltip></div>
+                                </div>
+                            </article>
+
+
+
+                            <article class="chart-card" data-chart="line">
+                                <div class="chart-header">
+                                    <div>
+                                        <h3>Evaluation par date</h3>
+                                        <p>Courbe continue</p>
+                                    </div>
+                                    <span class="chart-tag">Courbe</span>
+                                </div>
+                                <div class="chart-canvas">
+                                    <canvas id="chartEvaluation" role="img" aria-label="Line chart"></canvas>
+                                    <div class="chart-tooltip" data-tooltip></div>
+                                </div>
+                            </article>
+
+
+
+
+
+
+
+                            <!-- <article class="chart-card" data-chart="bars">
                                 <div class="chart-header">
                                     <div>
                                         <h3>Participations par theme</h3>
@@ -98,17 +149,15 @@
                                     <div class="chart-tooltip" data-tooltip></div>
                                 </div>
                                 <div class="chart-legend" data-legend-for="chartMulti"></div>
-                            </article>
+                            </article> -->
                         </section>
                     </div>
                 </div>
             </div>
         </div>
-        <script src="js/statistique.js"></script>
-        <script>
-            if (window.initStatistique) {
-                window.initStatistique();
-            }
+        <script type="module">
+            import { initStatistique } from "/js/statistique.js";
+            initStatistique();
         </script>
     </body>
 </html>

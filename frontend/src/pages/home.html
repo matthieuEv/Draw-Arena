@@ -2,7 +2,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
+    <title>Tableau de bord</title>
+    <link rel="stylesheet" href="/css/club.css">
+    <link rel="stylesheet" href="/css/home.css">
 </head>
     <body>
         <div class="app-shell">
@@ -10,10 +12,363 @@
             <div class="page-content">
                 <include src="modules/userbar.html"></include>
                 <div class="page-body">
-                    <h2>Welcome to Draw Arena</h2>
-                    <p>This is the home page content.</p>
+
+                    <!-- ====================================== -->
+                    <!-- USER DASHBOARD (Non-Admin) -->
+                    <!-- ====================================== -->
+                    <div id="home-user-body">
+
+                        <!-- Welcome Header -->
+                        <div class="dashboard-header">
+                            <div class="dashboard-welcome">
+                                <h1>Bienvenue, <span id="user-name-display"></span> !</h1>
+                                <p>Voici un aperçu de votre activité et de votre club.</p>
+                            </div>
+                            <div class="dashboard-role-badge" id="user-role-badge">
+                                <span class="material-symbols-rounded" id="role-icon"></span>
+                                <span id="role-text"></span>
+                            </div>
+                        </div>
+
+                        <!-- Club Info Card -->
+                        <div class="club-info-card">
+                            <div class="club-info-content">
+                                <h2 id="club-name">Chargement...</h2>
+                                <div class="club-meta">
+                                    <span id="club-address"></span>
+                                    <span id="club-city"></span>
+                                    <span id="club-dept"></span>
+                                    <span id="club-region"></span>
+                                    <br>
+                                    <span id="club-phone"></span>
+                                </div>
+                            </div>
+                            <div class="club-actions">
+                                <button onclick="location.href='/clubs'" class="load-more-button">
+                                    <span class="material-symbols-rounded">visibility</span>
+                                    Voir mon club
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Quick Stats -->
+                        <div class="quick-stats" id="user-quick-stats">
+                            <!-- Competiteur stats -->
+                            <div class="quick-stat-item" id="stat-mes-dessins" style="display: none;">
+                                <span class="quick-stat-value" id="mes-dessins-count">0</span>
+                                <span class="quick-stat-label">Mes dessins</span>
+                            </div>
+                            <div class="quick-stat-item" id="stat-mes-participations" style="display: none;">
+                                <span class="quick-stat-value" id="mes-participations-count">0</span>
+                                <span class="quick-stat-label">Participations</span>
+                            </div>
+                            <div class="quick-stat-item" id="stat-ma-moyenne" style="display: none;">
+                                <span class="quick-stat-value" id="ma-moyenne-value">-</span>
+                                <span class="quick-stat-label">Note moyenne</span>
+                            </div>
+                            <!-- Evaluateur stats -->
+                            <div class="quick-stat-item" id="stat-mes-evaluations" style="display: none;">
+                                <span class="quick-stat-value" id="mes-evaluations-count">0</span>
+                                <span class="quick-stat-label">Évaluations faites</span>
+                            </div>
+                            <div class="quick-stat-item" id="stat-a-evaluer" style="display: none;">
+                                <span class="quick-stat-value" id="a-evaluer-count">0</span>
+                                <span class="quick-stat-label">À évaluer</span>
+                            </div>
+                            <!-- President stats -->
+                            <div class="quick-stat-item" id="stat-concours-geres" style="display: none;">
+                                <span class="quick-stat-value" id="concours-geres-count">0</span>
+                                <span class="quick-stat-label">Concours gérés</span>
+                            </div>
+                            <!-- Directeur stats -->
+                            <div class="quick-stat-item" id="stat-membres-club" style="display: none;">
+                                <span class="quick-stat-value" id="membres-club-count">0</span>
+                                <span class="quick-stat-label">Membres du club</span>
+                            </div>
+                            <!-- Common stats -->
+                            <div class="quick-stat-item">
+                                <span class="quick-stat-value" id="concours-actifs-count">0</span>
+                                <span class="quick-stat-label">Concours actifs</span>
+                            </div>
+                        </div>
+
+                        <!-- Dashboard Grid -->
+                        <div class="dashboard-grid">
+
+                            <!-- Concours en cours -->
+                            <div class="dashboard-card">
+                                <div class="dashboard-card-header">
+                                    <h3>Concours du club</h3>
+                                    <div class="dashboard-card-icon primary">
+                                        <span class="material-symbols-rounded">trophy</span>
+                                    </div>
+                                </div>
+                                <div class="dashboard-card-content">
+                                    <div class="dashboard-concours-list" id="club-concours-list">
+                                        <div class="empty-state">
+                                            <span class="material-symbols-rounded">hourglass_empty</span>
+                                            <p>Chargement...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section Compétiteur: Mes dessins récents -->
+                            <div class="dashboard-card" id="card-mes-dessins" style="display: none;">
+                                <div class="dashboard-card-header">
+                                    <h3>Mes dessins récents</h3>
+                                    <div class="dashboard-card-icon success">
+                                        <span class="material-symbols-rounded">draw</span>
+                                    </div>
+                                </div>
+                                <div class="dashboard-card-content">
+                                    <div class="dashboard-dessins-grid" id="mes-dessins-grid">
+                                        <div class="empty-state">
+                                            <span class="material-symbols-rounded">image</span>
+                                            <p>Aucun dessin pour le moment</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section Évaluateur: Dessins à évaluer -->
+                            <div class="dashboard-card" id="card-a-evaluer" style="display: none;">
+                                <div class="dashboard-card-header">
+                                    <h3>Dessins à évaluer</h3>
+                                    <div class="dashboard-card-icon warning">
+                                        <span class="material-symbols-rounded">assignment</span>
+                                    </div>
+                                </div>
+                                <div class="dashboard-card-content">
+                                    <div class="dashboard-evaluations-list" id="dessins-a-evaluer-list">
+                                        <div class="empty-state">
+                                            <span class="material-symbols-rounded">task_alt</span>
+                                            <p>Aucun dessin en attente</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section Évaluateur: Mes évaluations récentes -->
+                            <div class="dashboard-card" id="card-mes-evaluations" style="display: none;">
+                                <div class="dashboard-card-header">
+                                    <h3>Mes évaluations récentes</h3>
+                                    <div class="dashboard-card-icon info">
+                                        <span class="material-symbols-rounded">rate_review</span>
+                                    </div>
+                                </div>
+                                <div class="dashboard-card-content">
+                                    <div class="dashboard-evaluations-list" id="mes-evaluations-list">
+                                        <div class="empty-state">
+                                            <span class="material-symbols-rounded">pending</span>
+                                            <p>Aucune évaluation récente</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section Président: Concours gérés -->
+                            <div class="dashboard-card" id="card-concours-president" style="display: none;">
+                                <div class="dashboard-card-header">
+                                    <h3>Mes concours (Président)</h3>
+                                    <div class="dashboard-card-icon warning">
+                                        <span class="material-symbols-rounded">stars</span>
+                                    </div>
+                                </div>
+                                <div class="dashboard-card-content">
+                                    <div class="dashboard-concours-list" id="president-concours-list">
+                                        <div class="empty-state">
+                                            <span class="material-symbols-rounded">hourglass_empty</span>
+                                            <p>Chargement...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section Directeur: Membres récents -->
+                            <div class="dashboard-card" id="card-membres-directeur" style="display: none;">
+                                <div class="dashboard-card-header">
+                                    <h3>Derniers membres inscrits</h3>
+                                    <div class="dashboard-card-icon danger">
+                                        <span class="material-symbols-rounded">group_add</span>
+                                    </div>
+                                </div>
+                                <div class="dashboard-card-content">
+                                    <div class="users-grid" id="derniers-membres-list" style="max-height: 300px; overflow-y: auto;">
+                                        <div class="empty-state">
+                                            <span class="material-symbols-rounded">people</span>
+                                            <p>Chargement...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ====================================== -->
+                    <!-- ADMIN DASHBOARD -->
+                    <!-- ====================================== -->
+                    <div id="admin-home-body">
+
+                        <!-- Admin Welcome Header -->
+                        <div class="dashboard-header">
+                            <div class="dashboard-welcome">
+                                <h1>Panneau d'administration</h1>
+                                <p>Bienvenue, <span id="admin-name-display"></span>. Gérez Draw Arena depuis cette interface.</p>
+                            </div>
+                            <div class="dashboard-role-badge administrateur">
+                                <span class="material-symbols-rounded">admin_panel_settings</span>
+                                <span>Administrateur</span>
+                            </div>
+                        </div>
+
+                        <!-- Admin Stats Grid -->
+                        <div class="admin-stats-grid">
+                            <div class="admin-stat-card">
+                                <div class="stat-icon clubs">
+                                    <span class="material-symbols-rounded">groups</span>
+                                </div>
+                                <div class="admin-stat-value" id="admin-clubs-count">0</div>
+                                <div class="admin-stat-label">Clubs</div>
+                            </div>
+                            <div class="admin-stat-card">
+                                <div class="stat-icon users">
+                                    <span class="material-symbols-rounded">person</span>
+                                </div>
+                                <div class="admin-stat-value" id="admin-users-count">0</div>
+                                <div class="admin-stat-label">Utilisateurs</div>
+                            </div>
+                            <div class="admin-stat-card">
+                                <div class="stat-icon concours">
+                                    <span class="material-symbols-rounded">trophy</span>
+                                </div>
+                                <div class="admin-stat-value" id="admin-concours-count">0</div>
+                                <div class="admin-stat-label">Concours</div>
+                            </div>
+                            <div class="admin-stat-card">
+                                <div class="stat-icon evaluations">
+                                    <span class="material-symbols-rounded">rate_review</span>
+                                </div>
+                                <div class="admin-stat-value" id="admin-evaluations-count">0</div>
+                                <div class="admin-stat-label">Évaluations</div>
+                            </div>
+                        </div>
+
+                        <!-- Admin Quick Actions -->
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-header">
+                                <h3>Actions rapides</h3>
+                                <div class="dashboard-card-icon primary">
+                                    <span class="material-symbols-rounded">bolt</span>
+                                </div>
+                            </div>
+                            <div class="dashboard-card-content">
+                                <div class="admin-actions-grid">
+                                    <a href="/clubs" class="admin-action-btn">
+                                        <span class="material-symbols-rounded">groups</span>
+                                        <span>Gérer les clubs</span>
+                                    </a>
+                                    <a href="/concours" class="admin-action-btn">
+                                        <span class="material-symbols-rounded">trophy</span>
+                                        <span>Voir les concours</span>
+                                    </a>
+                                    <a href="/dessins" class="admin-action-btn">
+                                        <span class="material-symbols-rounded">draw</span>
+                                        <span>Explorer les dessins</span>
+                                    </a>
+                                    <a href="/statistique" class="admin-action-btn">
+                                        <span class="material-symbols-rounded">insert_chart</span>
+                                        <span>Statistiques</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Admin Dashboard Grid -->
+                        <div class="dashboard-grid">
+
+                            <!-- Recent Activity -->
+                            <div class="dashboard-card">
+                                <div class="dashboard-card-header">
+                                    <h3>Activité récente</h3>
+                                    <div class="dashboard-card-icon info">
+                                        <span class="material-symbols-rounded">history</span>
+                                    </div>
+                                </div>
+                                <div class="dashboard-card-content">
+                                    <div class="recent-activity-list" id="admin-activity-list">
+                                        <div class="empty-state">
+                                            <span class="material-symbols-rounded">hourglass_empty</span>
+                                            <p>Chargement...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recent Clubs -->
+                            <div class="dashboard-card">
+                                <div class="dashboard-card-header">
+                                    <h3>Clubs récemment ajoutés</h3>
+                                    <div class="dashboard-card-icon success">
+                                        <span class="material-symbols-rounded">add_business</span>
+                                    </div>
+                                </div>
+                                <div class="dashboard-card-content">
+                                    <div class="dashboard-concours-list" id="admin-clubs-list">
+                                        <div class="empty-state">
+                                            <span class="material-symbols-rounded">groups</span>
+                                            <p>Chargement...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Concours en cours -->
+                            <div class="dashboard-card">
+                                <div class="dashboard-card-header">
+                                    <h3>Concours actifs</h3>
+                                    <div class="dashboard-card-icon warning">
+                                        <span class="material-symbols-rounded">emoji_events</span>
+                                    </div>
+                                </div>
+                                <div class="dashboard-card-content">
+                                    <div class="dashboard-concours-list" id="admin-concours-list">
+                                        <div class="empty-state">
+                                            <span class="material-symbols-rounded">trophy</span>
+                                            <p>Chargement...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Latest Dessins -->
+                            <div class="dashboard-card">
+                                <div class="dashboard-card-header">
+                                    <h3>Derniers dessins soumis</h3>
+                                    <div class="dashboard-card-icon danger">
+                                        <span class="material-symbols-rounded">palette</span>
+                                    </div>
+                                </div>
+                                <div class="dashboard-card-content">
+                                    <div class="dashboard-dessins-grid" id="admin-dessins-grid">
+                                        <div class="empty-state">
+                                            <span class="material-symbols-rounded">image</span>
+                                            <p>Chargement...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
         </div>
+
+        <script src="/js/home.js"></script>
     </body>
 </html>

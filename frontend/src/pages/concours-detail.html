@@ -1,0 +1,145 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détail du concours</title>
+    <link rel="stylesheet" href="/css/club.css">
+    <link rel="stylesheet" href="/css/concours-detail.css">
+</head>
+    <body>
+        <div class="app-shell">
+            <include src="modules/navigation.html"></include>
+            <div class="page-content">
+                <include src="modules/userbar.html"></include>
+                <div class="page-body">
+                    
+                    <!-- Header avec bouton retour -->
+                    <div class="header-card flex">
+                        <button class="back-btn" onclick="history.back()">
+                            <span class="material-symbols-rounded">arrow_back</span>
+                        </button>
+                        <div class="concours-header-info">
+                            <h1 id="concours-theme">Chargement...</h1>
+                            <div class="concours-status-badge" id="concours-status-badge">
+                                <span id="concours-status">-</span>
+                            </div>
+                        </div>
+                        <div class="right flex" id="depot-action" style="display: none;">
+                            <a href="#" id="depot-link" class="load-more-button depot-btn">
+                                <span class="material-symbols-rounded">image_arrow_up</span>
+                                Déposer un dessin
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Infos du concours -->
+                    <div class="concours-info-grid">
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <span class="material-symbols-rounded">calendar_today</span>
+                            </div>
+                            <div class="info-content">
+                                <span class="info-label">Date de début</span>
+                                <span class="info-value" id="concours-date-debut">-</span>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <span class="material-symbols-rounded">event</span>
+                            </div>
+                            <div class="info-content">
+                                <span class="info-label">Date de fin</span>
+                                <span class="info-value" id="concours-date-fin">-</span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Description -->
+                    <div class="concours-description-card" id="description-card" style="display: none;">
+                        <h3>Description</h3>
+                        <p id="concours-description"></p>
+                    </div>
+
+                    <!-- Statistiques rapides -->
+                    <div class="quick-stats-row">
+                        <div class="stat-box">
+                            <span class="stat-number" id="nb-participants">0</span>
+                            <span class="stat-label">Participants</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number" id="nb-dessins">0</span>
+                            <span class="stat-label">Dessins soumis</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number" id="nb-evaluateurs">0</span>
+                            <span class="stat-label">Évaluateurs</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number" id="nb-evaluations">0</span>
+                            <span class="stat-label">Évaluations</span>
+                        </div>
+                    </div>
+
+                    <!-- Onglets -->
+                    <div class="tabs-container">
+                        <button class="tab-btn active" data-tab="dessins">
+                            <span class="material-symbols-rounded">draw</span>
+                            Dessins
+                        </button>
+                        <button class="tab-btn" data-tab="participants">
+                            <span class="material-symbols-rounded">people</span>
+                            Participants
+                        </button>
+                        <button class="tab-btn" data-tab="top" id="tab-top">
+                            <span class="material-symbols-rounded">leaderboard</span>
+                            <span id="tab-top-label">Leaderboard</span>
+                        </button>
+                    </div>
+
+                    <!-- Tab Content: Dessins -->
+                    <div class="tab-content active" id="tab-content-dessins">
+                        <div class="dessins-gallery" id="dessins-gallery">
+                            <div class="empty-state">
+                                <span class="material-symbols-rounded">image</span>
+                                <p>Aucun dessin soumis</p>
+                            </div>
+                        </div>
+                        <div class="load-more-container" id="load-more-dessins-container">
+                            <button id="load-more-dessins" class="load-more-button">Charger plus de dessins</button>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content: Participants -->
+                    <div class="tab-content" id="tab-content-participants">
+                        <div class="users-grid" id="participants-grid">
+                            <div class="empty-state">
+                                <span class="material-symbols-rounded">people</span>
+                                <p>Aucun participant</p>
+                            </div>
+                        </div>
+                        <div class="load-more-container" id="load-more-participants-container">
+                            <button id="load-more-participants" class="load-more-button">Charger plus</button>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content: Top / Leaderboard -->
+                    <div class="tab-content" id="tab-content-top">
+                        <div class="podium-container" id="podium-container" style="display: none;">
+                            <!-- Podium will be generated here when concours is finished -->
+                        </div>
+                        <div class="leaderboard-list" id="leaderboard-list">
+                            <div class="empty-state">
+                                <span class="material-symbols-rounded">leaderboard</span>
+                                <p>Aucun classement disponible</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <script src="/js/concours-detail.js"></script>
+    </body>
+</html>
