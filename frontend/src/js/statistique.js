@@ -224,6 +224,20 @@ function buildInstance(options = {}) {
   };
 }
 
+function refreshCharts(instance, options = {}) {
+  if (!instance) return;
+  const bars = options.bars !== undefined ? options.bars : defaultBars;
+  const lines = options.lines !== undefined ? options.lines : defaultLines;
+  const pies = options.pies !== undefined ? options.pies : defaultPies;
+  const multis = options.multis !== undefined ? options.multis : defaultMultis;
+  instance.charts = {
+    bars: normalizeBarEntries(instance.root, bars),
+    lines: normalizeLineEntries(instance.root, lines),
+    pies: normalizePieEntries(instance.root, pies),
+    multis: normalizeMultiEntries(instance.root, multis),
+  };
+}
+
 function getPointerPosition(event, canvas) {
   const rect = canvas.getBoundingClientRect();
   return {
@@ -1163,7 +1177,6 @@ export function initStatistique(options = {}) {
   loadData();
 
   animateLoad(instance);
-  bindTooltips(instance);
 
   if (!resizeBound) {
     window.addEventListener("resize", () => {
@@ -1252,6 +1265,7 @@ export function initStatistique(options = {}) {
 
     Promise.all([evaluationPromise, clubPromise]).then(() => {
       applyCounts();
+      refreshCharts(instance, options);
       animateLoad(instance);
       bindTooltips(instance);
     });
