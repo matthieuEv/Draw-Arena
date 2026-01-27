@@ -203,17 +203,18 @@ class Concours
                 u.age,
                 u.adresse,
                 u.login,
-                e.note,
-                e.date_evaluation,
-                e.commentaire as evaluation_commentaire
-             FROM Dessin d
-             JOIN Concours_Competiteur cc ON cc.num_competiteur = d.num_competiteur
-             JOIN Competiteur comp ON comp.num_competiteur = cc.num_competiteur
-             JOIN Utilisateur u ON u.num_utilisateur = comp.num_competiteur
-             LEFT JOIN Evaluation e ON e.num_dessin = d.num_dessin
-             WHERE cc.num_concours = ?
-             ORDER BY d.date_remise DESC
-             LIMIT ? OFFSET ?'
+                AVG(e.note) as note,
+                MAX(e.date_evaluation) as date_evaluation,
+                GROUP_CONCAT(e.commentaire SEPARATOR \' | \') as evaluation_commentaires,
+                COUNT(e.num_dessin) as nb_evaluations
+            FROM Dessin d
+            JOIN Concours_Competiteur cc ON cc.num_competiteur = d.num_competiteur
+            JOIN Utilisateur u ON u.num_utilisateur = cc.num_competiteur
+            LEFT JOIN Evaluation e ON e.num_dessin = d.num_dessin
+            WHERE cc.num_concours = ?
+            GROUP BY d.num_dessin
+            ORDER BY d.date_remise DESC
+            LIMIT ? OFFSET ?'
         );
         $stmt->bindValue(1, $concoursId, PDO::PARAM_INT);
         $stmt->bindValue(2, $limit, PDO::PARAM_INT);
