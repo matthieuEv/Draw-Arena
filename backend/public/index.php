@@ -13,6 +13,9 @@ use DrawArena\Handlers\CompetiteurHandler;
 use DrawArena\Handlers\EvaluationHandler;
 use DrawArena\Handlers\DocsHandler;
 use DrawArena\Handlers\OpenApiHandler;
+use DrawArena\Models\Club;
+use DrawArena\Models\Utilisateur;
+use DrawArena\Models\Evaluation;
 
 $router = new Router();
 
@@ -31,8 +34,16 @@ $router->post('/api/auth/register', [AuthHandler::class, 'register']);
 $router->post('/api/auth/login', [AuthHandler::class, 'login']);
 
 // PROTECTED ROUTES (require JWT authentication)
+// Utilisateur routes
+$router->get('/api/utilisateur/count', function ($request, $response) {
+    $response->success(['count' => Utilisateur::count()])->send();
+}, [new AuthMiddleware()]);
+
 // Club routes
 $router->get('/api/club', [ClubHandler::class, 'getAllClub'], [new AuthMiddleware()]);
+$router->get('/api/club/count', function ($request, $response) {
+    $response->success(['count' => Club::count()])->send();
+}, [new AuthMiddleware()]);
 $router->get('/api/club/{clubId}', [ClubHandler::class, 'getClubById'], [new AuthMiddleware()]);
 $router->get('/api/club/{clubId}/users', [ClubHandler::class, 'getClubUsers'], [new AuthMiddleware()]);
 
@@ -54,6 +65,9 @@ $router->get('/api/competiteur/warriors', [CompetiteurHandler::class, 'getWarrio
 // Cas sans year filter - Obligation 3
 // Cas avec year filter - Obligation 2
 $router->get('/api/evaluation', [EvaluationHandler::class, 'getAllEvaluation'], [new AuthMiddleware()]);
+$router->get('/api/evaluation/count', function ($request, $response) {
+   $response->success(['count' => Evaluation::count()])->send();
+}, [new AuthMiddleware()]);
 // Obligation 5
 $router->get('/api/evaluation/best/region', [EvaluationHandler::class, 'getBestRegion'], [new AuthMiddleware()]);
 // Obligation 5.1 (For the fun beacause it's easy to do)

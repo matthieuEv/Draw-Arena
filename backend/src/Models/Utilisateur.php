@@ -22,6 +22,14 @@ class Utilisateur
 
     private function __construct() {}
 
+    public static function count(): int
+    {
+        $stmt = Database::prepare('SELECT COUNT(*) as total FROM Utilisateur');
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)($result['total'] ?? 0);
+    }
+
     public static function create(
         string $nom,
         string $prenom,

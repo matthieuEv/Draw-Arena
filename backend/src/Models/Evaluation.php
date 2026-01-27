@@ -16,6 +16,14 @@ class Evaluation
 
     private function __construct() {}
 
+    public static function count(): int
+    {
+        $stmt = Database::prepare('SELECT COUNT(*) as total FROM Evaluation');
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int)($result['total'] ?? 0);
+    }
+
     public static function getById(int $numDessin, int $numEvaluateur): ?Evaluation
     {
         $stmt = Database::prepare(

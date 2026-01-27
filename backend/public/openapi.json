@@ -94,6 +94,7 @@
   "tags": [
     {"name": "Health", "description": "Vérification de l'état de l'API"},
     {"name": "Authentication", "description": "Authentification et gestion des comptes"},
+    {"name": "Stats", "description": "Statistiques globales (comptes, clubs, évaluations)"},
     {"name": "Club", "description": "Gestion des clubs"},
     {"name": "Concours", "description": "Gestion des concours"},
     {"name": "Compétiteur", "description": "Gestion des compétiteurs"},
@@ -195,6 +196,28 @@
         }
       }
     },
+    "/api/utilisateur/count": {
+      "get": {
+        "summary": "Nombre total d'utilisateurs",
+        "tags": ["Stats"],
+        "responses": {
+          "200": {
+            "description": "Nombre d'utilisateurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {"type": "integer", "example": 42}
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"}
+        }
+      }
+    },
     "/api/club": {
       "get": {
         "summary": "Lister tous les clubs",
@@ -281,6 +304,29 @@
           },
           "401": {"description": "Token non valide ou absent"},
           "404": {"description": "Club non trouvé"}
+        }
+      }
+    },
+    "/api/club/count": {
+      "get": {
+        "summary": "Nombre total de clubs",
+        "tags": ["Stats"],
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "Nombre de clubs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {"type": "integer", "example": 15}
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"}
         }
       }
     },
@@ -543,6 +589,29 @@
                   "type": "object",
                   "properties": {
                     "evaluations": {"type": "array", "items": {"type": "object"}}
+                  }
+                }
+              }
+            }
+          },
+          "401": {"description": "Token non valide ou absent"}
+        }
+      }
+    },
+    "/api/evaluation/count": {
+      "get": {
+        "summary": "Nombre total d'évaluations",
+        "tags": ["Stats"],
+        "security": [{"bearerAuth": []}],
+        "responses": {
+          "200": {
+            "description": "Nombre d'évaluations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "count": {"type": "integer", "example": 256}
                   }
                 }
               }
