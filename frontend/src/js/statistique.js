@@ -1195,13 +1195,44 @@ export function initStatistique(options = {}) {
     lineEvalLabels.length = 0;
     lineEvalData.length = 0;
 
-    const evaluationPromise = apiFetch('/evaluation').then(data => {
+    // const evaluationPromise = apiFetch('/evaluation').then(data => {
+    //   if (!data || !Array.isArray(data.evaluations)) return;
+    //   let dataSimple = data.evaluations;
+
+    //   nbEval = dataSimple.length;
+      
+    //   const evalByDate = {};
+    //   dataSimple.forEach(item => {
+    //     const date = new Date(item.date_evaluation);
+    //     const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    //     if (!evalByDate[dateKey]) {
+    //       evalByDate[dateKey] = 0;
+    //     }
+    //     evalByDate[dateKey] += 1;
+    //   });
+    //   const evalDateKeys = Object.keys(evalByDate).sort();
+    //   lineDepoLabels.push(...evalDateKeys);
+    //   lineDepoData.push(...evalDateKeys.map(dateKey => evalByDate[dateKey]));
+    //   lineEvalLabels.push(...evalDateKeys);
+    //   lineEvalData.push(...evalDateKeys.map(dateKey => evalByDate[dateKey]));
+    // });
+
+
+    apiFetch('/evaluation').then(data => {
       if (!data || !Array.isArray(data.evaluations)) return;
       let dataSimple = data.evaluations;
 
       nbEval = dataSimple.length;
       
+      const themeMap = {};
       const evalByDate = {};
+      dataSimple.forEach(item => {
+        if (!themeMap[item.theme]) {
+          themeMap[item.theme] = { total: 0, count: 0 };
+        }
+        themeMap[item.theme].total += item.note;
+        themeMap[item.theme].count += 1;
+      });
       dataSimple.forEach(item => {
         const date = new Date(item.date_evaluation);
         const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
@@ -1210,11 +1241,17 @@ export function initStatistique(options = {}) {
         }
         evalByDate[dateKey] += 1;
       });
+
       const evalDateKeys = Object.keys(evalByDate).sort();
       lineDepoLabels.push(...evalDateKeys);
       lineDepoData.push(...evalDateKeys.map(dateKey => evalByDate[dateKey]));
-      lineEvalLabels.push(...evalDateKeys);
-      lineEvalData.push(...evalDateKeys.map(dateKey => evalByDate[dateKey]));
+
+      const themeKeys = Object.keys(themeMap);
+      lineEvalLabels.push(...themeKeys);
+      lineEvalData.push(...themeKeys.map(theme => {
+        const avg = themeMap[theme].total / themeMap[theme].count;
+        return avg;
+      }));
     });
 
     const clubPromise = apiFetch('/club').then(async data => {
