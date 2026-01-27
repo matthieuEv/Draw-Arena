@@ -43,7 +43,7 @@ function displayDessins(concoursID, users = null){
             const profileImg = user.leDessin ? user.leDessin : "/img/empty_image.jpg";
             clubUsersDiv.insertAdjacentHTML('beforeend', `
                 <div class="dessins-card">
-                    <img src="${profileImg}" alt="Profile" class="dessins-img">
+                    <img src="${profileImg}" class="dessins-img">
                     <div class="user-details">
                         <h3 class="user-name">${user.prenom} ${user.nom} - ${user.age}</h3>
                         <p class="user-login">${user.login}</p>

@@ -38,6 +38,7 @@
     align-items: center;
     gap: 1rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
 }
 
 .dessins-card {
@@ -49,12 +50,27 @@
     align-items: center;
     gap: 1rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
 }
 
 .user-card:hover, .dessins-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     background: #fff;
+}
+
+.role-icon{
+    font-size: 2em;
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    &.president-icon{
+        color: #ffe246;
+    }
+    &.evaluateur-icon{
+        color: #78e4fd;
+    }
 }
 
 .user-avatar {
@@ -68,11 +84,22 @@
         border-radius: 8px;
         background-color: transparent;
     }
+
+    &.president{
+        box-shadow: 0 4px 6px -1px #ffe246, 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+
+    &.evaluateur{
+        box-shadow: 0 4px 6px -1px #78e4fd, 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
 }
 
 .dessins-img{
     width: 100%;
+    height: 300px;
+    border-radius: 10px;
     object-fit: cover;
+    object-position: center;
     background-color: var(--color-gray-100, #e2e8f0);
 }
 
