@@ -1157,6 +1157,8 @@ export function initStatistique(options = {}) {
   if (!instance) return null;
   activeInstance = instance;
 
+  loadData();
+
   bindTooltips(instance);
 
   if (!resizeBound) {
@@ -1166,8 +1168,6 @@ export function initStatistique(options = {}) {
     });
     resizeBound = true;
   }
-
-  loadData();
 
   function applyCounts() {
     instance.clubCount = nbClub;
