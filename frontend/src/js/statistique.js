@@ -1218,7 +1218,7 @@ export function initStatistique(options = {}) {
     // });
 
 
-    apiFetch('/evaluation').then(data => {
+    const evaluationPromise = apiFetch('/evaluation').then(data => {
       if (!data || !Array.isArray(data.evaluations)) return;
       let dataSimple = data.evaluations;
 
