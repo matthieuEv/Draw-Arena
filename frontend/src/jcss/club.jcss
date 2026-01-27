@@ -39,6 +39,14 @@
     gap: 1rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
+
+    &.president{
+        box-shadow: 0 4px 6px -1px #ffe246, 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+
+    &.evaluateur{
+        box-shadow: 0 4px 6px -1px #78e4fd, 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
 }
 
 .dessins-card {
@@ -83,14 +91,6 @@
     &.noround {
         border-radius: 8px;
         background-color: transparent;
-    }
-
-    &.president{
-        box-shadow: 0 4px 6px -1px #ffe246, 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    }
-
-    &.evaluateur{
-        box-shadow: 0 4px 6px -1px #78e4fd, 0 2px 4px -1px rgba(0, 0, 0, 0.03);
     }
 }
 

@@ -1,8 +1,8 @@
-concoursData = [];
+concoursDataUser = [];
 concoursUsers = {};
 
 function distplayConcours(){
-    var dataToLoad = concoursData;
+    var dataToLoad = concoursDataUser;
     if (dataToLoad) {
         const concoursDiv = document.getElementById('concours-list');
         concoursDiv.innerHTML = "";
@@ -65,13 +65,13 @@ function displayUsers(concoursID, users = null){
 }
 
 function getConcours(year){
-    concoursData = [];
+    concoursDataUser = [];
     concoursUsers = {};
 
     var param = year === "all" ? "" : year;
     
     apiFetch(`/concours?year=${year}`).then(info => {
-        concoursData = info.concours;
+        concoursDataUser = info.concours;
         distplayConcours();
     });
 }
