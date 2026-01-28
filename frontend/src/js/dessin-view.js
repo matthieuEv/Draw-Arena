@@ -1,3 +1,5 @@
+// CODED BY CLAUDE OPUS 4.5
+
 /**
  * Dessin View - Affichage d'un dessin en plein écran
  */

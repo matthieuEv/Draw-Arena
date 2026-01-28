@@ -1,3 +1,5 @@
+// CODED BY CLAUDE OPUS 4.5
+
 
 var isActive = false;
 var element = null;

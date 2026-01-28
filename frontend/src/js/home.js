@@ -1,3 +1,5 @@
+// CODED BY CLAUDE OPUS 4.5
+
 /**
  * Home Dashboard JavaScript
  * Gère l'affichage du tableau de bord selon le rôle de l'utilisateur

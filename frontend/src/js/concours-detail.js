@@ -1,3 +1,5 @@
+// CODED BY CLAUDE OPUS 4.5
+
 /**
  * Concours Detail - Page de détail d'un concours
  */

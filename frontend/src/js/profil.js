@@ -1,3 +1,5 @@
+// CODED BY CLAUDE OPUS 4.5
+
 /**
  * Profil Page JavaScript
  * Gère l'affichage et la modification du profil utilisateur

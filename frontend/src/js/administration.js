@@ -1,3 +1,5 @@
+// CODED BY CLAUDE OPUS 4.5
+
 /**
  * Administration Panel - Full management interface
  */

@@ -1,3 +1,5 @@
+// CODED BY CLAUDE OPUS 4.5
+
 let currentImage = null;
 let puzzleState = Array(9).fill(null);
 let draggedPiece = null;
